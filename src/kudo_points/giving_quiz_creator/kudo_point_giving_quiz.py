@@ -4,25 +4,27 @@ from typing import List
 from .group import Group
 
 
-class KudoPointGivingQuiz:
-    def __init__(self, user: canvasapi.user.User,
-                 group: canvasapi.group.Group,
-                 assignment_group: canvasapi.assignment.AssignmentGroup,
-                 unlock_date: datetime.datetime,
-                 due_date: datetime.datetime,
-                 late_days: int = 0,
-                 number_of_kudo_points: int = 2):
-        self.user = user
-        self.group = Group(group)
-        self.assignment_group = assignment_group
-        self.unlock_date = unlock_date
-        self.due_date = due_date
-        self.lock_date = due_date + datetime.timedelta(days=late_days)
-        self.number_of_kudo_points = number_of_kudo_points
+def __init__(self, user: canvasapi.user.User,
+             group: canvasapi.group.Group,
+             assignment_group: canvasapi.assignment.AssignmentGroup,
+             number_of_kudo_points,
+             due_date: datetime.datetime,
+             unlock_date: datetime.datetime,
+             lock_date: datetime.datetime):
+    self.user = user
+    self.group = Group(group)
+    self.assignment_group = assignment_group
+    self.unlock_date = unlock_date
+    self.due_date = due_date
+    self.lock_date = lock_date
+    self.number_of_kudo_points = number_of_kudo_points
 
-        self.quiz_info = self._create_quiz_info()
-        self.assignment_info = self._create_assignment_info()
-        self.quiz_questions = self._create_quiz_questions()
+    self.quiz_info = self._create_quiz_info()
+    self.assignment_info = self._create_assignment_info()
+    self.quiz_questions = self._create_quiz_questions()
+
+
+class KudoPointGivingQuiz:
 
     def _create_quiz_info(self) -> dict:
         return {
