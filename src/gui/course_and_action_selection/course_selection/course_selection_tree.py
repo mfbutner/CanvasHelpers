@@ -20,10 +20,10 @@ class CourseSelectionTree(ttk.Treeview):
     def __init__(self, canvas_connection: canvasapi.Canvas,
                  master=None, **kw):
         super().__init__(master, **kw)
-        # self['selectmode'] = 'browse'
-        # self['sticky'] = tkinter.NSEW
 
         # gui elements
+        # TODO: make it so that this class is a frame with the treeview widget inside of it
+        # TODO: this will allow it so that the treeview "has" the scroll bar always placed to its right
         self.scroll_bar = ttk.Scrollbar(master, orient='vertical', command=self.yview)
         self['yscrollcommand'] = self.scroll_bar.set
 
@@ -33,8 +33,8 @@ class CourseSelectionTree(ttk.Treeview):
         self.all_courses = self.download_all_courses()
         self.term_to_courses = self.build_term_to_course_mapping()
         self.id_to_course: Dict[str, canvasapi.course.Course] = dict()
-        self.build_tree()
         self.selected_course = None
+        self.build_tree()
 
     # gui elements
 
@@ -42,6 +42,8 @@ class CourseSelectionTree(ttk.Treeview):
         self.add_favorite_courses_to_tree()
         self.add_all_courses_to_tree()
         self.tag_bind(CourseTreeTags.COURSE, '<<TreeviewSelect>>', self.get_course_selected)
+        self.selection_set()  # ensure nothing is selected
+
 
     def add_favorite_courses_to_tree(self) -> None:
         self.insert('', 0, iid='favorites_folder', text='Favorites', tags=(CourseTreeTags.FOLDER,), open=True)
@@ -57,12 +59,42 @@ class CourseSelectionTree(ttk.Treeview):
                 tree_id = self.insert(term_id, 'end', text=course.name, tags=(CourseTreeTags.COURSE,))
                 self.id_to_course[tree_id] = course
 
-    def get_course_selected(self, *args):
+    def get_course_selected(self, *args) -> None:
         selected_item_id = self.focus()
         self.selected_course = self.id_to_course[selected_item_id]
         print(f'{self.selected_course.name} selected')
 
     # logic
+
+    def refresh(self, *args) -> None:
+        """
+        Refresh the list of items in the tree
+        :return:
+        """
+        self.empty_tree()
+
+        # clear everything
+        self.favorite_courses.clear()
+        self.all_courses.clear()
+        self.term_to_courses.clear()
+        self.id_to_course.clear()
+        self.selected_course = None
+
+        # redownload everything
+        self.favorite_courses = self.download_favorite_courses()
+        self.all_courses = self.download_all_courses()
+        self.term_to_courses = self.build_term_to_course_mapping()
+
+        self.build_tree()  # rebuild the tree
+
+    def empty_tree(self) -> None:
+        """
+        remove all of the items in the tree
+        :return:
+        """
+
+        for child in self.get_children():
+            self.delete(child)
 
     def download_favorite_courses(self) -> List[canvasapi.course.Course]:
         me = self.canvas_connection.get_current_user()
