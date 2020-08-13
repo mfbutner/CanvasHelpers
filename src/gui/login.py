@@ -1,9 +1,12 @@
 import tkinter
-from tkinter import ttk
 from tkinter import messagebox
-import webbrowser
+from tkinter import ttk
+
 import canvasapi
 import requests
+
+from .labeled_entry import LabeledEntry
+from .course_and_action_selection import CourseAndActionSelectionWindow
 
 
 class LoginWindow(tkinter.Toplevel):
@@ -13,7 +16,7 @@ class LoginWindow(tkinter.Toplevel):
 
         # the content of the login window
         self.content = LoginFrame(self)
-        self.bind("<Return>", self.content.login)
+        self.bind("<Key-Return>", self.content.login)
 
         self.content.grid(row=0, column=0, sticky=tkinter.NSEW)
         self.rowconfigure(0, weight=1), self.columnconfigure(0, weight=1)
@@ -26,16 +29,10 @@ class LoginFrame(ttk.Frame):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
 
-        # create the attributes for the canvas api key
-        self.canvas_key_label = ttk.Label(self, text='Canvas API Key:')
-        self.canvas_key = tkinter.StringVar()
-        self.canvas_key_entry = ttk.Entry(self, width=70, textvariable=self.canvas_key)
-        self.canvas_key_entry.focus()
+        self.canvas_key = self.create_canvas_key()
+        self.canvas_key.entry.focus()  # start the cursor in the entry for the key
 
-        # create the attributes for the canvas url
-        self.canvas_url_label = ttk.Label(self, text='Canvas URL:')
-        self.canvas_url = tkinter.StringVar(value=r'https://canvas.ucdavis.edu/')
-        self.canvas_url_entry = ttk.Entry(self, width=70, textvariable=self.canvas_url)
+        self.canvas_url = self.create_canvas_url()
 
         # login button
         self.button_frame = ttk.Frame(self)
@@ -46,42 +43,43 @@ class LoginFrame(ttk.Frame):
 
         self.place_widgets()
 
-    def create_canvas_key(self):
-        self.canvas_key_label = ttk.Label(self, text='Canavs API Key')
-        self.canvas_key_entry = ttk.Entry(self, width=70)
+    def create_canvas_key(self) -> LabeledEntry:
+        label = ttk.Label(self, text='Canvas API Key')
+        entry = ttk.Entry(self, width=70)
+        return LabeledEntry(label, entry)
 
-    def create_canvas_url(self):
-        self.canvas_url_label = ttk.Label(self, text='Canvas URL')
-        self.canvas_url = tkinter.StringVar(value=r'https://canvas.ucdavis.edu/')
-        self.canvas_url_entry = ttk.Entry(self, width=70, textvariable=self.canvas_url)
+    def create_canvas_url(self) -> LabeledEntry:
+        label = ttk.Label(self, text='Canvas URL')
+        entry_contents = tkinter.StringVar(value=r'https://canvas.ucdavis.edu/')
+        entry = ttk.Entry(self, width=70, textvariable=entry_contents)
+        return LabeledEntry(label, entry, entry_contents)
 
-    def place_widgets(self):
+    def place_widgets(self)->None:
         for rows_cols in range(2):
             self.rowconfigure(rows_cols, weight=1), self.columnconfigure(rows_cols, weight=1)
 
-        self.canvas_key_label.grid(row=0, column=0, sticky=tkinter.E)
-        self.canvas_key_entry.grid(row=0, column=1, sticky=tkinter.EW)
-        self.canvas_url_label.grid(row=1, column=0, sticky=tkinter.E)
-        self.canvas_url_entry.grid(row=1, column=1, sticky=tkinter.EW)
+        self.canvas_key.label.grid(row=0, column=0, sticky=tkinter.E)
+        self.canvas_key.entry.grid(row=0, column=1, sticky=tkinter.EW)
+        self.canvas_url.label.grid(row=1, column=0, sticky=tkinter.E)
+        self.canvas_url.entry.grid(row=1, column=1, sticky=tkinter.EW)
         self.place_buttons()
-        # self.login_button.grid(row=2, column=0)
-        # self.quit_button.grid(row=2, column=1)
 
-    def place_buttons(self):
+    def place_buttons(self)->None:
         self.button_frame.grid(row=2, column=1, columnspan=2)
         self.login_button.grid(row=0, column=0)
         self.quit_button.grid(row=0, column=1)
 
     def login(self, *args):
         try:
-            canvas_connection = canvasapi.Canvas(self.canvas_url.get(), self.canvas_key.get())
-            me = canvas_connection.get_user('self')
+            canvas_connection = canvasapi.Canvas(self.canvas_url.entry.get(), self.canvas_key.entry.get())
+            canvas_connection.get_user('self') # attempt to get some info from canvas to see if we connected to it
             print('Connected')
+            CourseAndActionSelectionWindow(canvas_connection)
         except requests.exceptions.ConnectionError:
-           messagebox.showinfo(title='Bad URL',
-               message=f'Cannot connect to {self.canvas_url.get()}.\n'
-                                               f'Please check you entered the correct url.')
-        except canvasapi.exceptions.ResourceDoesNotExist as e:
+            messagebox.showinfo(title='Bad URL',
+                                message=f'Cannot connect to {self.canvas_url.entry.get()}.\n'
+                                        f'Please check you entered the correct url.')
+        except (canvasapi.exceptions.ResourceDoesNotExist, canvasapi.exceptions.InvalidAccessToken):
             messagebox.showinfo(title='Bad API Key',
-                message=f'Cannot connect to Canvas with the given API Key.\n'
+                                message=f'Cannot connect to Canvas with the given API Key.\n'
                                         f'Please check that you entered your API Key correctly.')

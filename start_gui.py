@@ -4,7 +4,7 @@ from src.gui import login
 
 def main():
     root = tkinter.Tk()
-    login_window = login.LoginWindow(root)
+    login_window = login.LoginWindow(None)
     root.withdraw()
     login_window.mainloop()
 
