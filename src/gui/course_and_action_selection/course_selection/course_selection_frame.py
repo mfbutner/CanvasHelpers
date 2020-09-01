@@ -15,6 +15,11 @@ class CourseSelectionFrame(ttk.Frame):
         self.refresh_button = self.create_refresh_button()
         self.place_contents()
 
+
+    @property
+    def selected_course(self) -> canvasapi.course.Course:
+        return self.course_tree.selected_course
+
     def create_refresh_button(self) -> ttk.Button:
         button = ttk.Button(master=self, text='Refresh Courses', command=self.course_tree.refresh)
         return button

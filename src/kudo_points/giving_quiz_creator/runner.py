@@ -169,7 +169,7 @@ def create_kudo_point_giving_quiz_for_user(user: canvasapi.user.User,
         'title': f'Override for {user}',
         'due_at': due_date.isoformat(),
         'unlock_at': unlock_date,
-        'lock_at': due_date + timedelta(days=late_days)
+        'lock_at': due_date + datetime.timedelta(days=late_days)
     }
     the_quiz = course.create_quiz({
         'title': f"{user.name}'s Kudo Point Givings for {group.name}",

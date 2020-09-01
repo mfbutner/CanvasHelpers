@@ -1,6 +1,6 @@
 import tkinter
 from tkinter import ttk
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 import canvasapi
 import enum
@@ -14,6 +14,10 @@ class CourseTreeTags(enum.Enum):
     COURSE = 'course'
 
 
+COURSE_PICKED_EVENT = '<<COURSE_PICKED>>'
+COURSES_REFRESHED_EVENT = '<<COURSES_REFRESHED>>'
+
+
 class CourseSelectionTree(ttk.Treeview):
     teaching_roles = (CanvasRole.TEACHER, CanvasRole.TA, CanvasRole.DESIGNER)
 
@@ -21,9 +25,6 @@ class CourseSelectionTree(ttk.Treeview):
                  master=None, **kw):
         super().__init__(master, **kw)
 
-        # gui elements
-        # TODO: make it so that this class is a frame with the treeview widget inside of it
-        # TODO: this will allow it so that the treeview "has" the scroll bar always placed to its right
         self.scroll_bar = ttk.Scrollbar(master, orient='vertical', command=self.yview)
         self['yscrollcommand'] = self.scroll_bar.set
 
@@ -33,8 +34,12 @@ class CourseSelectionTree(ttk.Treeview):
         self.all_courses = self.download_all_courses()
         self.term_to_courses = self.build_term_to_course_mapping()
         self.id_to_course: Dict[str, canvasapi.course.Course] = dict()
-        self.selected_course = None
+        self.selected_course: Optional[canvasapi.course.Course] = None
         self.build_tree()
+
+        # new events
+        self.event_add(COURSE_PICKED_EVENT, 'None')
+        self.event_add(COURSES_REFRESHED_EVENT, 'None')
 
     # gui elements
 
@@ -43,7 +48,6 @@ class CourseSelectionTree(ttk.Treeview):
         self.add_all_courses_to_tree()
         self.tag_bind(CourseTreeTags.COURSE, '<<TreeviewSelect>>', self.get_course_selected)
         self.selection_set()  # ensure nothing is selected
-
 
     def add_favorite_courses_to_tree(self) -> None:
         self.insert('', 0, iid='favorites_folder', text='Favorites', tags=(CourseTreeTags.FOLDER,), open=True)
@@ -62,7 +66,8 @@ class CourseSelectionTree(ttk.Treeview):
     def get_course_selected(self, *args) -> None:
         selected_item_id = self.focus()
         self.selected_course = self.id_to_course[selected_item_id]
-        print(f'{self.selected_course.name} selected')
+        self.event_generate(COURSE_PICKED_EVENT, data=str(self.selected_course.id), when='tail')
+        # print(f'{self.selected_course.name} selected')
 
     # logic
 
@@ -86,6 +91,7 @@ class CourseSelectionTree(ttk.Treeview):
         self.term_to_courses = self.build_term_to_course_mapping()
 
         self.build_tree()  # rebuild the tree
+        self.event_generate(COURSES_REFRESHED_EVENT, when='tail')
 
     def empty_tree(self) -> None:
         """

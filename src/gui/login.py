@@ -5,7 +5,7 @@ from tkinter import ttk
 import canvasapi
 import requests
 
-from .labeled_entry import LabeledEntry
+from src.gui.convenience.labeled_entry import LabeledEntry
 from src.gui.course_and_action_selection.course_and_action_selection_window import CourseAndActionSelectionWindow
 from .convenience.resizeable_window import ResizeableWindow
 
@@ -20,7 +20,6 @@ class LoginWindow(ResizeableWindow):
         self.bind("<Key-Return>", self.content.login)
 
         self.content.grid(row=0, column=0, sticky=tkinter.NSEW)
-
         self.enable_resizing()
 
 
