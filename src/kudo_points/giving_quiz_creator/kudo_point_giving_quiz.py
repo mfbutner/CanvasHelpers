@@ -1,30 +1,28 @@
 import canvasapi
 import datetime
-from typing import List
+from typing import List, Callable
 from .group import Group
 
 
-def __init__(self, user: canvasapi.user.User,
-             group: canvasapi.group.Group,
-             assignment_group: canvasapi.assignment.AssignmentGroup,
-             number_of_kudo_points,
-             due_date: datetime.datetime,
-             unlock_date: datetime.datetime,
-             lock_date: datetime.datetime):
-    self.user = user
-    self.group = Group(group)
-    self.assignment_group = assignment_group
-    self.unlock_date = unlock_date
-    self.due_date = due_date
-    self.lock_date = lock_date
-    self.number_of_kudo_points = number_of_kudo_points
-
-    self.quiz_info = self._create_quiz_info()
-    self.assignment_info = self._create_assignment_info()
-    self.quiz_questions = self._create_quiz_questions()
-
-
 class KudoPointGivingQuiz:
+    def __init__(self, user: canvasapi.user.User,
+                 group: canvasapi.group.Group,
+                 assignment_group: canvasapi.assignment.AssignmentGroup,
+                 number_of_kudo_points,
+                 due_date: datetime.datetime,
+                 unlock_date: datetime.datetime,
+                 lock_date: datetime.datetime):
+        self.user = user
+        self.group = Group(group)
+        self.assignment_group = assignment_group
+        self.unlock_date = unlock_date
+        self.due_date = due_date
+        self.lock_date = lock_date
+        self.number_of_kudo_points = number_of_kudo_points
+
+        self.quiz_info = self._create_quiz_info()
+        self.assignment_info = self._create_assignment_info()
+        self.quiz_questions = self._create_quiz_questions()
 
     def _create_quiz_info(self) -> dict:
         return {
@@ -79,11 +77,42 @@ class KudoPointGivingQuiz:
         })
         return answers
 
-    def upload_to_canvas(self, course: canvasapi.course.Course, print_when_done: bool = True) -> None:
+    def upload_to_canvas(self, course: canvasapi.course.Course) -> None:
         canvas_quiz = course.create_quiz(self.quiz_info)
         for question in self.quiz_questions:
             canvas_quiz.create_question(question=question)
         canvas_assignment = course.get_assignment(canvas_quiz.assignment_id)
         canvas_assignment = canvas_assignment.edit(assignment=self.assignment_info)
-        if print_when_done:
-            print(f'Created "{canvas_quiz}" in "{self.assignment_group}"')
+
+    @staticmethod
+    def create_kudo_point_giving_quiz_for_group_category(course: canvasapi.course.Course,
+                                                         group_category: canvasapi.group.GroupCategory,
+                                                         assignment_group: canvasapi.assignment.AssignmentGroup,
+                                                         number_of_kudo_points,
+                                                         due_date: datetime.datetime,
+                                                         unlock_date: datetime.datetime,
+                                                         lock_date: datetime.datetime,
+                                                         on_group_start: Callable[[Group], None] = None,
+                                                         on_group_end: Callable[[Group], None] = None,
+                                                         on_user_start: Callable[
+                                                             [canvasapi.user.User, Group], None] = None,
+                                                         on_user_end: Callable[
+                                                             [canvasapi.user.User, Group], None] = None
+                                                         ):
+        for group in group_category.get_groups():
+            if on_group_start is not None:
+                on_group_start(group)
+            for user in group.get_users():
+                if on_user_start is not None:
+                    on_user_start(user, group)
+                quiz = KudoPointGivingQuiz(user, group, assignment_group,
+                                           number_of_kudo_points,
+                                           due_date,
+                                           unlock_date,
+                                           lock_date)
+
+                quiz.upload_to_canvas(course)
+                if on_user_end is not None:
+                    on_user_end(user, group)
+            if on_group_end is not None:
+                on_group_end(group)

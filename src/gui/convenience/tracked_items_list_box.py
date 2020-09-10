@@ -103,3 +103,6 @@ class TrackedItemListBox(tkinter.Listbox):
         else:
             self._values.clear()
             self._values.extend(value)
+
+    def get_selected_items(self) -> list:
+        return [self.values[index] for index in self.curselection()]
