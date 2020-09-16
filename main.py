@@ -2,6 +2,7 @@ import argparse
 import canvasapi
 from src.kudo_points.giving_quiz_creator.runner import create_assignment_group
 
+
 def create_argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog='Canvas Tool Helper',
                                      description='A collection of useful tools for interacting with Canvas',
