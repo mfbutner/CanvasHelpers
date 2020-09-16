@@ -42,35 +42,35 @@ class LoginFrame(ttk.Frame):
         self.place_widgets()
 
     def create_canvas_key(self) -> LabeledEntry:
-        label = ttk.Label(self, text='Canvas API Key')
-        entry = ttk.Entry(self, width=70)
-        return LabeledEntry(label, entry)
+        label_and_entry = LabeledEntry(self, 'Canvas API Key')
+        label_and_entry.entry['width'] = 70
+        return label_and_entry
 
     def create_canvas_url(self) -> LabeledEntry:
-        label = ttk.Label(self, text='Canvas URL')
-        entry_contents = tkinter.StringVar(value=r'https://canvas.ucdavis.edu/')
-        entry = ttk.Entry(self, width=70, textvariable=entry_contents)
-        return LabeledEntry(label, entry, entry_contents)
+        label_and_entry = LabeledEntry(self, 'Canvas URL', 'https://canvas.ucdavis.edu/')
+        label_and_entry.entry['width'] = 70
+        return label_and_entry
 
     def place_widgets(self) -> None:
-
-        self.canvas_key.label.grid(row=0, column=0, sticky=tkinter.E)
-        self.canvas_key.entry.grid(row=0, column=1, sticky=tkinter.EW)
-        self.canvas_url.label.grid(row=1, column=0, sticky=tkinter.E)
-        self.canvas_url.entry.grid(row=1, column=1, sticky=tkinter.EW)
+        # label_length = max(self.canvas_key.label['text'], self.canvas_url.label['text'])
+        # self.canvas_key.label['width'] = label_length
+        # self.canvas_url.label['width'] = label_length
+        self.canvas_key.grid(row=0, column=0, sticky=tkinter.EW)
+        self.canvas_url.grid(row=1, column=0, sticky=tkinter.EW)
         self.place_buttons()
 
     def place_buttons(self) -> None:
-        self.button_frame.grid(row=2, column=1, columnspan=2)
+        self.button_frame.grid(row=2, column=0)
         self.login_button.grid(row=0, column=0)
         self.quit_button.grid(row=0, column=1)
 
     def login(self, *args):
         try:
             canvas_connection = canvasapi.Canvas(self.canvas_url.entry.get(), self.canvas_key.entry.get())
-            canvas_connection.get_user('self')  # attempt to get some info from canvas to see if we connected to it
-            print('Connected')
+            canvas_connection.get_current_user()
             CourseAndActionSelectionWindow(canvas_connection)
+            self.master.destroy()
+
         except requests.exceptions.ConnectionError:
             messagebox.showinfo(title='Bad URL',
                                 message=f'Cannot connect to {self.canvas_url.entry.get()}.\n'
