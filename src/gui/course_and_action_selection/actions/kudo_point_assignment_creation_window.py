@@ -1,17 +1,14 @@
-import tkinter
 import canvasapi
 from tkinter import ttk
-from tkinter import messagebox
 
 from src.gui.convenience.resizeable_window import ResizeableWindow
-from src.gui.convenience.tracked_items_list_box import TrackedItemListBox
 from src.gui.convenience.tool_tip import CreateToolTip
 from src.gui.convenience.canvas_related.assignment_dates import AssignmentDates
 from src.gui.convenience.labeled_entry import LabeledEntry
 from src.gui.convenience.progress_window import ProgressWindow
 from src.gui.convenience.refreshable_items_list import RefreshableItemsList
 
-from src.kudo_points.giving_quiz_creator.kudo_point_giving_quiz import KudoPointGivingQuiz
+from src.logic.kudo_points import KudoPointGivingQuiz
 
 
 class KudoPointAssignmentCreationWindow(ResizeableWindow):

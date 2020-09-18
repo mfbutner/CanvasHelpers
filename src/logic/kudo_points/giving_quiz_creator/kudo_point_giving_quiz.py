@@ -46,7 +46,9 @@ class KudoPointGivingQuiz:
         }
 
         return {
-            'grading_type': 'not_graded',
+            # setting grading_type to not_graded breaks the association between Quiz and Assignment
+            # not sure if this is a bug on Canvas's end or what so leaving it out for now.
+            # 'grading_type': 'not_graded',
             'omit_from_final_grade': True,
             'only_visible_to_overrides': True,
             'assignment_overrides': [date_info],
@@ -60,14 +62,15 @@ class KudoPointGivingQuiz:
                 'question_name': f'Kudo Point {point}',
                 'question_text': 'Who do you want to give this Kudo Point to?',
                 'question_type': 'multiple_choice_question',
-                'answers': answers
+                'answers': answers,
+                'points_possible': 1
             } for point in range(1, self.number_of_kudo_points + 1)
         ]
 
     def _create_answers(self) -> List[dict]:
         answers = [
             {
-                'answer_text': member.name,
+                'answer_text': member.sortable_name,
                 'answer_weight': 1
             } for member in self.group.members if self.user.id != member.id
         ]
@@ -82,7 +85,10 @@ class KudoPointGivingQuiz:
         for question in self.quiz_questions:
             canvas_quiz.create_question(question=question)
         canvas_assignment = course.get_assignment(canvas_quiz.assignment_id)
-        canvas_assignment = canvas_assignment.edit(assignment=self.assignment_info)
+        edited_canvas_assignment = canvas_assignment.edit(assignment=self.assignment_info)
+        #edited_quiz = canvas_quiz.edit(quiz={'published': True})
+        second_assignment = course.get_assignment(canvas_quiz.assignment_id)
+        pass
 
     @staticmethod
     def create_kudo_point_giving_quiz_for_group_category(course: canvasapi.course.Course,

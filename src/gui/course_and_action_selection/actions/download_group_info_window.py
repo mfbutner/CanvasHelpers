@@ -10,7 +10,7 @@ from src.gui.convenience.tool_tip import CreateToolTip
 from src.gui.convenience.refreshable_items_list import RefreshableItemsList
 from src.gui.convenience.button_group import ButtonGroup
 
-from src.kudo_points.groups.groups import download_groups_to_csv
+from src.logic.groups import download_groups_to_csv
 
 
 class ButtonFieldLink:

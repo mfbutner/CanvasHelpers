@@ -1,6 +1,6 @@
 import argparse
 import canvasapi
-from src.kudo_points.giving_quiz_creator.runner import create_assignment_group
+from src.logic.kudo_points import create_assignment_group
 
 
 def create_argument_parser() -> argparse.ArgumentParser:
