@@ -1,5 +1,5 @@
 import tkinter
-from typing import Iterable, Union, overload, Callable, TypeVar, Optional
+from typing import Iterable, Union, overload, Callable, TypeVar
 
 T = TypeVar('T')
 
@@ -86,8 +86,7 @@ class TkinterDisplayableList(list):
 
 
 class TrackedItemListBox(tkinter.Listbox):
-    def __init__(self, master=None, values: Optional[Iterable] = None, to_string: Callable[[T], str] = str, cnf={},
-                 **kw):
+    def __init__(self, master=None, values=None, to_string: Callable[[T], str] = str, cnf={}, **kw):
         super().__init__(master, cnf, **kw)
         self._values = TkinterDisplayableList(values, to_string) if values is not None \
             else TkinterDisplayableList(to_string=to_string)
