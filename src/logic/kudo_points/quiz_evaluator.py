@@ -12,8 +12,9 @@ def evaluate_kudo_point_giving_quiz(course: canvasapi.course.Course,
     for assignment in kudo_point_assignment_group.assignments:
         if 'online_quiz' in assignment['submission_types']:
             quiz = course.get_quiz(assignment['quiz_id'])
-            stats = list(quiz.get_statistics())[0] #TODO check what happens when there are no responses
-            for question in stats.question_statistics:
+            quiz_questions = list(quiz.get_questions())
+            stats = list(quiz.get_statistics())[0] #there should always be a single element in this list
+            for question, question_stats in zip(quiz_questions, stats.question_statistics):
                 # last answer means don't give points so don't look at it
                 for answer in question['answers'][:-1]:
                     if answer['responses'] > 0: # user selected this choice
