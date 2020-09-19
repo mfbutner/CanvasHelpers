@@ -41,8 +41,8 @@ class KudoPointGivingQuiz:
             'student_ids': [self.user.id],
             'title': f'Override for {self.user.name}',
             'due_at': self.due_date.isoformat(),
-            'unlock_at': self.unlock_date,
-            'lock_at': self.lock_date
+            'unlock_at': self.unlock_date.isoformat(),
+            'lock_at': self.lock_date.isoformat()
         }
 
         return {
@@ -70,12 +70,14 @@ class KudoPointGivingQuiz:
     def _create_answers(self) -> List[dict]:
         answers = [
             {
-                'answer_text': member.sortable_name,
+                'answer_html': member.name,
+                'answer_text': f'{member.id}',
                 'answer_weight': 1
+
             } for member in self.group.members if self.user.id != member.id
         ]
         answers.append({
-            'answer_text': 'I do not want to give this Kudo Point to anyone.',
+            'answer_html': 'I do not want to give this Kudo Point to anyone.',
             'answer_weight': 1
         })
         return answers
@@ -86,7 +88,7 @@ class KudoPointGivingQuiz:
             canvas_quiz.create_question(question=question)
         canvas_assignment = course.get_assignment(canvas_quiz.assignment_id)
         edited_canvas_assignment = canvas_assignment.edit(assignment=self.assignment_info)
-        #edited_quiz = canvas_quiz.edit(quiz={'published': True})
+        # edited_quiz = canvas_quiz.edit(quiz={'published': True})
         second_assignment = course.get_assignment(canvas_quiz.assignment_id)
         pass
 
