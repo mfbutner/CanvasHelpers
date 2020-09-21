@@ -27,6 +27,10 @@ class KudoPointGivingQuiz:
     def _create_quiz_info(self) -> dict:
         return {
             'title': f"{self.user.name}'s Kudo Point Givings for {self.group.name}",
+            'description': 'Please fill out who you would like to give your kudo points to.\n'
+                           'After responding, please ignore Canvas\'s notification that your answers'
+                           'are incorrect. Your response has been recorded correctly, Canvas just does not'
+                           'know how to deal with multiple choice questions where every answer is "correct."',
             'quiz_type': 'assignment',
             'assignment_group_id': self.assignment_group.id,
             'allowed_attempts': 10,

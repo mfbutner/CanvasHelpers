@@ -8,7 +8,7 @@ from src.gui.convenience.labeled_entry import LabeledEntry
 from src.gui.convenience.progress_window import ProgressWindow
 from src.gui.convenience.refreshable_items_list import RefreshableItemsList
 
-from src.logic.kudo_points import KudoPointGivingQuiz
+from src.logic.kudo_points.giving_quiz_creator.kudo_point_giving_quiz import KudoPointGivingQuiz
 
 
 class KudoPointAssignmentCreationWindow(ResizeableWindow):
@@ -83,7 +83,7 @@ class KudoPointAssignmentCreationWindow(ResizeableWindow):
         # self.create_assignments_button['state'] = 'disabled'
 
     def create_assignments(self):
-        groups = list(self.group_categories_list_box.get_selected_items()[0].get_groups())
+        groups = list(self.group_categories_list_box.listbox.get_selected_items()[0].get_groups())
         progress_tracker = ProgressWindow(self, total_work_to_do=len(groups))
         KudoPointGivingQuiz.create_kudo_point_giving_quiz_for_group_category(
             self.course,
