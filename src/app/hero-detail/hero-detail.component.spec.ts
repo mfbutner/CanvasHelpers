@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Hero} from '../hero';
 
 import { HeroDetailComponent } from './hero-detail.component';
 
