@@ -2,12 +2,14 @@
 <h2>My Heroes</h2>
 <ul class="heroes">
     <!-- *ngFor is a repeater directive, heroes is the heroes list, and hero is the current iteration hero -->
-    <li *ngFor="let hero of heroes" (click)="onSelect(hero)"> 
+    <!-- if hero == selectedHero in the list, run class.selected-->
+    <li *ngFor="let hero of heroes" 
+    [class.selected]="hero === selectedHero" 
+    (click)="onSelect(hero)"> 
         <span class="badge">{{hero.id}}</span> {{hero.name}}
     </li>
 </ul>
-
-<!-- div will not display if selectedHero is undefined -->
+<!--a dfsf ddding changes why is this happening-->
 <div *ngIf="selectedHero">
     <!--displays the selectedHero in uppercase and info-->
     <h2>{{selectedHero.name | uppercase}} Details</h2>
