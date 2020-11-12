@@ -1,4 +1,11 @@
 <div>
+    <h2>My Heroes</h2>
+    <ul class="heroes">
+        <!-- *ngFor is a repeater directive, for every hero in heroes list.-->
+        <li *ngFor="let hero of heroes"> 
+            <span class="badge">{{hero.id}}</span> {{hero.name}}
+        </li>
+    </ul>
     <label> name:
         <input [(ngModel)]="hero.name" placeholder="name"/>
     </label>
