@@ -16,6 +16,7 @@ export class HeroesComponent implements OnInit {
   selectedHero: Hero;
 
   /* will construct herocomponent with data from heroService */
+  /* private messageService component for herocomponet */
   constructor(private heroService: HeroService, private messageService:MessageService) { 
   }
 
@@ -36,6 +37,7 @@ export class HeroesComponent implements OnInit {
   };
 
   /* on select assigns the clicked hero from the template to selectedHero */
+  /* add selected hero to message list */
   onSelect(hero: Hero): void {
     this.selectedHero = hero;
     this.messageService.add('HeroesComponent; Selected hero id=${hero.id}');
