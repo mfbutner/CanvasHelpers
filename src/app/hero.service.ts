@@ -15,7 +15,7 @@ export class HeroService {
   constructor(private MessageService: MessageService) {}
 
   getHeros(): Observable<Hero[]> {
-    this.MessageService.add('HeroSErvice: fetched heroes');
+    this.MessageService.add('HeroService: fetched heroes');
     return of(HEROES);
   }
 
