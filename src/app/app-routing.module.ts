@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { HeroesComponent } from './heroes/heroes.component';
 
+/* displays heroes component to /heroes URL */
 const routes: Routes = [
   { path: 'heroes', component: HeroesComponent }
 ];
