@@ -13,9 +13,7 @@ export class HeroesComponent implements OnInit {
 
   /* set heroes list to elements from HEROES */
   heroes: Hero[];
-  /* selected hero */
-  selectedHero: Hero;
-
+  
   /* will construct herocomponent with data from heroService */
   /* private messageService component for herocomponet */
   constructor(private heroService: HeroService, private messageService:MessageService) { 
@@ -31,16 +29,5 @@ export class HeroesComponent implements OnInit {
       .subscribe(heroes => this.heroes = heroes);
   }
 
-  /* each hero element has an id and name */
-  hero: Hero = {
-    id: 1,
-    name: 'Windstorm'
-  };
-
-  /* on select assigns the clicked hero from the template to selectedHero */
-  /* add selected hero to message list */
-  onSelect(hero: Hero): void {
-    this.selectedHero = hero;
-    this.messageService.add('HeroesComponent; Selected hero id=${hero.id}');
-  }
+ 
 }
