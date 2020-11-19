@@ -28,6 +28,10 @@ export class HeroDetailComponent implements OnInit {
       .subscribe(hero => this.hero = hero);
   }
 
+  goBack(): void {
+    this.location.back();
+  }
+
   /* defines an input property of type Hero */
   @Input() hero:Hero;
 
