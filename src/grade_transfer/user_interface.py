@@ -69,12 +69,12 @@ class UserInterface:
         # EXCEPTION: If user choose out of bounds or enter non-number or empty space or more than one number
         print("*******************************************************************************************************")
         print("These are the available FAVORITE Canvas courses from your token and url.")
-        self.print_list_with_index(self.canvas.get_courses(include="favorites"))
+        self.print_list_with_index(self.canvas.get_current_user().get_favorite_courses())
         course_index = input("Please enter the index number in front of the course in which you want to manage the "
                              "grades: ")
         course_index = self.str_to_int(course_index)
         course_index -= 1
-        course = self.canvas.get_courses(include="favorites")[course_index]
+        course = self.canvas.get_current_user().get_favorite_courses()[course_index]
         return course
 
     def get_assignments(self):
