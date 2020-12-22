@@ -5,7 +5,6 @@ import csv
 from typing import List, Union
 from src.grade_transfer.third_party_student import ThirdPartyStudent
 
-
 class CanvasGradeTransfer:
     # csv_path because we still need to read the csv after knowing what the header situation is.
     def __init__(self, course: canvasapi.course.Course,
@@ -18,11 +17,13 @@ class CanvasGradeTransfer:
         self.third_party_students_last_name_pool = []
         self.canvas_students_full_name_pool = []
         self.canvas_students_last_name_pool = []
+        self.grade_book = self.create_empty_grade_book()
         # gui_list = ["first_name", "last_name", "email", None, assignment1, assignment2]
         self.third_party_students = self.create_third_party_student_list()
         self.canvas_students = set(course.get_users(enrollment_type=["student"]))
         self.create_canvas_name_pool()
         self.match_students()
+
 
     def create_third_party_student_list(self):
         student_set = set()
@@ -36,8 +37,8 @@ class CanvasGradeTransfer:
                         student.first_name = cell
                     elif key == "last_name":
                         student.last_name = cell
-                    elif key == "name":
-                        first, last = split_name(cell)
+                    elif key == "full_name":
+                        first, last = self.split_name(cell)
                         student.first_name = first
                         student.last_name = last
                     elif key == "sid":
@@ -52,10 +53,17 @@ class CanvasGradeTransfer:
                 self.third_party_students_last_name_pool.append(student.last_name)
         return student_set
 
+    def create_empty_grade_book(self):
+        grade_book = {}
+        for assignment in self.gui_list:
+            if type(assignment) == canvasapi.assignment.Assignment:
+                grade_book[assignment.id] = {}
+        return grade_book
+
     def create_canvas_name_pool(self):
         for student in self.canvas_students:
             self.canvas_students_full_name_pool.append(student.sortable_name)
-            self.canvas_students_last_name_pool.append(split_name(student.sortable_name)[1])
+            self.canvas_students_last_name_pool.append(self.split_name(student.sortable_name)[1])
         return
 
     def match_students(self):
@@ -72,7 +80,7 @@ class CanvasGradeTransfer:
 
     def remove_from_name_pool(self, csv_student: ThirdPartyStudent, canvas_student: canvasapi.user.User):
         self.canvas_students_full_name_pool.remove(canvas_student.sortable_name)
-        self.canvas_students_last_name_pool.remove(split_name(canvas_student.sortable_name)[1])
+        self.canvas_students_last_name_pool.remove(self.split_name(canvas_student.sortable_name)[1])
         self.third_party_students_full_name_pool.remove(csv_student.full_name)
         self.third_party_students_last_name_pool.remove(csv_student.last_name)
         return
@@ -86,7 +94,7 @@ class CanvasGradeTransfer:
         else:
             third_party_list.remove(name)
             canvas_list.remove(name)
-            if is_unique_quick_check(third_party_list) and is_unique_quick_check(canvas_list):
+            if name in third_party_list or name in canvas_list:
                 return False
         return True
 
@@ -113,7 +121,7 @@ class CanvasGradeTransfer:
 
     def last_name_check(self, csv_student: ThirdPartyStudent, canvas_student: canvasapi.user.User):
         if csv_student.last_name is not None:
-            if csv_student.last_name == split_name(canvas_student.sortable_name)[1]:
+            if csv_student.last_name == self.split_name(canvas_student.sortable_name)[1]:
                 if self.is_unique(csv_student.last_name, "last"):
                     csv_student.last_name_match = True
         return
@@ -121,15 +129,53 @@ class CanvasGradeTransfer:
     def __str__(self):
         return str(self.__dict__)
 
+    def split_name(self, full_name: str):
+        if "," in full_name:
+            last, first = full_name.split(",")
+        elif " " in full_name:
+            first, last = full_name.split(" ", 1)
+        first = first.strip()
+        last = last.strip()
+        return first, last
 
-def split_name(full_name: str):
-    if "," in full_name:
-        last, first = full_name.split(",")
-    elif " " in full_name:
-        first, last = full_name.split(" ", 1)
-    first = first.strip()
-    last = last.strip()
-    return first, last
+    def update_grade_for_one(self, csv_student: ThirdPartyStudent, canvas_student: canvasapi.user.User):
+        i = 0
+        for grade in self.grade_book:
+            self.grade_book[grade][canvas_student.id] = {"posted_grade": csv_student.assignment_list[i]}
+            i += 1
+        return
+
+    def fill_in_grade_data(self):
+        for student in self.third_party_students:
+            if student.email_match:
+                for c_student in self.canvas_students:
+                    if student.email == c_student.email:
+                        self.update_grade_for_one(student, c_student)
+                        break
+            elif student.sid_match:
+                for c_student in self.canvas_students:
+                    if student.sid == c_student.sis_user_id:
+                        self.update_grade_for_one(student, c_student)
+                        break
+            elif student.manual_match:
+                if student.full_name_match:
+                    for c_student in self.canvas_students:
+                        if student.full_name == c_student.sortable_name:
+                            self.update_grade_for_one(student, c_student)
+                            break
+                elif student.last_name_match:
+                    for c_student in self.canvas_students:
+                        if student.last_name == self.split_name(c_student.sortable_name)[1]:
+                            self.update_grade_for_one(student, c_student)
+                            break
+        return
+
+
+    def bulk_update(self, assignment:canvasapi.assignment.Assignment):
+        # print(self.grade_book[assignment.id])
+        assignment.submissions_bulk_update(grade_data=self.grade_book[assignment.id])
+        return
+
 
 
 def is_unique_quick_check(list_a: list):
