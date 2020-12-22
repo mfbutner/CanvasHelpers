@@ -182,3 +182,4 @@ def is_unique_quick_check(list_a: list):
     if len(list_a) == len(set(list_a)):
         return True
     return False
+

@@ -241,3 +241,4 @@ class UserInterface:
                 print("Email: " + student.email)
                 print("")
                 # repeat function in verify_name_check
+
