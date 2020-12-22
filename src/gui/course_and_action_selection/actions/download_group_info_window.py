@@ -35,7 +35,7 @@ class DownloadGroupInfoWindow(ResizeableWindow):
     @staticmethod
     def create_button_field_links() -> List[ButtonFieldLink]:
         return [
-            ButtonFieldLink('Email', 'login_id', True),
+            ButtonFieldLink('Email', 'email', True),
             ButtonFieldLink('Name', 'sortable_name', False),
             ButtonFieldLink('Student Id', 'sis_user_id', False),
             ButtonFieldLink('Canvas Id', 'id', False)
