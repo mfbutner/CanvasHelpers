@@ -1,0 +1,28 @@
+1. Create an instance of UserInterface class (start.py)
+2. In the UserInterface class (user_interface.py),
+   2.1 Ask user for the following information: Canvas url, Canvas token, and the path to the downloaded third party CSV
+       grade file
+       (?? third party CSV grade file ?? Better name??)
+   2.2 Build a connection to Canvas using the Canvas url and token that user just gave, and ask user for the course and
+       assignment(s) to which they want to transfer grades.
+   2.3 Provide user with the head of the third party CSV file, and ask user to identify what's inside the header by
+       filling in a list of the column size with numbers 0-n where 0 means None (not important for this grade transfer),
+       1 means first_name, 2 means last_name, 3 means full_name, 4 means sid, 5 means email, 6-n means the assignment(s)
+       to which the user want to transfer grades.
+       NOTE: ONLY 0 is allowed to be repeated in the array; other numbers can appear AT MOST once.
+   2.4 Create an instance of CanvasGradeTransfer class using the Canvas course (2.2), CSV header (2.3), and CSV path
+       (2.1).
+
+
+NOTE: 1. If leftover students (the one who can't match by sid or email absolutely) do NOT have unique names, then their
+         grades will NOT be transferred by this program. You must do it manually.
+
+      2. Only leftover 3rd party csv students (if any) (after both 1st and 2nd degree match) will be shown to the screen
+         after grade transfer is done. Attention to them because it may require you to manually transfer them. Also, you
+         won't be told which Canvas students left un-transferred.
+
+      3. Course must be favorites. I didn't ask for others.
+
+
+
+
