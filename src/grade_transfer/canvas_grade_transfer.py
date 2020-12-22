@@ -89,14 +89,14 @@ class CanvasGradeTransfer:
         # type == "full" or "last"
         third_party_list = getattr(self, "third_party_students_" + type + "_name_pool").copy()
         canvas_list = getattr(self, "canvas_students_" + type + "_name_pool").copy()
-        if is_unique_quick_check(third_party_list) and is_unique_quick_check(canvas_list):
+
+        third_n = third_party_list.count(name)
+        canvas_n = canvas_list.count(name)
+
+        if (third_n == 1) and (canvas_n == 1):
             return True
-        else:
-            third_party_list.remove(name)
-            canvas_list.remove(name)
-            if name in third_party_list or name in canvas_list:
-                return False
-        return True
+        return False
+
 
     def email_check(self, csv_student: ThirdPartyStudent, canvas_student: canvasapi.user.User):
         if csv_student.email is not None:
