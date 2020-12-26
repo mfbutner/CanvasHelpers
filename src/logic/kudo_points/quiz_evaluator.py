@@ -40,7 +40,11 @@ def _count_points(course: canvasapi.course.Course,
                 # last answer means don't give points so don't look at it
                 for answer in question_stats['answers'][:-1]:
                     if answer['responses'] > 0:  # user selected this choice
-                        point_map[(int(answer['text']))] += 1  # this is the person the student awarded the point to
+                        selected_student = int(answer['text'])
+                        # person we are awarding credit to may have dropped course
+                        # can't give them credit then
+                        if selected_student in point_map:
+                            point_map[selected_student] += 1  # this is the person the student awarded the point to
                         break  # user can only select one answer so stop looking after it is found
     return point_map
 

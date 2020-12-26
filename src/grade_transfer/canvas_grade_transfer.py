@@ -67,15 +67,39 @@ class CanvasGradeTransfer:
         return
 
     def match_students(self):
+        #do all email matches
         for third_student in self.third_party_students:
             for canvas_student in self.canvas_students:
                 self.email_check(third_student, canvas_student)
-                if not third_student.email_match:
-                    self.sid_check(third_student, canvas_student)
-                    if not third_student.sid_match:
-                        self.full_name_check(third_student, canvas_student)
-                        if not third_student.full_name_match:
-                            self.last_name_check(third_student, canvas_student)
+                if third_student.email_match:
+                    break
+
+        #do all student id matches but only for students we haven't already matched by email
+        for third_student in self.third_party_students:
+            if third_student.email_match:
+                continue
+            for canvas_student in self.canvas_students:
+                self.sid_check(third_student, canvas_student)
+                if third_student.sid_match:
+                    break
+
+        #now match students by full name but only if they haven't matched by email or sid
+        for third_student in self.third_party_students:
+            if third_student.email_match or third_student.sid_match:
+                continue
+            for canvas_student in self.canvas_students:
+                self.full_name_check(third_student, canvas_student)
+                if third_student.full_name_match:
+                    break
+
+        #now match students by last name but only if they haven't matched by email or sid or fullname
+        for third_student in self.third_party_students:
+            if third_student.email_match or third_student.sid_match or third_student.full_name_match:
+                continue
+            for canvas_student in self.canvas_students:
+                self.last_name_check(third_student, canvas_student)
+                if third_student.last_name_match:
+                    break
         return
 
     def remove_from_name_pool(self, csv_student: ThirdPartyStudent, canvas_student: canvasapi.user.User):
@@ -107,7 +131,7 @@ class CanvasGradeTransfer:
 
     def sid_check(self, csv_student: ThirdPartyStudent, canvas_student: canvasapi.user.User):
         if csv_student.sid is not None:
-            if int(csv_student.sid) == canvas_student.sis_user_id:
+            if int(csv_student.sid) == int(canvas_student.sis_user_id):
                 csv_student.sid_match = True
                 self.remove_from_name_pool(csv_student, canvas_student)
         return

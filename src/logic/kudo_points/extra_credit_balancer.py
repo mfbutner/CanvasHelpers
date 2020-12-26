@@ -26,7 +26,10 @@ def create_extra_credit_balancer(course: canvasapi.course.Course,
     now = datetime.datetime.now()
     balancer = course.create_assignment(assignment={
         'name': f'{assignment_group.name} Balancer',
-        'description': 'How many Kudo Points you received this week.',
+        'description': 'This assignment is here to prevent you from receiving over the maximum allowed extra credit. '
+                       'If you see negative points here it means you received a lot of kudo points from your partners. '
+                       'So much so that it would push you over the maximum allowed extra credit. Thank you for being so '
+                       'helpful but I cannot let the amount of extra credit in the class be unbounded.',
         'position': len(assignment_group.assignments),  # maybe + 1?
         'assignment_group_id': assignment_group.id,
         'submission_types': ['none'],

@@ -207,13 +207,13 @@ class UserInterface:
                 print("From " + self.csv_path + ": ")
                 print("Full name: " + student.full_name)
                 print("SID: " + str(student.sid))
-                print("Email: " + student.email)
+                print("Email: " + str(student.email))
                 print("")
                 canvas_student = self.find_Canvas_student(search_name, name_type)
                 print("From Canvas: ")
                 print("Full name: " + canvas_student.sortable_name)
                 print("SID: " + str(canvas_student.sis_user_id))
-                print("Email: " + canvas_student.email)
+                print("Email: " + str(canvas_student.email))
                 print("")
                 user_check = input("Are they the same student? (yes or no): ")
                 student.manual_match = self.translate_yes_no_to_TF(user_check)
@@ -238,7 +238,7 @@ class UserInterface:
             if not(student.sid_match or student.email_match or student.manual_match):
                 print("Full name: " + student.full_name)
                 print("SID: " + str(student.sid))
-                print("Email: " + student.email)
+                print("Email: " + str(student.email))
                 print("")
                 # repeat function in verify_name_check
 
