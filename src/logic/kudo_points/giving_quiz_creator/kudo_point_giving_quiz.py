@@ -1,61 +1,67 @@
 import canvasapi
 import datetime
-from typing import List, Callable
+from typing import List, Callable, Optional
 from .group import Group
 
 
 class KudoPointGivingQuiz:
-    def __init__(self, user: canvasapi.user.User,
-                 group: canvasapi.group.Group,
+    def __init__(self, course: canvasapi.course.Course,
+                 assignment_name: str,
                  assignment_group: canvasapi.assignment.AssignmentGroup,
                  number_of_kudo_points,
-                 due_date: datetime.datetime,
-                 unlock_date: datetime.datetime,
-                 lock_date: datetime.datetime):
-        self.user = user
-        self.group = Group(group)
+                 due_date: Optional[datetime.datetime] = None,
+                 unlock_date: Optional[datetime.datetime] = None,
+                 lock_date: Optional[datetime.datetime] = None):
+        self.user = course
+        self.assignment_name = assignment_name
         self.assignment_group = assignment_group
         self.unlock_date = unlock_date
         self.due_date = due_date
         self.lock_date = lock_date
         self.number_of_kudo_points = number_of_kudo_points
 
+        students = course.get_users(sort='username', enrollment_type=['student'])
+        self.students = {}
+        for student in students:
+            if student.sortable_name not in self.students:
+                self.students[student.sortable_name] = []
+            self.students[student.sortable_name].append(student)
+
         self.quiz_info = self._create_quiz_info()
         self.assignment_info = self._create_assignment_info()
         self.quiz_questions = self._create_quiz_questions()
 
     def _create_quiz_info(self) -> dict:
+        prompt = """<p>Please fill out who you would like to give your Kudo points to. You can <strong>NOT </strong>give your Kudo point to</p>
+<ol>
+<li><span style="font-family: inherit; font-size: 1rem;">Yourself&nbsp;</span></li>
+<li><span style="font-family: inherit; font-size: 1rem;">Anyone outside of your Study Group </span></li>
+</ol>
+<p><span style="font-family: inherit; font-size: 1rem;">If you break any of these rules, your Kudo point will <strong>NOT be counted</strong>. </span></p>
+<p>&nbsp;</p>
+<p><span style="font-family: inherit; font-size: 1rem;">To quickly find who you want to give your Kudo point to use ctrl+f if you are on Windows or Cmd+f if you are Mac and then enter the recipient's name.</span></p>
+<p>&nbsp;</p>
+<p><span style="font-family: inherit; font-size: 1rem;">After responding, please ignore Canvas's notification that your answer are incorrect. Your response has been recorded correctly, Canvas just does not know how to deal with multiple-choice questions where every answer is "correct."</span></p>"""
         return {
-            'title': f"{self.user.name}'s Kudo Point Givings for {self.group.name}",
-            'description': 'Please fill out who you would like to give your kudo points to.\n'
-                           'After responding, please ignore Canvas\'s notification that your answers'
-                           'are incorrect. Your response has been recorded correctly, Canvas just does not'
-                           'know how to deal with multiple choice questions where every answer is "correct."',
+            'title': self.assignment_name,
+            'description': prompt,
             'quiz_type': 'assignment',
             'assignment_group_id': self.assignment_group.id,
             'allowed_attempts': 10,
             'scoring_policy': 'keep_latest',
             'published': False,
             'show_correct_answers': False,
-            'only_visible_to_overrides': True,
+            'due_at': self.due_date,
+            'lock_at': self.lock_date,
+            'unlock_at': self.unlock_date
         }
 
     def _create_assignment_info(self) -> dict:
-        date_info = {
-            'student_ids': [self.user.id],
-            'title': f'Override for {self.user.name}',
-            'due_at': self.due_date.isoformat(),
-            'unlock_at': self.unlock_date.isoformat(),
-            'lock_at': self.lock_date.isoformat()
-        }
-
         return {
             # setting grading_type to not_graded breaks the association between Quiz and Assignment
             # not sure if this is a bug on Canvas's end or what so leaving it out for now.
             # 'grading_type': 'not_graded',
             'omit_from_final_grade': True,
-            'only_visible_to_overrides': True,
-            'assignment_overrides': [date_info],
             'published': True
         }
 
@@ -74,11 +80,11 @@ class KudoPointGivingQuiz:
     def _create_answers(self) -> List[dict]:
         answers = [
             {
-                'answer_html': member.name,
-                'answer_text': f'{member.id}',
+                'answer_html': student_name,
+                'answer_text': ','.join([str(s.id) for s in student]),
                 'answer_weight': 1
 
-            } for member in self.group.members if self.user.id != member.id
+            } for student_name, student in self.students.items()
         ]
         answers.append({
             'answer_html': 'I do not want to give this Kudo Point to anyone.',
