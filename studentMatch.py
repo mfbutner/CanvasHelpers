@@ -13,8 +13,11 @@ QUIZ_ID = 108761
 canvas = Canvas(API_URL, API_KEY)
 canvasClass = canvas.get_course(CLASS_ID)   #<---- NEED TO CHANGE TO BUTNERS REAL CLASS
 
-#Get the right quiz and the right statistics
+# Get the right quiz and creating a Pandas dataFrame from the generated csv
 quiz = canvasClass.get_quiz(QUIZ_ID)
+studentReport = quiz.create_report("student_analysis")
+url = studentReport.file["url"]
+df = pd.read_csv(url)
 
 #Alternatively use the download
 #statFile  = pd.read_csv(r'\Users\rebek\Documents\Fall Quarter\Group.csv')   #<---- NEED TO CHANGE FOR EACH
