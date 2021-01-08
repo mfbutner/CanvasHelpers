@@ -2,7 +2,6 @@
 from canvasapi import Canvas
 import pprint
 import pandas as pd
-import xlrd
 from studentClass import Student
 
 #Get the right class 
@@ -17,7 +16,7 @@ canvasClass = canvas.get_course(CLASS_ID)   #<---- NEED TO CHANGE TO BUTNERS REA
 quiz = canvasClass.get_quiz(QUIZ_ID)
 studentReport = quiz.create_report("student_analysis")
 url = studentReport.file["url"]
-df = pd.read_csv(url)
+studentData = pd.read_csv(url)
 
 #Alternatively use the download
 #statFile  = pd.read_csv(r'\Users\rebek\Documents\Fall Quarter\Group.csv')   #<---- NEED TO CHANGE FOR EACH
@@ -29,26 +28,22 @@ df = pd.read_csv(url)
 #print(statColumn)
 #At this point do not actually need the class
 
-loc = r'\Users\rebek\Documents\Fall Quarter\Group.xls' # <--- NEED To change to real thing and make into a xls
-wb = xlrd.open_workbook(loc)
-sheet = wb.sheet_by_index(0)
 
 #Fill the dictionary
 dictSt = {}
-for i in range(1, int(sheet.nrows)):
-    print(sheet.cell_value(i, 0))
+for index, row in studentData.iterrrows():
 
     #name and id
-    dictSt[sheet.cell_value(i, 2)] = Student(sheet.cell_value(i, 1), sheet.cell_value(i, 0))
+    dictSt['id'] = Student(row['name'], row['id'])
 
     #pronouns
-    dictSt[sheet.cell_value(i, 2)].pronouns = sheet.cell_value(i, 9)
+    dictSt['id'].pronouns = row[studentData.columns.str.contains('1085146')].item()
 
     #prefer same
-    if sheet.cell_value(i, 9) == "If possible, I would prefer another person with the same pronouns as me.":
-        dictSt[sheet.cell_value(i, 2)].preferSame = True
+    if row[studentData.columns.str.contains('1085148')].item() == "If possible, I would prefer another person with the same pronouns as me.":
+        dictSt['id'].preferSame = True
     else:
-        dictSt[sheet.cell_value(i, 2)].preferSame = False
+        dictSt['id'].preferSame = False
 
     #meeting times
 
@@ -69,11 +64,6 @@ for i in range(1, int(sheet.nrows)):
     #preferlanguage
 
     #
-    dictSt[sheet.cell_value(i, 2)].pr = sheet.cell_value(i, 9)
-    dictSt[sheet.cell_value(i, 2)].pronouns = sheet.cell_value(i, 9)
-    dictSt[sheet.cell_value(i, 2)].pronouns = sheet.cell_value(i, 9)
-    dictSt[sheet.cell_value(i, 2)].pronouns = sheet.cell_value(i, 9)
-    dictSt[sheet.cell_value(i, 2)].pronouns = sheet.cell_value(i, 9)
 
 # update student dictionary to include people who did not take
 # the class and add default emails to all students
