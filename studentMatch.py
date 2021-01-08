@@ -31,7 +31,7 @@ studentData = pd.read_csv(url)
 
 #Fill the dictionary
 dictSt = {}
-for index, row in studentData.iterrrows():
+for index, row in studentData.iterrows():
 
     #name and id
     dictSt['id'] = Student(row['name'], row['id'])
