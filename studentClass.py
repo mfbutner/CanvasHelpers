@@ -2,33 +2,32 @@
 # this is a class containing student information
 class Student:
     #Personal data
-    idNum = 0 #check
-    name = "default_name" #check
+    idNum = 0
+    name = "default_name"
     schoolEmail = "default@gmail.com"
     
     #Pronouns
-    pronouns = "default/defaults" #check
-    otherPronouns = "NA" #check
-    preferSame = 1 #check
+    pronouns = "default/defaults" #string representing the pronoun
+    preferSame = False #does the person prefer someone of their same gender.
 
-    #Meet the times
-    meetingTimes = [[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1]]
-    preferAsy = 0
+    #Meet the times (starting [sunday] [midnight])
+    meetingTimes = [[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1]]
+    preferAsy = 0 # 3 values, 0 = sync, 1= no preference, 2=async
 
     #Contact Infonrmation
-    contactPreference = [0, 0, 0, 1]  #Discord, Phone Number, Email, Canvas Groups
+    contactPreference = [0, 0, 0, 1]  #Discord, Phone Number, Email, Canvas Groups 0 = no, 1= no preference, 2= yes
     contactInformation = ["defaultDiscordName#2424", "(000) 000-0000", "deafultEmail@gmail.com"]
 
     #Preferred Leader or Follower
-    preferLeader = 0
+    preferLeader = False
 
-    #Country of Origin
+    #Country of Origin if US then false?
     countryOfOrigin = "United States of America"
-    preferCountry = 0
+    preferCountry = False
          
     #Language Preference
     language = "English"
-    preferLanguage = 0
+    preferLanguage = False
     
     #Preffered Stuff to Do
     option1 = "default"
