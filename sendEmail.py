@@ -175,9 +175,8 @@ def sendMessage(group_list, class_name, study_group_number):
     for group in range(len(group_list)):
         sendGroupMessage(group_list[group], class_name, study_group_number)
 
-
-
-group_list = # place a list of list of student objects here
+# place a list of list of student objects here
+group_list = []
 class_name = "ECS" # change to ecs 50 or ecs 154
 study_group_number = "1" # change the study group number here
 
