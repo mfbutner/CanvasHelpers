@@ -13,7 +13,7 @@ from studentClass import Student
 
 #Get the right class 
 API_URL = "https://canvas.ucdavis.edu/"
-API_KEY = "3438~F8UL89qNJVVOcpDpxmEQdEkGixcJm4vN1rZpwQebN0zJtXjUd0girRxeAXnRsCvc"
+API_KEY = "Key_Goes_Here"
 
 #Macros that will have to change to the appropriate class and survey number
 CLASS_ID = 1599
