@@ -60,7 +60,13 @@ for index, row in studentData.iterrows():
     #meeting times - Sun - Sat, Midnight-4, 4-8, 8-noon, etc  [0][0] is sunday at midnight to 4 time slot
 
     #asynch (2), synch (1), no pref (0)- how the student would like to meet
-
+    studentSync = row[studentData.columns.str.contains('1085149')].item()
+    if studentSync == "Synchronously":
+        tempStudent.preferAsy = 1
+    elif studentSync == "Asynchronously":
+        tempStudent.preferAsy = 2
+    else:
+        tempStudent = 0
     #contact pref - Discord, Phone, Email, Canvas - 2 = yes, 1 = no preference, 0 = not comfortable
 
     #contact info - [DiscordHandle, PhoneNumber, personal@email.com]
