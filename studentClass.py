@@ -27,12 +27,14 @@ class Student:
          
     #Language Preference
     language = "English"
-    preferLanguage = False
     
     #Preffered Stuff to Do
     option1 = "default"
     option2 = "default"
     freeResponse = "default"
+
+    #Priority
+    priorityList = ["default", "default", "default", "default", "default"]
     
     def __init__(self, idNumInput = 0, nameInput = "default_name", emailInput = "default_email"):
         self.name = nameInput
