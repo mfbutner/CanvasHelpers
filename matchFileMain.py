@@ -93,21 +93,38 @@ for index, row in studentData.iterrows():
         tempStudent.preferLeader = False
 
     #country - Country of Origin
-    tempArr = (row[studentData.column.str.contains('1085151')].item()).split(",")
-    tempStudent.countryOfOrigin = tempArr[0]
+    tempArr = (row[studentData.column.str.contains('1085153')].item()).split(",")
+    freeResponse = row[studentData.column.str.contains('1091769')].item()
+    if tempArr[0] == "Not Included":
+        tempStudent.countryOfOrigin = freeResponse
+    else:
+        tempStudent.countryOfOrigin = tempArr[0]
+    
+    
+    #preferCountry - True if they would like to have a groupmate from the same country
     if tempArr[1] == "No":
         tempStudent.preferCountry = False
     else: 
         tempStudent.preferCountry = True
-
-    #preferCountry - True if they would like to have a groupmate from the same country
+    tempArr.clear()
+    freeResponse = ''
 
     #languages - Preferred language
+    freeResponse = row[studentData.column.str.contains('1085154')].item()
+    tempResponse = row[studentData.column.str.contains('1091774')].item()
+    if freeResponse == "Not Included":
+        tempStudent.language = tempResponse
+    else:
+        tempStudent.language = freeResponse
     
-
-    #preferlanguage - True if they would like to share a group with someone from the same country
+    freeResponse = ''
+    tempResponse = ''
 
     #Preferred stuff to do - the drop downs and free response
+    freeResponse = (row[studentData.column.str.contains('1085156')].item()).split(",")
+    tempStudent.option1 = freeResponse[0]
+    tempStudent.option2 = freeResponse[1]
+    tempStudent.freeResponse = row[studentData.column.str.contain('1085157')].item()
 
 
     #Add the student to the dictionary of all students
