@@ -5,7 +5,7 @@ import csv
 import pandas as pd
 
 API_URL = "https://canvas.ucdavis.edu/"
-API_KEY = "3438~F8UL89qNJVVOcpDpxmEQdEkGixcJm4vN1rZpwQebN0zJtXjUd0girRxeAXnRsCvc"
+API_KEY = "api_key_goes_here"
 
 canvasN = Canvas(API_URL, API_KEY)
 
