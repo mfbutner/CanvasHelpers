@@ -6,6 +6,7 @@
 
 
 #!/usr/bin/env python3
+from sendEmail import preferredContactMethod
 from canvasapi import Canvas
 import pprint
 import pandas as pd
@@ -66,18 +67,43 @@ for index, row in studentData.iterrows():
     elif studentSync == "Asynchronously":
         tempStudent.preferAsy = 2
     else:
-        tempStudent = 0
+        tempStudent.preferAsy = 0
     #contact pref - Discord, Phone, Email, Canvas - 2 = yes, 1 = no preference, 0 = not comfortable
+    tempArr = (row[studentData.column.str.contains('1085150')].item()).split(",")
+    for i in range(4):
+        if tempArr[i] == "No":
+            tempStudent.contactPreference[i] = 0
+        elif tempArr[i] == "Yes":
+            tempStudent.contactPreference[i] = 2
+        else:
+            tempStudent.contactPreference[i] = 1
+    tempArr.clear()
 
     #contact info - [DiscordHandle, PhoneNumber, personal@email.com]
+    tempArr = (row[studentData.column.str.contains('1085151')].item()).split(",")
+    for i in range(3):
+        tempStudent.contactInformation[i] = tempArr[i]
+    tempArr.clear()
 
     #prefer leader- True if they prefer to be the leader, false otherwise
+    studentLeader = row[studentData.column.str.contains('1085152')].item()
+    if studentLeader == "I like to lead.":
+        tempStudent.preferLeader = True
+    else:
+        tempStudent.preferLeader = False
 
     #country - Country of Origin
+    tempArr = (row[studentData.column.str.contains('1085151')].item()).split(",")
+    tempStudent.countryOfOrigin = tempArr[0]
+    if tempArr[1] == "No":
+        tempStudent.preferCountry = False
+    else: 
+        tempStudent.preferCountry = True
 
     #preferCountry - True if they would like to have a groupmate from the same country
 
     #languages - Preferred language
+    
 
     #preferlanguage - True if they would like to share a group with someone from the same country
 
