@@ -59,6 +59,7 @@ for index, row in studentData.iterrows():
         tempStudent.preferSame = False
 
     #meeting times - Sun - Sat, Midnight-4, 4-8, 8-noon, etc  [0][0] is sunday at midnight to 4 time slot
+    
 
     #asynch (2), synch (1), no pref (0)- how the student would like to meet
     studentSync = row[studentData.columns.str.contains('1085149')].item()
@@ -125,6 +126,13 @@ for index, row in studentData.iterrows():
     tempStudent.option1 = freeResponse[0]
     tempStudent.option2 = freeResponse[1]
     tempStudent.freeResponse = row[studentData.column.str.contain('1085157')].item()
+
+    freeResponse = ''
+    tempStudent = ''
+    
+    #Priority of what they want
+    tempStudent.priorityList = (row[studentData.column.str.contains('1091940')].item()).split(",")
+
 
 
     #Add the student to the dictionary of all students
