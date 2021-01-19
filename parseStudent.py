@@ -17,11 +17,14 @@ def parse(studentData:pd, canvasClass:Canvas):
     leaderQ = '1091824'
     countryQ = '1091825'
     countryFree = '1091826'
+    internationalQ = ''
     languageQ = '1091827'
     languageFree = '1091828'
     groupWantsQ = '1091829'
     groupWantsFree = '1091830'
     priorityQ = '1095859'
+    studentPerfQ = ''
+
     for index, row in studentData.iterrows():
 
         #name and id
@@ -40,11 +43,14 @@ def parse(studentData:pd, canvasClass:Canvas):
 
         #preferSame is True if the student would like to share their group with someone of the same gender
         tempArr = row[studentData.columns.str.contains(genderMatchQ)].tolist()
-        if len(tempArr) != 0:
-            if tempArr[0] == "If possible, I would prefer another person with the same pronouns as me.":
-                tempStudent.preferSame = True
-            else:
-                tempStudent.preferSame = False
+        if type(tempArr[0]) is str:
+            if tempArr[0] == "I would prefer another person who as the same pronouns as I do.":
+                tempStudent.preferSame = 2
+            elif tempArr[0] == "I would prefer another person who does not have the same pronouns as I do.":
+                tempStudent.preferSame = 0
+            elif tempArr[0] == "No preference":
+                tempStudent.preferSame = 1
+
 
         tempArr.clear()
 
@@ -104,6 +110,7 @@ def parse(studentData:pd, canvasClass:Canvas):
                 tempStudent.preferLeader = False
 
         #country - Country of Origin
+        '''
         tempArr = (row[studentData.columns.str.contains(countryQ)].tolist())
         freeResponse = row[studentData.columns.str.contains(countryFree)].tolist()
         
@@ -129,6 +136,17 @@ def parse(studentData:pd, canvasClass:Canvas):
                     
         tempArr.clear()
         freeResponse.clear()
+        '''
+
+        #international student preference
+        tempArr = row[studentData.columns.str.contains(internationalQ)].tolist
+        if type(tempArr[0]) is str:
+            if tempArr[0] == "I would like to be placed with another international student.":
+                tempStudent.international = 2
+            elif tempArr[0] == "No preference":
+                tempStudent.international = 1
+            elif tempArr[0] == "I am not an international student.":
+                tempStudent.international = 0
 
         #languages - Preferred language
         languageSelect = row[studentData.columns.str.contains(languageQ)].tolist()
@@ -149,7 +167,7 @@ def parse(studentData:pd, canvasClass:Canvas):
         if type(tempArr[0]) is str:
             tempStudent.option1 = tempArr[0]
         tempResponse = row[studentData.columns.str.contains(groupWantsFree)].tolist()
-        if len(tempResponse) != 0:
+        if type(tempResponse[0]) is str:
             tempStudent.freeResponse = tempResponse[0]
 
         tempArr.clear()
@@ -162,6 +180,17 @@ def parse(studentData:pd, canvasClass:Canvas):
             priority = freeResponse[0].split(",")
             tempStudent.priorityList = freeResponse[0]
 
+        # how the student feels in the class
+        tempArr = row[studentData.columns.str.contains(studentPerfQ)]
+        if type(tempArr[0]) is str: 
+            if tempArr[0] == "I'm confident.":
+                tempStudent.confidence = 2
+            elif tempArr[0] == "I have some questions.":
+                tempStudent.confidence = 1
+            elif tempArr[0] == "I could really use some help.":
+                tempStudent.confidence = 0
+
+        tempArr.clear()
 
 
         #Add the student to the dictionary of all students
