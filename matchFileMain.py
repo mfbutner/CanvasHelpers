@@ -138,36 +138,6 @@ for index, row in studentData.iterrows():
     #Add the student to the dictionary of all students
     dictSt['id'] = tempStudent
     
-    if tempStudent.pronouns == "They/them" or tempStudent.pronouns == "Not included":
-        if tempStudent.preferSame:
-            #If student is nonbinary and does care about their groups' gender, place them in that list
-            nonBinaryCare.insert(dict['id'])
-        else:
-            #If student is nonbinary and does not care about their groups' gender, place them in that list and the full dont care list
-            nonBinaryDontCare.insert(dict['id'])
-            allDontCare.insert(dict['id'])
-    elif tempStudent.pronouns == "She/her":
-        if tempStudent.preferSame:
-            #If student is a woman and does care about their groups' gender, place them in that list
-            womanCare.insert(dict['id'])
-        else:
-            #If student is a woman and does not care about their groups' gender, place them in that list and the full dont care list
-            womanDontCare.insert(dict['id'])
-            allDontCare.insert(dict['id'])
-    elif tempStudent.pronouns == "He/him/his":
-        if tempStudent.preferSame:
-            #If student is a man and does care about their groups' gender, place them in that list
-            manCare.insert(dict['id'])
-        else:
-            #If student is a man and does not care about their groups' gender, place them in that list and the full dont care list
-            manDontCare.insert(dict['id'])
-            allDontCare.insert(dict['id'])
-    elif tempStudent.pronouns == "Prefer not to say":
-        #A student who prefers not to say is automatically in the full dont care list because their gender cannot be matched
-        allDontCare.insert(dict['id'])
-    else:
-        print( "Error: inelibe response to sorting people by pronoun")
-        
   
 
 # update student dictionary to include people who did not take, as well as list composed of students who did not take the test
