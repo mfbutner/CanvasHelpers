@@ -8,7 +8,7 @@ class Student:
     
     #Pronouns
     pronouns = "default/defaults" #string representing the pronoun
-    preferSame = False #does the person prefer someone of their same gender.
+    preferSame = 1 #does the person prefer someone of their same gender.
 
     #Meet the times (starting [sunday] [midnight])
     meetingTimes = [[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1]]
@@ -24,6 +24,9 @@ class Student:
     #Country of Origin if US then false?
     countryOfOrigin = "United States of America"
     preferCountry = False
+
+    # international student preference
+    international = 0
          
     #Language Preference
     language = "English"
@@ -35,6 +38,9 @@ class Student:
 
     #Priority
     priorityList = ["default", "default", "default", "default", "default"]
+
+    #confidence
+    confidence = "default"
     
     def __init__(self, idNumInput = 0, nameInput = "default_name", emailInput = "default_email"):
         self.name = nameInput
