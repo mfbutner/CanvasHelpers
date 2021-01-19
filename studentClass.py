@@ -15,7 +15,7 @@ class Student:
     preferAsy = 0 # 3 values, 0 = sync, 1= no preference, 2=async
 
     #Contact Infonrmation
-    contactPreference = [0, 0, 0, 1]  #Discord, Phone Number, Email, Canvas Groups 0 = no, 1= no preference, 2= yes
+    contactPreference = [False, False, False, True]  #Discord, Phone Number, Email, Canvas Groups 0 = no, 1= no preference, 2= yes
     contactInformation = ["defaultDiscordName#2424", "(000) 000-0000", "deafultEmail@gmail.com"]
 
     #Preferred Leader or Follower
