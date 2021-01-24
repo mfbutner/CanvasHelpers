@@ -46,3 +46,17 @@ class Student:
         self.name = nameInput
         self.idNum = idNumInput
         self.schoolEmail = emailInput
+        self.pronouns = "default/defaults"
+        self.preferSame = 1
+        self.meetingTimes = [[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1]]
+        self.preferAsy = 0
+        self.contactPreference = [False, False, False, True]
+        self.contactInformation = ["defaultDiscordName#2424", "(000) 000-0000", "deafultEmail@gmail.com"]
+        self.preferLeader = False
+        self.international = 0
+        self.language = "English"
+        self.option1 = "default"
+        self.option2 = "default"
+        self.freeResponse = "default"
+        self.priorityList = ["default", "default", "default", "default", "default"]
+        self.confidence = "default"
