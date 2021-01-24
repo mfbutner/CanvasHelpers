@@ -7,28 +7,28 @@ from studentClass import Student
 def parse(studentData:pd, canvasClass:Canvas):
     #Fill the dictionary and the student lists
     dictSt = {}
-    pronounsQ = '1091818'
-    pronounsFree = '1091819'
-    genderMatchQ = '1091820'
-    syncQ = '1091821'
-    timeQ = '1095858'
-    commPreferenceQ = '1091822'
-    commValuesQ = '1091823'
-    leaderQ = '1091824'
+    pronounsQ = '1106598'
+    pronounsFree = '1106599'
+    genderMatchQ = '1106600'
+    syncQ = '1106601'
+    timeQ = '1106602'
+    commPreferenceQ = '1106603'
+    commValuesQ = '1106604'
+    leaderQ = '1106605'
     countryQ = '1091825'
     countryFree = '1091826'
-    internationalQ = ''
-    languageQ = '1091827'
-    languageFree = '1091828'
-    groupWantsQ = '1091829'
-    groupWantsFree = '1091830'
-    priorityQ = '1095859'
-    studentPerfQ = ''
+    internationalQ = '1106606'
+    languageQ = '1106607'
+    languageFree = '1106608'
+    groupWantsQ = '1106609'
+    groupWantsFree = '1106610'
+    priorityQ = '1106611'
+    studentPerfQ = '1106612'
 
     for index, row in studentData.iterrows():
 
         #name and id
-        tempStudent = Student(row['name'], row['id'])
+        tempStudent = Student(row['id'], row['name'])
 
         #pronouns that the student prefers
         tempArr = row[studentData.columns.str.contains(pronounsQ)].tolist()
@@ -55,7 +55,7 @@ def parse(studentData:pd, canvasClass:Canvas):
         tempArr.clear()
 
         #meeting times - Sun - Sat, Midnight-4, 4-8, 8-noon, etc  [0][0] is sunday at midnight to 4 time slot
-        tempArr = row[studentData.columns.str.contains(commPreferenceQ)].tolist()
+        tempArr = row[studentData.columns.str.contains(timeQ)].tolist()
         if type(tempArr[0]) is str:
             meetingTimes = tempArr[0].split(",")
             daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri","Sat"]
@@ -70,27 +70,27 @@ def parse(studentData:pd, canvasClass:Canvas):
         #asynch (2), synch (1), no pref (0)- how the student would like to meet
         studentSync = row[studentData.columns.str.contains(syncQ)].tolist()
         if type(studentSync[0]) is str:
-            if studentSync == "Synchronously":
+            if studentSync[0] == "Synchronously":
                 tempStudent.preferAsy = 1
-            elif studentSync == "Asynchronously":
+            elif studentSync[0] == "Asynchronously":
                 tempStudent.preferAsy = 2
             else:
                 tempStudent.preferAsy = 0
         #contact pref - Discord, Phone, Email, Canvas - 2 = yes, 1 = no preference, 0 = not comfortable
         tempArr = (row[studentData.columns.str.contains(commPreferenceQ)].tolist())
         if type(tempArr[0]) is str:
-            print(tempArr)
             contactPreference = tempArr[0].split(",")
             # Parse which contact method student wants from a list
             if "Discord" in contactPreference:
-                tempStudent.contactPreference[0] = True
-            if "Test/Phone Number" in contactPreference:
-                tempStudent.contactPreference[1] = True
+                (tempStudent.contactPreference)[0] = True
+            if "Text/Phone Number" in contactPreference:
+                (tempStudent.contactPreference)[1] = True
             if "Email" in contactPreference:
-                tempStudent.contactPreference[3] = True 
+                (tempStudent.contactPreference)[2] = True 
             if "Canvas Groups" in contactPreference: 
-                tempStudent.contactPreference[4] = True
-           
+                (tempStudent.contactPreference)[3] = True
+            contactPreference.clear()
+        
         tempArr.clear()
 
         #contact info - [DiscordHandle, PhoneNumber, personal@email.com]
@@ -139,7 +139,7 @@ def parse(studentData:pd, canvasClass:Canvas):
         '''
 
         #international student preference
-        tempArr = row[studentData.columns.str.contains(internationalQ)].tolist
+        tempArr = row[studentData.columns.str.contains(internationalQ)].tolist()
         if type(tempArr[0]) is str:
             if tempArr[0] == "I would like to be placed with another international student.":
                 tempStudent.international = 2
@@ -175,13 +175,13 @@ def parse(studentData:pd, canvasClass:Canvas):
         
         
         #Priority of what they want
-        freeResponse = (row[studentData.columns.str.contains(priorityQ)])
+        freeResponse = (row[studentData.columns.str.contains(priorityQ)]).tolist()
         if type(freeResponse[0]) is str:
             priority = freeResponse[0].split(",")
             tempStudent.priorityList = freeResponse[0]
 
         # how the student feels in the class
-        tempArr = row[studentData.columns.str.contains(studentPerfQ)]
+        tempArr = row[studentData.columns.str.contains(studentPerfQ)].tolist()
         if type(tempArr[0]) is str: 
             if tempArr[0] == "I'm confident.":
                 tempStudent.confidence = 2
@@ -189,22 +189,24 @@ def parse(studentData:pd, canvasClass:Canvas):
                 tempStudent.confidence = 1
             elif tempArr[0] == "I could really use some help.":
                 tempStudent.confidence = 0
-
         tempArr.clear()
 
 
         #Add the student to the dictionary of all students
-        dictSt['id'] = tempStudent
-        
-    
+        dictSt[row['id']] = tempStudent
+
+    return dictSt
+
+def parseEmails(dictSt:dict, canvasClass:Canvas):
+    missingSt = {}
 
     # update student dictionary to include people who did not take, as well as list composed of students who did not take the test
     # the class and add default emails to all students
     for user in canvasClass.get_users(enrollment_type=['student']):
         if user.id not in dictSt:
             temp = Student(user.id, user.name, user.email)
-            dictSt[user.id] = temp
+            missingSt[user.id] = temp
         else:
             dictSt[user.id].schoolEmail = user.email
 
-    return dictSt
+    return missingSt
