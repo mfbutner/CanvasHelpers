@@ -178,7 +178,8 @@ def parse(studentData:pd, canvasClass:Canvas):
         freeResponse = (row[studentData.columns.str.contains(priorityQ)]).tolist()
         if type(freeResponse[0]) is str:
             priority = freeResponse[0].split(",")
-            tempStudent.priorityList = freeResponse[0]
+            for i in range(len(priority)):
+                tempStudent.priorityList[i] = priority[i]
 
         # how the student feels in the class
         tempArr = row[studentData.columns.str.contains(studentPerfQ)].tolist()
