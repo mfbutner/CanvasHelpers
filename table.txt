@@ -1,0 +1,21 @@
++----------------+------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+
+| Times          | Sun        | Mon             | Tues            | Wed             | Thur            | Fri             | Sat             |
++================+============+=================+=================+=================+=================+=================+=================+
+| Midnight - 4AM | Nancy Drew | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung |
+|                |            | Nancy Drew      | Nancy Drew      |                 | Nancy Drew      |                 |                 |
++----------------+------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+
+| 4AM - 8AM      |            |                 | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung |
+|                |            |                 | Nancy Drew      | Nancy Drew      |                 | Nancy Drew      | Nancy Drew      |
++----------------+------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+
+| 8AM - Noon     |            | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung |
+|                |            | Nancy Drew      | Nancy Drew      |                 |                 |                 | Nancy Drew      |
++----------------+------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+
+| Noon -  4PM    |            |                 | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung |
+|                |            |                 | Nancy Drew      | Nancy Drew      | Nancy Drew      |                 |                 |
++----------------+------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+
+| 4PM - 8PM      |            | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung |
+|                |            | Nancy Drew      | Nancy Drew      |                 |                 | Nancy Drew      | Nancy Drew      |
++----------------+------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+
+| 8PM - Midnight |            |                 | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung | Stephanie Chung |
+|                |            |                 | Nancy Drew      |                 | Nancy Drew      |                 |                 |
++----------------+------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+
