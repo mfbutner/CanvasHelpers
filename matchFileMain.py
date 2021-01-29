@@ -154,17 +154,6 @@ for user in canvasClass.get_users(enrollment_type=['student']):
 #AT this point all students are in at least one of 8 lists, and we begin pairing up the students who care the partner of their gender within their own group#
 #############################################################################################################################################################
         
-#lists of pairs of students who match up together
-matchListCare(nonBinaryCare, nonBinaryDontCare, allDontCare, pairs, didNotTakeSurvey)
-matchListCare(womanCare, womanDontCare, allDontCare, pairs, didNotTakeSurvey)
-matchListCare(manCare, manDontCare, allDontCare, pairs, didNotTakeSurvey)
-matchListDontCare(allDontCare, pairs, didNotTakeSurvey)
-
-#At this point, they are all pairs or in didNotTakeSurvey
-for match1 in Pairs:
-    for match2 in Pairs:
-        if validQuad(match1, match2):
-            Quad.score = scoreQuad(match1, match2)
             
             
             
