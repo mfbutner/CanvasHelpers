@@ -55,7 +55,7 @@ matchedBefore = invalidGroupDict(canvas, CLASS_ID)
 groups = makeGroups(dictStudentTakeSurvey, dictStudentDidNotTakeSurvey, matchedBefore)
 
 #Now that groups are matched, send emails and form groups
-#sendConvo(canvas, CLASS_ID, groups, studyGroupNumber)
+sendConvo(canvas, CLASS_ID, groups, studyGroupNumber)
 
 #If you don't want to see the analysis of the information you can comment this out
-gradeGroups(groups, matchedBefore)
+#gradeGroups(groups, matchedBefore)
