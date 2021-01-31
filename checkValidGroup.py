@@ -30,6 +30,11 @@ def invalidGroupDict(canvas: Canvas, course_number: int):
     for student in all_students:
         studentid_groupid[str(student.id)] = []
 
+    # add in the one student from ecs 36a who for some reason does not get pulled
+    if course_number == 516271:
+        studentid_groupid["157307"] = []
+
+
     for group_cat in group_cat_list:
         group_list = group_cat.get_groups()
         for group in group_list:
