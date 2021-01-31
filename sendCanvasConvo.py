@@ -72,7 +72,7 @@ def sendConvo(canvas: Canvas, course_number: int, group_list: list, study_group_
         #make the conversation
 
         table_id = [uploadTable(canvas)]
-        canvas.create_conversation(recipients=members, body=body, subject = group_name, attachment_ids = table_id, force_new = True)
+        canvas.create_conversation(recipients=members, body=body, subject = group_name, attachment_ids = table_id)
     return
 
 
