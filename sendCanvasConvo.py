@@ -9,9 +9,6 @@
 # import system variables
 # in order to send the messages, need canvas api key
 # i put the api key in environment variables
-import os
-API_URL = "https://canvas.ucdavis.edu/"
-CANVAS_API_KEY = os.environ.get('canvas_api_key')
 
 # Import the canvas class
 from canvasapi import Canvas
