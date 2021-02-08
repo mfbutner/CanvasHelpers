@@ -205,9 +205,16 @@ def parseEmails(dictSt:dict, canvasClass:Canvas):
     # the class and add default emails to all students
     for user in canvasClass.get_users(enrollment_type=['student']):
         if user.id not in dictSt:
-            temp = Student(user.id, user.name, user.email)
+            name = user.sortable_name.split(",")
+            temp = Student(user.id, user.name, user.email, name[1], name[0])
             missingSt[user.id] = temp
         else:
-            dictSt[user.id].schoolEmail = user.email
+            name = user.sortable_name.split(",")
+            tempStudent = dictSt[user.id]
+            tempStudent.schoolEmail = user.email
+            tempStudent.firstName = name[1]
+            tempStudent.lastName = name[0]
+            dictSt[user.id] = tempStudent
+
 
     return missingSt
