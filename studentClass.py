@@ -4,6 +4,8 @@ class Student:
     #Personal data
     idNum = 0
     name = "default_name"
+    firstName = "default_firstName"
+    lastName = "default_lastName"
     schoolEmail = "default@gmail.com"
     
     #Pronouns
@@ -42,7 +44,7 @@ class Student:
     #confidence
     confidence = "default"
     
-    def __init__(self, idNumInput = 0, nameInput = "default_name", emailInput = "default_email"):
+    def __init__(self, idNumInput = 0, nameInput = "default_name", emailInput = "default_email", firstNameInput = "default_firstName", lastNameInput = "default_lastName"):
         self.name = nameInput
         self.idNum = idNumInput
         self.schoolEmail = emailInput
@@ -60,3 +62,5 @@ class Student:
         self.freeResponse = "default"
         self.priorityList = ["default", "default", "default", "default", "default"]
         self.confidence = "default"
+        self.firstName = firstNameInput
+        self.LastName = lastNameInput
