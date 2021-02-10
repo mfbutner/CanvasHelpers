@@ -1,3 +1,5 @@
+# In progress, NOT finished!
+
 1. Create an instance of UserInterface class (start.py)
 2. In the UserInterface class (user_interface.py),
    2.1 Ask user for the following information: Canvas url, Canvas token, and the path to the downloaded third party CSV
@@ -21,7 +23,6 @@ NOTE: 1. If leftover students (the one who can't match by sid or email absolutel
          after grade transfer is done. Attention to them because it may require you to manually transfer them. Also, you
          won't be told which Canvas students left un-transferred.
 
-      3. Course must be favorites. I didn't ask for others.
 
 
 
