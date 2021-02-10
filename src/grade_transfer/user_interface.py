@@ -102,7 +102,7 @@ class UserInterface:
         print("These are ALL of your Canvas courses")
         end_all_index = self.print_list_with_index(self.canvas.get_courses())
         return end_all_index
-
+ 
     def get_course(self) -> canvasapi.course.Course:
         self.line_separator()
         ask_course = "Please enter the index number in front of the course in which you want to manage the grades: "
