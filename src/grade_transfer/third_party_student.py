@@ -1,5 +1,5 @@
 # Author: Qianhan Zhang
-
+ 
 class ThirdPartyStudent:
     def __init__(self, first_name=None, last_name=None, sid=None, email=None, full_name=None):
         self.first_name = first_name
