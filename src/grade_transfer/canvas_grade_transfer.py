@@ -52,7 +52,7 @@ class CanvasGradeTransfer:
                 self.third_party_students_full_name_pool.append(student.full_name)
                 self.third_party_students_last_name_pool.append(student.last_name)
         return student_set
-
+ 
     def create_empty_grade_book(self):
         grade_book = {}
         for assignment in self.gui_list:
