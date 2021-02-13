@@ -43,7 +43,7 @@ url = studentReportN.file["url"]
 studentData = pd.read_csv(url)
 
 #Parse the student data of those that took the survey
-dictStudentTakeSurvey = parse(studentData, canvasClass, CLASS_ID)
+dictStudentTakeSurvey = parse(studentData, CLASS_ID)
 
 #Finds out who did not take survey (also updates the entire class with their school emails)
 dictStudentDidNotTakeSurvey = parseEmails(dictStudentTakeSurvey, canvasClass)
@@ -55,7 +55,7 @@ matchedBefore = invalidGroupDict(canvas, CLASS_ID)
 groups = makeGroups(dictStudentTakeSurvey, dictStudentDidNotTakeSurvey, matchedBefore)
 
 #Now that groups are matched, send emails and form groups
-sendConvo(canvas, CLASS_ID, groups, studyGroupNumber)
+#sendConvo(canvas, CLASS_ID, groups, studyGroupNumber)
 
 #If you don't want to see the analysis of the information you can comment this out
 #gradeGroups(groups, matchedBefore)
