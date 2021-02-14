@@ -114,6 +114,7 @@ def parse(studentData:pd, CLASS_ID: int):
                 tempStudent.preferAsy = 2
             else:
                 tempStudent.preferAsy = 0
+
         #contact pref - Discord, Phone, Email, Canvas - 2 = yes, 1 = no preference, 0 = not comfortable
         tempArr = (row[questionsDict[commPreferenceQ]])
         if type(tempArr) is str:
@@ -127,8 +128,6 @@ def parse(studentData:pd, CLASS_ID: int):
                 (tempStudent.contactPreference)[2] = True 
             if "Canvas Groups" in contactPreference: 
                 (tempStudent.contactPreference)[3] = True
-            contactPreference.clear()
-        
 
         #contact info - [DiscordHandle, PhoneNumber, personal@email.com]
         tempArr = (row[questionsDict[commValuesQ]])
@@ -211,7 +210,6 @@ def parse(studentData:pd, CLASS_ID: int):
             while len(priority) < 5:
                 priority.append("default")
             tempStudent.priorityList = priority
-
 
         # how the student feels in the class
         tempArr = row[questionsDict[studentPerfQ]]
