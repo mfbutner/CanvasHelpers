@@ -1,7 +1,6 @@
 import canvasapi
 import datetime
 from typing import List, Callable, Optional
-from .group import Group
 
 
 class KudoPointGivingQuiz:
@@ -12,6 +11,16 @@ class KudoPointGivingQuiz:
                  due_date: Optional[datetime.datetime] = None,
                  unlock_date: Optional[datetime.datetime] = None,
                  lock_date: Optional[datetime.datetime] = None):
+        """
+
+        :param course:
+        :param assignment_name:
+        :param assignment_group:
+        :param number_of_kudo_points:
+        :param due_date:
+        :param unlock_date:
+        :param lock_date:
+        """
         self.user = course
         self.assignment_name = assignment_name
         self.assignment_group = assignment_group
@@ -99,38 +108,5 @@ class KudoPointGivingQuiz:
         canvas_assignment = course.get_assignment(canvas_quiz.assignment_id)
         edited_canvas_assignment = canvas_assignment.edit(assignment=self.assignment_info)
         # edited_quiz = canvas_quiz.edit(quiz={'published': True})
-        second_assignment = course.get_assignment(canvas_quiz.assignment_id)
+        # second_assignment = course.get_assignment(canvas_quiz.assignment_id)
         pass
-
-    @staticmethod
-    def create_kudo_point_giving_quiz_for_group_category(course: canvasapi.course.Course,
-                                                         group_category: canvasapi.group.GroupCategory,
-                                                         assignment_group: canvasapi.assignment.AssignmentGroup,
-                                                         number_of_kudo_points,
-                                                         due_date: datetime.datetime,
-                                                         unlock_date: datetime.datetime,
-                                                         lock_date: datetime.datetime,
-                                                         on_group_start: Callable[[Group], None] = None,
-                                                         on_group_end: Callable[[Group], None] = None,
-                                                         on_user_start: Callable[
-                                                             [canvasapi.user.User, Group], None] = None,
-                                                         on_user_end: Callable[
-                                                             [canvasapi.user.User, Group], None] = None
-                                                         ):
-        for group in group_category.get_groups():
-            if on_group_start is not None:
-                on_group_start(group)
-            for user in group.get_users():
-                if on_user_start is not None:
-                    on_user_start(user, group)
-                quiz = KudoPointGivingQuiz(user, group, assignment_group,
-                                           number_of_kudo_points,
-                                           due_date,
-                                           unlock_date,
-                                           lock_date)
-
-                quiz.upload_to_canvas(course)
-                if on_user_end is not None:
-                    on_user_end(user, group)
-            if on_group_end is not None:
-                on_group_end(group)
