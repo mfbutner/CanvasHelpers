@@ -1,46 +1,37 @@
 # Author: Qianhan Zhang
 
-import canvasapi
-from src.grade_transfer.canvas_grade_transfer import CanvasGradeTransfer
-from src.grade_transfer.third_party_student import ThirdPartyStudent
+
+from canvasapi.course import Course
+from canvasapi.canvas import Canvas
+from canvasapi.assignment import Assignment
 from typing import List
 import csv
 import itertools
-import warnings
+from collections import Counter
 
 
 class UserInterface:
-    def __init__(self):
-        self.canvas = self.build_canvas_connection()
-        self.csv_path = self.get_csv_path()
-        self.course = self.get_course()
-        self.assignments = []
-        self.get_assignments()
-        self.csv_header = []
-        self.csv_ncol = self.show_head()
-        self.tell_me_about_header()
-        self.grade_uploader = CanvasGradeTransfer(self.course, self.csv_header, self.csv_path)
-        self.verify_name_checks(self.grade_uploader.third_party_students, "FULL")
-        self.verify_name_checks(self.grade_uploader.third_party_students, "LAST")
-        self.grade_uploader.fill_in_grade_data()
-        self.update_grade()
-        self.show_csv_leftover(self.grade_uploader.third_party_students)
 
     @staticmethod
     def line_separator():
         print("*******************************************************************************************************")
         return
 
-    def build_canvas_connection(self) -> canvasapi.Canvas:
+    @staticmethod
+    def sub_line_separator():
+        print("***********************************************************************************************")
+        return
+
+    def build_canvas_connection(self) -> Canvas:
         self.line_separator()
         while True:
             try:
                 url = input("Please enter the Canvas url (example: https://canvas.ucdavis.edu/): ")
                 token = input("Please enter your Canvas token: ")
-                connection = canvasapi.Canvas(url, token)
+                connection = Canvas(url, token)
                 # Check if url and token match
                 connection.get_current_user()
-            except Exception as e:
+            except (UserWarning, ValueError) as e:
                 print(e)
             else:
                 return connection
@@ -60,103 +51,120 @@ class UserInterface:
             else:
                 return csv_path
 
-    # the next 3 functions will be reviewed when encounter them in other main functions
     @staticmethod
-    def print_list_with_index(a_list: list):
+    def print_list_with_index(a_list: list) -> int:
         # List index starts with 1
-        index = 1
+        index = 0
         for item in a_list:
-            print(str(index) + ": " + item.name)
             index += 1
+            print(str(index) + ": " + item.name)
         return index
 
     @staticmethod
-    def str_to_int(word: str):
-        word = word.replace(" ", "")
-        word = int(word)
-        return word
+    def is_int(user_input: str) -> bool:
+        try:
+            user_input = int(user_input)
+        except ValueError as e:
+            print(e)
+            return False
+        return True
 
     @staticmethod
-    def check_within_bounds(start: int, end: int, prompt: str):
+    def get_user_input_int(start_point: int, end_point: int, prompt: str, comma_allowed: bool):
         while True:
             user_input = input(prompt)
-            if (user_input < start) or (user_input > end):
-                print("Please enter a number between ", start, "and ", end)
+            if not comma_allowed:
+                if UserInterface.verify_user_input(start_point, end_point, user_input):
+                    return int(user_input)
             else:
+                user_input = user_input.split(",")
+                if all((UserInterface.verify_user_input(start_point, end_point, element)) for element in user_input):
+                    return [int(element) for element in user_input]
+
+    @staticmethod
+    def verify_user_input(start_point: int, end_point: int, user_input: str):
+        if UserInterface.is_int(user_input):
+            if UserInterface.is_in_range(start_point, end_point, int(user_input)):
+                return True
+            else:
+                print("Please enter a number between ", start_point, "and ", end_point)
+                return False
+        else:
+            return False
+
+    @staticmethod
+    def get_user_input_key_words(allowed_key_words: List[str], prompt: str) -> str:
+        while True:
+            user_input = input(prompt)
+            if user_input in allowed_key_words:
                 return user_input
+            else:
+                print("Please only enter the allowed key words:", allowed_key_words)
 
-    def separate_by_comma(self, user_input: str):
-        input_list = user_input.split(",")
-        for index, item in enumerate(input_list):
-            input_list[index] = self.str_to_int(item)
-        return input_list
+    @staticmethod
+    def is_in_range(start: int, end: int, user_input: int) -> bool:
+        if (user_input < start) or (user_input > end):
+            return False
+        return True
 
-    def print_favorite_courses(self):
+    def print_favorite_courses(self, canvas: Canvas) -> int:
         print("These are your FAVORITE Canvas courses.")
-        end_favorite_index = self.print_list_with_index(self.canvas.get_current_user().get_favorite_courses())
+        end_favorite_index = self.print_list_with_index(canvas.get_current_user().get_favorite_courses())
         all_course_index = end_favorite_index + 1
         print(str(all_course_index) + ": " + "Show me ALL Canvas courses")
         return all_course_index
 
-    def print_all_courses(self):
+    def print_all_courses(self, canvas: Canvas) -> int:
         print("These are ALL of your Canvas courses")
-        end_all_index = self.print_list_with_index(self.canvas.get_courses())
+        end_all_index = self.print_list_with_index(canvas.get_courses())
         return end_all_index
- 
-    def get_course(self) -> canvasapi.course.Course:
+
+    def get_course(self, canvas: Canvas) -> Course:
         self.line_separator()
         ask_course = "Please enter the index number in front of the course in which you want to manage the grades: "
-        all_course_index = self.print_favorite_courses()
-        user_input_course = self.check_within_bounds(start=1, end=all_course_index, prompt=ask_course)
+        all_course_index = self.print_favorite_courses(canvas)
+        user_input_course = self.get_user_input_int(start_point=1, end_point=all_course_index, prompt=ask_course,
+                                                    comma_allowed=False)
         if user_input_course == all_course_index:
-            end_all_index = self.print_all_courses()
-            user_input_course = self.check_within_bounds(start=1, end=end_all_index, prompt=ask_course)
-        course_index = self.str_to_int(user_input_course) - 1
-        course = self.canvas.get_current_user().get_favorite_courses()[course_index]
-        return course
+            end_all_index = self.print_all_courses(canvas)
+            user_input_course = self.get_user_input_int(start_point=1, end_point=end_all_index, prompt=ask_course,
+                                                        comma_allowed=False)
+        course_index = user_input_course - 1
+        canvas_course = canvas.get_current_user().get_favorite_courses()[course_index]
+        return canvas_course
 
-    # LEFT HERE ~~~
-    def get_assignments(self):
+    def get_assignment_groups(self, canvas_course: Course):
         self.line_separator()
-        print("These are the available ASSIGNMENT GROUPS from the Canvas course you just chose.")
-        self.print_list_with_index(self.course.get_assignment_groups())
-        assignment_groups = input("Please enter the index in front of the assignment GROUP(s) that you want to transfer"
-                                  " grade from. If multiple, separate them with commas: ")
-        assignment_groups = self.separate_by_comma(assignment_groups)
-        for group in assignment_groups:
-            id = self.course.get_assignment_groups().__getitem__(group - 1).id
-            self.get_each_assignments(id)
+        print("These are the available ASSIGNMENT GROUPS from " + canvas_course.name + ".")
+        last_assignment_index = self.print_list_with_index(canvas_course.get_assignment_groups())
+        ask_groups = "Please enter the index in front of the assignment GROUP(s) that you want to transfer grade from.\n" \
+                     "If you want to select multiple groups, please separate them with commas: "
+        user_input_groups = self.get_user_input_int(start_point=1, end_point=last_assignment_index, prompt=ask_groups,
+                                                    comma_allowed=True)
+        assignments = []
+        for group in user_input_groups:
+            group_id = canvas_course.get_assignment_groups().__getitem__(group - 1).id
+            self.get_each_assignments(group_id, canvas_course, assignments)
+        return assignments
 
-    def get_each_assignments(self, group_id: int):
+    def get_each_assignments(self, group_id: int, canvas_course: Course, assignments: List[Assignment]):
         self.line_separator()
-        group_name = self.course.get_assignment_group(group_id).name
+        group_name = canvas_course.get_assignment_group(group_id).name
         print("These are the available assignment(s) in the " + group_name + " you just chose.")
-        self.print_list_with_index(self.course.get_assignments_for_group(group_id))
-        assignment_index = input(
-            "Please enter the index number in front of the assignment(s) which you want to transfer"
-            " grades from. If multiple, separate them with commas: ")
-        assignment_list = self.separate_by_comma(assignment_index)
+        last_assignment_index = self.print_list_with_index(canvas_course.get_assignments_for_group(group_id))
+        ask_assignments = "Please enter the index number in front of the assignment(s) which you want to transfer \n" \
+                          "grades from. If multiple, separate them with commas: "
+        assignment_list = self.get_user_input_int(start_point=1, end_point=last_assignment_index,
+                                                  prompt=ask_assignments,
+                                                  comma_allowed=True)
         for index in assignment_list:
-            self.assignments.append(self.course.get_assignments_for_group(group_id)[index - 1])
+            assignments.append(canvas_course.get_assignments_for_group(group_id)[index - 1])
         return
 
-    # def get_assignments(self):
-    #     # EXCEPTION: If user choose out of bounds or enter non-number or empty space or end with comma
-    #     print("*******************************************************************************************************")
-    #     print("These are the available Canvas assignments from your chosen class.")
-    #     self.print_list_with_index(self.course.get_assignments())
-    #     assignment_index = input("Please enter the index number in front of the assignment(s). If multiple, separate "
-    #                              "them with commas: ")
-    #     print(assignment_index)
-    #     assignment_list = self.separate_by_comma(assignment_index)
-    #     for index in assignment_list:
-    #         self.assignments.append(self.course.get_assignments()[index - 1])
-    #     return
-
-    def show_head(self):
+    def show_head(self, csv_path: str) -> int:
         self.line_separator()
-        print("Below are the first 6 lines in " + self.csv_path + ": ")
-        with open(self.csv_path) as csv_file:
+        print("Below are the first 6 lines in " + csv_path + ": ")
+        with open(csv_path) as csv_file:
             reader1, reader2 = itertools.tee(csv.reader(csv_file))
             n_col = len(next(reader1))
             del reader1
@@ -166,117 +174,127 @@ class UserInterface:
                     break
         return n_col
 
-    def tell_me_about_header(self):
+    @staticmethod
+    def is_only_one_element_repeated(a_list: list, element_repeated: int) -> bool:
+        counter = dict(Counter(a_list))
+        for element, num_occurrence in counter.items():
+            if num_occurrence != 1:
+                if element != element_repeated:
+                    return False
+        return True
+
+    def list_header_options(self, assignments: List[Assignment]) -> int:
         self.line_separator()
-        print("Use the numbers in front of below key words to identify what's in the header, separated by comma(s):")
-        print("NOTE: 0 (None) means to ignore this column because it is NOT important to this grade transfer. You can "
-              "ONLY repeat 0, other numbers can be used AT MOST once.")
+        print("Use the numbers in front of key words below to identify what's in the header, separated by comma(s):")
+        print("NOTE: 0 (None) means to ignore this column because it is NOT important to this grade transfer. You can\n"
+              "ONLY repeat 0; other numbers can be used AT MOST once.")
         print("0 None \n"
               "1 first_name\n"
               "2 last_name\n"
               "3 full_name\n"
               "4 sid\n"
               "5 email")
-        i = 6
-        for assignment in self.assignments:
-            print(str(i) + " " + assignment.name)
-            i += 1
+        assignment_index = 5
+        for assignment in assignments:
+            assignment_index += 1
+            print(str(assignment_index) + " " + assignment.name)
+        return assignment_index
 
-        input_header = input("Please categorize the columns: ")
-        while len(input_header.split(",")) != self.csv_ncol:
-            input_header = input("Please enter EXACTLY " + str(self.csv_ncol) + " numbers. One for each column in "
-                                 + self.csv_path + ": ")
+    def tell_me_about_header(self, csv_ncol: int, csv_path: str, assignments: List[Assignment]):
+        self.line_separator()
+        last_available_index = self.list_header_options(assignments)
+        ask_header = "Please categorize the columns: "
+        user_input = self.get_user_input_int(start_point=0, end_point=last_available_index, prompt=ask_header,
+                                             comma_allowed=True)
+        while True:
+            if len(user_input) != csv_ncol:
+                print("Please enter EXACTLY " + str(csv_ncol) + " numbers. One for each column in " + csv_path
+                      + ": ")
+            elif not UserInterface.is_only_one_element_repeated(a_list=user_input, element_repeated=0):
+                print("Only 0 (None) is allowed to repeat. Please enter again.")
+            else:
+                csv_header = self.decode_input_header(user_input, assignments)
+                return csv_header
 
-        input_header = self.separate_by_comma(input_header)
-        self.decompose_input_header(input_header)
-        return
-
-    def decompose_input_header(self, input_header: list):
+    @staticmethod
+    def decode_input_header(input_header: List[int], assignments: List[Assignment]):
+        csv_header = []
         for i in input_header:
             if i == 0:
-                self.csv_header.append(None)
+                csv_header.append(None)
             elif i == 1:
-                self.csv_header.append("first_name")
+                csv_header.append("first_name")
             elif i == 2:
-                self.csv_header.append("last_name")
+                csv_header.append("last_name")
             elif i == 3:
-                self.csv_header.append("full_name")
+                csv_header.append("full_name")
             elif i == 4:
-                self.csv_header.append("sid")
+                csv_header.append("sid")
             elif i == 5:
-                self.csv_header.append("email")
+                csv_header.append("email")
             elif i > 5:
-                self.csv_header.append(self.assignments[i - 6])
-        return
+                csv_header.append(assignments[i - 6])
+        return csv_header
 
-    def print_prompt_for_names(self, name_type: str):
+    def print_prompt_for_names(self, name_type: str, csv_path: str):
         self.line_separator()
-        print("ATTENTION: We suspect students below from " + self.csv_path + " match with the these "
-                                                                             "from Canvas because they share the SAME UNIQUE ",
-              name_type, " name after eliminating those who match "
-                         "absolutely (either by SID or EMAIL). Please help us verify one by one. If match, type \"yes\"; if not, "
-                         "type \"no\"")
-        return
-
-    def find_Canvas_student(self, name: str, n_type: str):
-        for student in self.grade_uploader.canvas_students:
-            if n_type == "FULL":
-                if student.sortable_name == name:
-                    return student
-            if n_type == "LAST":
-                if self.grade_uploader.split_name(student.sortable_name)[1] == name:
-                    return student
+        print("ATTENTION: We suspect students below from " + csv_path + " match with the these from Canvas \n"
+                                                                        "because they share the SAME UNIQUE ",
+              name_type, " name after eliminating those who match absolutely \n"
+                         "(either by SID or EMAIL). Please help us verify one by one. If match, type \"yes\" or \"y\"; if not,\n"
+                         " type \"no\" or \"n\"")
         return
 
     @staticmethod
-    def translate_yes_no_to_TF(user_input: str):
-        if user_input == "yes":
+    def translate_yes_no_to_TF(user_input: str, yes_list: List[str], no_list: List[str]):
+        if user_input in yes_list:
             return True
-        elif user_input == "no":
+        elif user_input in no_list:
             return False
         return
 
-    def verify_name_checks(self, student_list: List[ThirdPartyStudent], name_type: str):
-        self.print_prompt_for_names(name_type)
-        for student in student_list:
-            if (student.full_name_match and name_type == "FULL") or (student.last_name_match and name_type == "LAST"):
-                if name_type == "FULL":
-                    search_name = student.full_name
-                elif name_type == "LAST":
-                    search_name = student.last_name
-                print("***********************************************************************************************")
-                print("From " + self.csv_path + ": ")
-                print("Full name: " + student.full_name)
-                print("SID: " + str(student.sid))
-                print("Email: " + str(student.email))
-                print("")
-                canvas_student = self.find_Canvas_student(search_name, name_type)
-                print("From Canvas: ")
-                print("Full name: " + canvas_student.sortable_name)
-                print("SID: " + str(canvas_student.sis_user_id))
-                print("Email: " + str(canvas_student.email))
-                print("")
-                user_check = input("Are they the same student? (yes or no): ")
-                student.manual_match = self.translate_yes_no_to_TF(user_check)
+    @staticmethod
+    def print_student_info(name: str, sid: str, email: str):
+        print("Full name: " + name)
+        print("SID: " + sid)
+        print("Email: " + email)
+        print("")
         return
 
-    def update_grade(self):
+    def verify_name_check(self, third_party_dic: dict, canvas_dict: dict, name_type: str, csv_path: str):
+        self.print_prompt_for_names(name_type, csv_path)
+        ask_verify_name = "Are they the same student? (yes/y or no/n): "
+        for student in third_party_dic:
+            UserInterface.sub_line_separator()
+            print("From " + csv_path + ": ")
+            UserInterface.print_student_info(name=third_party_dic[student]["full_name"],
+                                             sid=third_party_dic[student]["sid"],
+                                             email=third_party_dic[student]["email"])
+            print("From Canvas: ")
+            UserInterface.print_student_info(name=canvas_dict[student]["full_name"], sid=canvas_dict[student]["sid"],
+                                             email=canvas_dict[student]["email"])
+            user_verify = UserInterface.get_user_input_key_words(allowed_key_words=["yes", "y", "Y", "no", "n", "N"],
+                                                                 prompt=ask_verify_name)
+            third_party_dic[student]["manual_match"] = self.translate_yes_no_to_TF(user_input=user_verify,
+                                                                                   yes_list=["yes", "y", "Y"],
+                                                                                   no_list=["no", "n", "N"])
+        return
+
+    def pre_update_announcement(self):
         self.line_separator()
         print("Now upload the grades. Please be patient")
-        for assignment in self.assignments:
-            self.grade_uploader.bulk_update(assignment)
-            print("Finished updating " + assignment.name + ".")
-            print("***********************************************************************************************")
-        print("Finished updating ALL grades in assignment_list")
+        return
 
-    def show_csv_leftover(self, student_list: List[ThirdPartyStudent]):
+    @staticmethod
+    def one_update_finish(name: str):
+        print("Finished updating " + name + ".")
+        UserInterface.sub_line_separator()
+        return
+
+    def show_csv_leftover(self, student_dic: dict, csv_path: str):
         self.line_separator()
-        print("These are the students in " + self.csv_path + " who didn't get their grades transferred this time.")
+        print("These are the students in " + csv_path + " who didn't get their grades transferred this time.")
         print("")
-        for student in student_list:
-            if not (student.sid_match or student.email_match or student.manual_match):
-                print("Full name: " + student.full_name)
-                print("SID: " + str(student.sid))
-                print("Email: " + str(student.email))
-                print("")
-                # repeat function in verify_name_check
+        for student in student_dic:
+            UserInterface.print_student_info(student, student_dic[student]["sid"], student_dic[student]["email"])
+        return
