@@ -1,10 +1,33 @@
+# In progress, NOT finished!
+
+Using this program, you can transfer grades from a downloaded CSV file to your course on Canvas. You will need to know
+the following before the grade transfer:
+1. Canvas url
+2. Your Canvas token (How to get API access tokens: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-manage-API-access-tokens-as-an-admin/ta-p/89)
+3. The path to your downloaded CSV file
+
+The logic of the program is as follows:
 1. Create an instance of UserInterface class (start.py)
-2. In the UserInterface class (user_interface.py),
-   2.1 Ask user for the following information: Canvas url, Canvas token, and the path to the downloaded third party CSV
-       grade file
-       (?? third party CSV grade file ?? Better name??)
-   2.2 Build a connection to Canvas using the Canvas url and token that user just gave, and ask user for the course and
-       assignment(s) to which they want to transfer grades.
+2. In the UserInterface class (user_interface.py):
+   2.1 Continue asking user for the Canvas url and Canvas token until valid answer is given. Then build a connection to
+       Canvas using these information.
+   2.2 Continue asking user for the path to the downloaded CSV file until valid answer is given.
+   2.3 Show user the list of their favorite courses. Continue asking them to which course they want to transfer the
+       grade until valid answer is given. Will show them the full list of all courses if asked.
+   2.3 Show user the list of the assignment groups from their chosen course. Continue asking them to choose the
+       assignment group(s) to which they want to transfer the grade until valid answer is given.
+   2.4 From each assignment groups user choose in 2.3, ask them to which assignment(s) they want to transfer the grade.
+   2.5 Show user the first five rows of the CSV file they entered in 2.2.
+   2.6 Continue asking user to identify what's in side of each column until valid answer is given. To do this, user need
+       to fill in a list (list length = column size) with integers 0-n where 0 means None (not important for this grade
+       transfer), 1 means first name, 2 means last name, 3 means full name, 4 means student ID, 5 means email, 6-n
+       represents the each assignment(s) in 2.4. Please notice that only 0 (None) is allowed to be repeated; other
+       integers can appear at most once.
+
+3. Question: should I separate prep and verify in UI, so I can migrate canvas grade transfer and user interface in start.py?
+
+
+
    2.3 Provide user with the head of the third party CSV file, and ask user to identify what's inside the header by
        filling in a list of the column size with numbers 0-n where 0 means None (not important for this grade transfer),
        1 means first_name, 2 means last_name, 3 means full_name, 4 means sid, 5 means email, 6-n means the assignment(s)
@@ -21,7 +44,6 @@ NOTE: 1. If leftover students (the one who can't match by sid or email absolutel
          after grade transfer is done. Attention to them because it may require you to manually transfer them. Also, you
          won't be told which Canvas students left un-transferred.
 
-      3. Course must be favorites. I didn't ask for others.
 
 
 
