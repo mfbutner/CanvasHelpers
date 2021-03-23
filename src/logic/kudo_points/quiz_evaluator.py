@@ -8,7 +8,8 @@ Score = float
 
 def evaluate_kudo_point_giving_quiz(course: canvasapi.course.Course,
                                     kudo_point_assignment: canvasapi.assignment.Assignment,
-                                    group_category: canvasapi.group.GroupCategory, evaluation_assignment_name: str,
+                                    group_category: canvasapi.group.GroupCategory,
+                                    evaluation_assignment_name: str,
                                     evaluation_assignment_points: float,
                                     evaluation_assignment_group: canvasapi.assignment.AssignmentGroup) -> canvasapi.assignment.Assignment:
     # if user forgot to include the assignments in the assignment group
@@ -17,16 +18,17 @@ def evaluate_kudo_point_giving_quiz(course: canvasapi.course.Course,
         evaluation_assignment_group = course.get_assignment_group(evaluation_assignment_group.id,
                                                                   include=['assignments'])
 
-
-    try:
+        # try:
         point_map = _count_points(course, kudo_point_assignment, group_category)
-        evaluation_assignment = _create_evaluation_assignment(evaluation_assignment_name, evaluation_assignment_points, course,
+        evaluation_assignment = _create_evaluation_assignment(evaluation_assignment_name, evaluation_assignment_points,
+                                                              course,
                                                               evaluation_assignment_group)
-        evaluation_assignment.submissions_bulk_update(grade_data={student_id: {'posted_grade': grade}
-                                                                  for student_id, grade in point_map.items()})
-        return evaluation_assignment
-    except ValueError as e:
-        print(e)
+        progress = evaluation_assignment.submissions_bulk_update(grade_data={student_id: {'posted_grade': grade}
+                                                                             for student_id, grade in
+                                                                             point_map.items()})
+        return evaluation_assignment, progress
+    # except ValueError as e:
+    #     print(e)
 
 
 def _count_points(course: canvasapi.course.Course,
@@ -43,17 +45,19 @@ def _count_points(course: canvasapi.course.Course,
 
         stats = list(quiz.get_statistics())[0]  # there should always be a single element in this list
         for question_stats in stats.question_statistics:
-            # last answer means don't give points so don't look at it
-            for answer in question_stats['answers'][:-1]:
+            for answer in question_stats['answers']:
                 # can only award points to students that are still in the class
-                students_awarded_points = [int(student_id) for student_id in answer['text'].split(',') if
-                                           int(student_id) in point_map]
+                try:
+                    students_awarded_points = [int(student_id) for student_id in answer['text'].split(',') if
+                                               int(student_id) in point_map]
+                except ValueError:  # skip responses that don't correspond to students
+                    continue
                 for student_receiving_points in students_awarded_points:
                     for student_giving_points in answer['user_ids']:
                         _give_points(int(student_giving_points), student_receiving_points, point_map, group_memberships)
         return point_map
     else:
-        raise ValueError(f'{kudo_point_assignment} is not an online quiz. Cannot give points for this assignment.' )
+        raise ValueError(f'{kudo_point_assignment} is not an online quiz. Cannot give points for this assignment.')
 
 
 def _give_points(student_giving_points: CanvasUserId, student_receiving_points: CanvasUserId,
@@ -69,11 +73,14 @@ def _give_points(student_giving_points: CanvasUserId, student_receiving_points: 
     """
 
     # the student receiving the point must still be in the class and
-    # the student giving the point must be in the same group as the student receiving the point
-    # and they can't be giving the point to themselves.
+    # they can't be giving the point to themselves and
+    # the student giving the point must not be in the class anymore(because now we can't track which group they were in)
+    # or (the student giving the point must be in a group and be in the same group as the student receiving the point)
     if (student_receiving_points in point_map and
-            student_receiving_points in group_memberships[student_giving_points] and
-            student_receiving_points != student_giving_points):
+            student_receiving_points != student_giving_points and
+            student_giving_points not in point_map or
+            (student_giving_points in group_memberships and
+             student_receiving_points in group_memberships[student_giving_points])):
         point_map[student_receiving_points] += 1
 
 
