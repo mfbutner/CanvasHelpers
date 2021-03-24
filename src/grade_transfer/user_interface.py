@@ -255,9 +255,9 @@ class UserInterface:
 
     @staticmethod
     def print_student_info(name: str, sid: str, email: str):
-        print("Full name: " + name)
-        print("SID: " + sid)
-        print("Email: " + email)
+        print(f"Full name: {name}")
+        print(f"SID: {sid}")
+        print(f"Email: {email}")
         print("")
         return
 
