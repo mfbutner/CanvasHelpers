@@ -15,6 +15,7 @@ class ThirdPartyStudent:
         self.manual_match = False
 
     def set_full_name(self):
+        # Need more work. Logic is not quite right.
         if (self.last_name is None) and (self.first_name is None):
             name = None
         elif self.last_name is None:

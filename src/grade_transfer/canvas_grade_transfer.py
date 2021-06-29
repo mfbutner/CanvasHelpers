@@ -10,7 +10,6 @@ from src.grade_transfer.third_party_student import ThirdPartyStudent
 
 
 class CanvasGradeTransfer:
-    # csv_path because we still need to read the csv after knowing what the header situation is.
     def __init__(self, course: Course,
                  gui_list: List[Union[str, None, Assignment]],
                  csv_path: str):
@@ -22,7 +21,6 @@ class CanvasGradeTransfer:
         self.canvas_students_full_name_pool = []
         self.canvas_students_last_name_pool = []
         self.grade_book = self.create_empty_grade_book()
-        # gui_list = ["first_name", "last_name", "email", None, assignment1, assignment2]
         self.third_party_students = self.create_third_party_student_list()
         self.canvas_students = set(course.get_users(enrollment_type=["student"]))
         self.create_canvas_name_pool()
@@ -50,6 +48,7 @@ class CanvasGradeTransfer:
                         student.email = cell
                     elif type(key) == Assignment:
                         student.add_assignment(cell)
+
                 student.set_full_name()
                 student_set.add(student)
                 self.third_party_students_full_name_pool.append(student.full_name)
@@ -113,7 +112,6 @@ class CanvasGradeTransfer:
         return
 
     def is_unique(self, name: str, name_type: str):
-        # type == "full" or "last"
         third_party_list = getattr(self, "third_party_students_" + name_type + "_name_pool").copy()
         canvas_list = getattr(self, "canvas_students_" + name_type + "_name_pool").copy()
 
@@ -143,6 +141,7 @@ class CanvasGradeTransfer:
             if csv_student.full_name == canvas_student.sortable_name:
                 if self.is_unique(csv_student.full_name, "full"):
                     csv_student.full_name_match = True
+                    # Need to remove form name pool?
         return
 
     def last_name_check(self, csv_student: ThirdPartyStudent, canvas_student: User):
@@ -204,7 +203,6 @@ class CanvasGradeTransfer:
         return
 
     def bulk_update(self, assignment: Assignment):
-        # print(self.grade_book[assignment.id])
         assignment.submissions_bulk_update(grade_data=self.grade_book[assignment.id])
         return
 
