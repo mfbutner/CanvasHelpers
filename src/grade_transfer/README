@@ -1,40 +1,55 @@
-# In progress, NOT finished!
-
-Using this program, you can transfer grades from a downloaded CSV file to your course on Canvas. You will need to know
-the following before the grade transfer:
+Using this program, user can transfer grades from a downloaded CSV file to your course on Canvas. User will need to know
+three things before the grade transfer:
 1. Canvas url
-2. Your Canvas token (How to get API access tokens: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-manage-API-access-tokens-as-an-admin/ta-p/89)
-3. The path to your downloaded CSV file
+2. User's Canvas token
+   How to get API access tokens: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-manage-API-access-tokens-as-an-admin/ta-p/89
+3. The path to user's downloaded CSV file
 
 The logic of the program is as follows:
-1. Create an instance of UserInterface class (start.py)
-2. In the UserInterface class (user_interface.py):
-   2.1 Continue asking user for the Canvas url and Canvas token until valid answer is given. Then build a connection to
-       Canvas using these information.
-   2.2 Continue asking user for the path to the downloaded CSV file until valid answer is given.
-   2.3 Show user the list of their favorite courses. Continue asking them to which course they want to transfer the
-       grade until valid answer is given. Will show them the full list of all courses if asked.
-   2.3 Show user the list of the assignment groups from their chosen course. Continue asking them to choose the
-       assignment group(s) to which they want to transfer the grade until valid answer is given.
-   2.4 From each assignment groups user choose in 2.3, ask them to which assignment(s) they want to transfer the grade.
-   2.5 Show user the first five rows of the CSV file they entered in 2.2.
-   2.6 Continue asking user to identify what's in side of each column until valid answer is given. To do this, user need
-       to fill in a list (list length = column size) with integers 0-n where 0 means None (not important for this grade
-       transfer), 1 means first name, 2 means last name, 3 means full name, 4 means student ID, 5 means email, 6-n
-       represents the each assignment(s) in 2.4. Please notice that only 0 (None) is allowed to be repeated; other
-       integers can appear at most once.
+1. Create an instance of UserInterface class.
+2. Continue asking user for the Canvas url and Canvas token until valid answer is given. Then build a connection to
+   Canvas using these information.
+3. Continue asking user for the path to the downloaded CSV file until valid answer is given.
+4. Show user the list of their favorite Canvas courses. Continue asking them to which course they want to transfer the
+   grade until valid answer is given. Will show them the full list of all courses if asked.
+5. Show user the list of the assignment groups from their chosen course in step 4. Continue asking them to choose the
+   assignment group(s) to which they want to transfer the grade until valid answer is given. Then from each assignment
+   groups, ask user to which assignment(s) they want to transfer the grade.
+6. Show user the first five rows of the CSV file they entered in step 3.
+7. Continue asking user to identify what's inside of each CSV column until valid answer is given. To do this, user need
+   to fill in a list (list length = CSV column size) with integers 0-n where 0 means None (not important for this grade
+   transfer), 1 means first name, 2 means last name, 3 means full name, 4 means student ID, 5 means email, 6-n
+   represents each assignment(s) in step 5. Please notice that only 0 (None) is allowed to be repeated; other integers
+   can appear at most once. The program will transfer user input integers 0 to None, 1-5 to their corresponding string
+   literals (such as "first_name"), and 6-n to the corresponding Canvas assignments, and then store these information
+   into a list.
 
-3. Question: should I separate prep and verify in UI, so I can migrate canvas grade transfer and user interface in start.py?
+8. Create an instance of CanvasGradeTransfer class using the Canvas course (step 4), CSV header information (step 7),
+   and CSV path (step 3).
+   8.1. Create member variables of Canvas course, gui list (CSV header information), and CSV path using the three class
+        parameters. Also create four empty lists: third party students' full name pool, third party students' last name
+        pool, Canvas students' full name pool, and Canvas students' last name pool.
+   8.2. Create an empty grade book dictionary where the keys are the assignments id in gui list (step 8.1) and the
+        values are empty dictionaries.
+   8.3. Create a set of third party students. To do this, the program creates an instance of ThirdPartyStudent class for
+        every row in the CSV file (step 8.1) by filling in students' information according to the gui list (step 8.1).
+        Each ThirdPartyStudent will have a first name, last name, sid, email, full name, assignment list (which stores
+        the grades of each assignment in the gui list (step 8.1)), and four boolean variables: email match, sid match,
+        full name match, last name match, manual match. All four matches are initially set to be false. Then the program
+        adds each student to the third party student set. Lastly, it also appends each student's full name and last name
+        to the third party students' full name pool and last name pool (step 8.1) respectively.
+   8.4. Create a set which includes all students enrolled in the Canvas course (step 8.1).
+   8.5. Add Canvas students' (step 8.4) last names and full names to the Canvas students' last name pool and full name
+        pool respectively (step 8.1).
+   8.6. Match third party students (step 8.3) with Canvas students (step 8.4).
+        8.6.1. Match all students who can be matched based on emails. If the email matched, remove the students' names
+               from all four lists: third party students' full name pool, third party students' last name pool, Canvas
+               students' full name pool, and Canvas students' last name pool (step 8.1),.
+        8.6.2. Match all students who can be matched based on sid. If the sid matched, remove the students' names from
+               all four lists in step 8.1.
+   
 
 
-
-   2.3 Provide user with the head of the third party CSV file, and ask user to identify what's inside the header by
-       filling in a list of the column size with numbers 0-n where 0 means None (not important for this grade transfer),
-       1 means first_name, 2 means last_name, 3 means full_name, 4 means sid, 5 means email, 6-n means the assignment(s)
-       to which the user want to transfer grades.
-       NOTE: ONLY 0 is allowed to be repeated in the array; other numbers can appear AT MOST once.
-   2.4 Create an instance of CanvasGradeTransfer class using the Canvas course (2.2), CSV header (2.3), and CSV path
-       (2.1).
 
 
 NOTE: 1. If leftover students (the one who can't match by sid or email absolutely) do NOT have unique names, then their
