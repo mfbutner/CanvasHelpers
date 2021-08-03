@@ -1,0 +1,124 @@
+Using this program, user can transfer grades from a downloaded CSV file to your course on Canvas. User will need to know
+three things before the grade transfer:
+1. Canvas url
+2. User's Canvas token
+   How to get API access tokens: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-manage-API-access-tokens-as-an-admin/ta-p/89
+3. The path to user's downloaded CSV file
+
+The logic of the program is as follows (start.py):
+
+1. Create an instance of UserInterface class.
+
+2. Continue asking user for the Canvas url and Canvas token until valid answer is given. Then build a connection to
+   Canvas using these information.
+
+3. Continue asking user for the path to the downloaded CSV file until valid answer is given.
+
+4. Show user the list of their favorite Canvas courses. Continue asking them to which course they want to transfer the
+   grade until valid answer is given. Will show them the full list of all courses if asked.
+
+5. Show user the list of the assignment groups from their chosen course in step 4. Continue asking them to choose the
+   assignment group(s) to which they want to transfer the grade until valid answer is given. Then from each assignment
+   groups, ask user to which assignment(s) they want to transfer the grade.
+
+6. Show user the first five rows of the CSV file they entered in step 3.
+
+7. Continue asking user to identify what's inside of each CSV column until valid answer is given. To do this, user need
+   to fill in a list (list length = CSV column size) with integers 0-n where 0 means None (not important for this grade
+   transfer), 1 means first name, 2 means last name, 3 means full name, 4 means student ID, 5 means email, 6-n
+   represents each assignment(s) in step 5. Please notice that only 0 (None) is allowed to be repeated; other integers
+   can appear at most once. The program will transfer user input integers 0 to None, 1-5 to their corresponding string
+   literals (such as "first_name"), and 6-n to ththee corresponding Canvas assignments, and then store these information
+   into a list.
+
+8. Create an instance of CanvasGradeTransfer class using the Canvas course (step 4), CSV header information (step 7),
+   and CSV path (step 3).
+   8.1. Create member variables of Canvas course, gui list (CSV header information), and CSV path using the three class
+        parameters. Also create four empty lists: third party students' full name pool, third party students' last name
+        pool, Canvas students' full name pool, and Canvas students' last name pool.
+   8.2. Create an empty grade book dictionary where the keys are the assignments id in gui list (step 8.1) and the
+        values are empty dictionaries.
+   8.3. Create a set of third party students. To do this, the program creates an instance of ThirdPartyStudent class for
+        every row in the CSV file (step 8.1) by filling in students' information according to the gui list (step 8.1).
+        Each ThirdPartyStudent will have a first name, last name, SID, email, full name, assignment list (which stores
+        the grades of each assignment in the gui list (step 8.1)), and four boolean variables: email match, SID match,
+        full name match, last name match, manual match. All four matches are initially set to be false. Then the program
+        adds each student to the third party student set. Lastly, it also appends each student's full name and last name
+        to the third party students' full name pool and last name pool (step 8.1) respectively.
+   8.4. Create a set which contains all students enrolled in the Canvas course (step 8.1).
+   8.5. Add Canvas students' (step 8.4) last names and full names to the Canvas students' last name pool and full name
+        pool respectively (step 8.1).
+   8.6. Match third party students (step 8.3) with Canvas students (step 8.4).
+        8.6.1 [Primary Match (Match by Email or SID)]: Match all students who can be matched absolutely either by emails
+              or SIDs. If matched, flag the third party student's corresponding boolean variable (email match or SID
+              match) to be true (step 8.3) and remove the students' names from all four lists: third party students' full
+              name pool, third party students' last name pool, Canvas students' full name pool, and Canvas students' last
+              name pool (step 8.1).
+        8.6.2 [Secondary Match (Match by Full Names or Last Names)]: Match leftover students by their unique full name or
+              last name (see NOTE 1). If matched, flag the third party student's corresponding boolean variable (full
+              name match or last name match) to be true (step 8.3).
+
+9. Creat a dictionary for the third party students who can be matched by full names. The keys are third party students'
+   full names, and the values are a dictionary containing the third party students' information: full name, SID, and
+   email.
+
+10. Create a dictionary for the Canvas students who can be matched by full names (i.e. find the Canvas student's version
+    of students in (step 9)). For every student in (step 9), find the corresponding Canvas version of the student by
+    going through the Canvas student list (step 8.4) and search for the same full name. At the end, create a dictionary
+    where the keys are Canvas students' full names, and the values are a dictionary containing the Canvas students'
+    information: full name, SID, and email.
+
+11. Repeat (step 9) for the third party students who can by matched by last names. The dictionary's keys are the third
+    party students' last name and the values are in the same format.
+
+12. Repeat (step 10) for the Canvas students who can by matched by last names. The dictionary's keys are the Canvas
+    students' last name and the values are in the same format.
+
+13. Ask user to verify that the secondary full name matches are correct. For every pair of leftover students who share
+    the same unique full name in both CSV and Canvas, show their full name, SID, and email (step 9) from both CSV and
+    Canvas and ask user if they are indeed the same student. The acceptable response are "yes", "y", "Y" for affirmation
+    or "no", "n", "N" for denial. Then expand the student dictionary (step 9) with a new key-value pair where the key is
+    "manual match" and the value is the boolean variable that is translated form the user response.
+
+14. Repeat (step 13) for the secondary last name matches.
+
+15. Change the full name matched students' manual match in third party students (step 8.3) to the "manual match"'s value
+    in student dictionary in (step 13).
+
+16. Repeat (step 15) for the last name matched students.
+
+17. Fill in the grade data. For every eligible (See NOTE 2) third party students (step 8.3), find their corresponding
+    Canvas student and upgrade their grade in the grade book (step 8.2). To upgrade the grade, for every assignment's
+    dictionary in the grade book (step 8.2), add a key-value pair where the key is the Canvas student's ID and the value
+    is another dictionary which contains "posted_grade" as the key and the corresponding assignment grade from third
+    party student's assignment list (step 8.3) as the value.
+
+18. Announce to the user that the grade is about to be transferred to Canvas. Update the every students' grade per
+    assignment use the "submission_bulk_update" function from "Assignment" in canvasapi.assignment (a Python API wrapper
+    for Instructor's Canvas LMS.) Tell the user that one assignment's grade finished uploading as the progress goes.
+
+19. Gather information (email and SID) of students whose grades are not transferred because they can't be matched by
+    email, SID, or manually. Make it a dictionary where the keys are the student's full name and the values are another
+    dictionary where the keys are "sid" and "email" and the values are the students' corresponding information. (May
+    need to readjust the keys as student's full name because they are not guaranteed to be unique at this point.)
+
+20. Tell the user about the students (full name, email, and SID) whose grades didn't get transferred at this time (step
+    19). 
+
+
+
+
+NOTE: 1. If leftover students (the one who can't match by SID or email absolutely) do NOT have unique names, then their
+         grades will NOT be transferred by this program. You must do it manually.
+
+      2. "Eligible students" means one of the third party students' boolean variables yields true: email match, SID
+         match, or manual match.
+
+      3. Only leftover 3rd party csv students (if any) (after both primary and secondary match) will be shown to the
+         screen after grade transfer is done. Attention to them because it may require you to manually transfer them.
+         Also, you won't be told which Canvas students left un-transferred.
+
+
+
+
+

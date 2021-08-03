@@ -114,10 +114,8 @@ class CanvasGradeTransfer:
     def is_unique(self, name: str, name_type: str):
         third_party_list = getattr(self, "third_party_students_" + name_type + "_name_pool").copy()
         canvas_list = getattr(self, "canvas_students_" + name_type + "_name_pool").copy()
-
         third_n = third_party_list.count(name)
         canvas_n = canvas_list.count(name)
-
         if (third_n == 1) and (canvas_n == 1):
             return True
         return False
@@ -252,7 +250,7 @@ class CanvasGradeTransfer:
         return student_dic
 
 
-def is_unique_quick_check(list_a: list):
-    if len(list_a) == len(set(list_a)):
-        return True
-    return False
+#def is_unique_quick_check(list_a: list):
+#    if len(list_a) == len(set(list_a)):
+#        return True
+#    return False
