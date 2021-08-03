@@ -103,7 +103,7 @@ The logic of the program is as follows (start.py):
     need to readjust the keys as student's full name because they are not guaranteed to be unique at this point.)
 
 20. Tell the user about the students (full name, email, and SID) whose grades didn't get transferred at this time (step
-    19). 
+    19).
 
 
 
