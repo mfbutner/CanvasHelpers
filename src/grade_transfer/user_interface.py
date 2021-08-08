@@ -42,7 +42,7 @@ class UserInterface:
             try:
                 csv_path = input("Please specify the path to the third party CSV file from which you want to upload "
                                  "the grades: ")
-                # Check if 1.the file exits; 2.it has read permission; 3.it is unifomally coded
+                # Check if 1.the file exits; 2.it has read permission; 3.it is uniformly coded
                 with open(csv_path) as file:
                     for row in file:
                         pass
