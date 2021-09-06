@@ -107,9 +107,9 @@ To do:
     1. Match students based on Email, SIDs, and names. 
     2. Link the student [----------LEFT HERE-----------]
 
-- Fix TODOs in ExternalDocumentation
+- Fix TODOs in ExternalDocumentation.
 
-- Test more corner cases
+- Test more corner cases.
 
 - Add more comments to functions. 
 
