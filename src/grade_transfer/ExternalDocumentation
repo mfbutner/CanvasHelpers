@@ -89,7 +89,7 @@ The logic of "start_grade_transfer.py" is as follows:
 18. Announce to the user that the grade is about to be transferred to Canvas. Update every students' grade per assignment
     using the "submission_bulk_update" function from "Assignment" in canvasapi.assignment (a Python API wrapper for
     Instructor's Canvas LMS.) Update the user as the requests of uploading each assignment's grades are sent to Canvas.
-    (See NOTE 4)
+    (See NOTE 4) [TODO: Maybe change the update to after the grades are uploaded to Canvas]
 
 19. Gather information (email and SID) of students whose grades are not transferred because they can't be matched by
     email, SID, or manually. Make it a dictionary where the keys are the student's full name and the values are another
