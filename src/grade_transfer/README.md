@@ -6,7 +6,7 @@
 * [Technologies Used](#technologies-used)
 * [Features](#features)
 * [Setup](#setup)
-* [Usage](#usage)
+* [Workflow](#workflow)
 * [Project Status](#project-status)
 * [Room for Improvement](#room-for-improvement)
 * [Acknowledgements](#acknowledgements)
@@ -21,11 +21,15 @@ This program transfers students' grades of one or more assignments from a CSV fi
 
 ## Technologies Used
 - Python - version 3.8
+  - Install [Python 3.8.0](https://www.python.org/downloads/release/python-380/).
 
 
 ## Features
-- Simplify the grade transfer process by requiring only three things: 1. Canvas url, 2. user's Canvas token, and 3. the 
-path to the user's CSV file. 
+- Simplify the grade transfer process by requiring only three things:
+    1. Canvas url, 
+    2. user's Canvas token
+    3. the path to the user's CSV file. 
+
 
 - Match students automatically by their emails and student IDs (SIDs) first, then match the rest of students by their
 unique full names or last names and ask user to verify these name matches.
@@ -35,51 +39,59 @@ unique full names or last names and ask user to verify these name matches.
 
 
 ## Setup
-Make sure three things are available before running the program:
-1. a Canvas url (example: https://canvas.ucdavis.edu/)
-
-2. the Canvas token (How to get Canvas API access tokens: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-manage-API-access-tokens-as-an-admin/ta-p/89)
+#### Make sure three things are available before running the program:
+1. Canvas url 
+    - Example: https://canvas.ucdavis.edu/
+    
+2. the Canvas token 
+    - How to get Canvas API access tokens: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-manage-API-access-tokens-as-an-admin/ta-p/89
 
 3. the path to the CSV file on user's local computer
 
-To run the program, 
-1. (Skip if Python >= 3.8.0 is installed) Install [Python 3.8.0](https://www.python.org/downloads/release/python-380/). 
+#### To run the program:
 
-2. Install CanvasAPI by typing this command on the terminal and hitting <kbd>Enter</kbd>:
+1. Install [CanvasAPI](https://github.com/ucfopen/canvasapi) by typing this command on the terminal and hitting <kbd>Enter</kbd>:
 
     `pip install canvasapi`
 
-3. Clone this Git repository to the user chosen directory with git clone:
-    
+2. Clone this Git repository to a user chosen directory with git clone:   
+
     `git clone https://github.com/mfbutner/CanvasHelpers.git`
 
-4. Inside the chosen directory of step 3, go to the new sub-directory called "CanvasHelpers":
-    
+3. Inside the directory from step 2, go to the new sub-directory called "CanvasHelpers":   
+
     `cd CanvasHelpers`
+   
+4. Run the program using the `python3` command:
+
+    `python3 start_grade_transfer.py`
+
+5. Answer the first prompt which asks for the Canvas url:
+
+    ![First_prompt_example](./first_prompt.png)
     
-5. Go to the sub-directory called " src":
-
-    `cd src`
-    
-6. Go to the sub-directory called "grade_transfer":
-
-    `cd grade_transfer`
-    
-7. Run the program using the `python3` command:
-
-    ``
+6. Follow the prompts and happy uploading :)
 
 
+## Workflow
+- After given the Canvas url, the user's Canvas token, and the path to the CSV file, the program asks user to 
+specify the course, assignment groups, and assignments to which they want the grades to be uploaded. 
 
-## Usage
-- After given a valid Canvas url, the user's Canvas token, and the path to the CSV file, the program asks the user to 
-specify the course and assignments to which they want the grades to be uploaded. 
-
-- Then the program shows the first five rows 
-in the CSV file and ask user to identify what each column represents.
+- Then the program shows the first five rows from the CSV file and asks user to identify what each column represents.
 
 - The program first matches students from the CSV file and the Canvas course by their emails and student IDs (SID), then 
-it matches the leftover students who can't be matched by emails or SIDs by their unique full names and last names. 
+it matches the leftover students who can't be matched previously by their unique full names or last names. Next, the 
+program asks user to identify if each name-matched Canvas-CSV student pair is correct.
+
+- Afterwards the program updates the matched (by emails, SIDs, or verified names) students' grades to Canvas. It informs 
+user about the progress of sending each assignment's grade update request to Canvas.
+
+- Lastly the program announces the CSV file students (full names, emails, and SID) whose grades are not transferred during
+this grade upload. 
+
+- Please visit [ExternalDocumentation](./ExternalDocumentation) for a more detailed workflow about this program. 
+
+[----------LEFT HERE-----------]
 
 
 
@@ -89,9 +101,13 @@ The program is functional but it's not in the ideal state. More updates will be 
 
 ## Room for Improvement
 To do:
-- Upgrade the user interface from terminal command line to local website.
+- Upgrade the user interface from terminal command line to a local website.
 
-- Find a more efficient algorithm to match students based on Email, SIDs, and names. 
+- Find a more efficient algorithm to 
+    1. Match students based on Email, SIDs, and names. 
+    2. Link the student [----------LEFT HERE-----------]
+
+- Test more corner cases
 
 - Add more comments to functions. 
 

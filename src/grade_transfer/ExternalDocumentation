@@ -1,11 +1,4 @@
-Using this program, user can transfer grades from a downloaded CSV file to your course on Canvas. User will need to know
-three things before the grade transfer:
-1. Canvas url
-2. User's Canvas token
-   How to get API access tokens: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-manage-API-access-tokens-as-an-admin/ta-p/89
-3. The path to user's downloaded CSV file
-
-The logic of the program is as follows (start.py):
+The logic of "start_grade_transfer.py" is as follows:
 
 1. Create an instance of UserInterface class.
 
@@ -28,7 +21,7 @@ The logic of the program is as follows (start.py):
    transfer), 1 means first name, 2 means last name, 3 means full name, 4 means student ID, 5 means email, 6-n
    represents each assignment(s) in step 5. Please notice that only 0 (None) is allowed to be repeated; other integers
    can appear at most once. The program will transfer user input integers 0 to None, 1-5 to their corresponding string
-   literals (such as "first_name"), and 6-n to ththee corresponding Canvas assignments, and then store these information
+   literals (such as "first_name"), and 6-n to the corresponding Canvas assignments, and then store these information
    into a list.
 
 8. Create an instance of CanvasGradeTransfer class using the Canvas course (step 4), CSV header information (step 7),
@@ -93,14 +86,16 @@ The logic of the program is as follows (start.py):
     is another dictionary which contains "posted_grade" as the key and the corresponding assignment grade from third
     party student's assignment list (step 8.3) as the value.
 
-18. Announce to the user that the grade is about to be transferred to Canvas. Update the every students' grade per
-    assignment use the "submission_bulk_update" function from "Assignment" in canvasapi.assignment (a Python API wrapper
-    for Instructor's Canvas LMS.) Tell the user that one assignment's grade finished uploading as the progress goes.
+18. Announce to the user that the grade is about to be transferred to Canvas. Update every students' grade per assignment
+    using the "submission_bulk_update" function from "Assignment" in canvasapi.assignment (a Python API wrapper for
+    Instructor's Canvas LMS.) Update the user as the requests of uploading each assignment's grades are sent to Canvas.
+    (See NOTE 4)
 
 19. Gather information (email and SID) of students whose grades are not transferred because they can't be matched by
     email, SID, or manually. Make it a dictionary where the keys are the student's full name and the values are another
-    dictionary where the keys are "sid" and "email" and the values are the students' corresponding information. (May
-    need to readjust the keys as student's full name because they are not guaranteed to be unique at this point.)
+    dictionary where the keys are "sid" and "email" and the values are the students' corresponding information.
+    [TODO: Need to change the data structure to be something other than dictionary because at this point names are not
+    guaranteed to be unique and SID/email may not exist.]
 
 20. Tell the user about the students (full name, email, and SID) whose grades didn't get transferred at this time (step
     19).
@@ -118,7 +113,8 @@ NOTE: 1. If leftover students (the one who can't match by SID or email absolutel
          screen after grade transfer is done. Attention to them because it may require you to manually transfer them.
          Also, you won't be told which Canvas students left un-transferred.
 
-
+      4. Please wait for 5-15 minutes after the last announcement of grade update request being sent to Canvas to see the
+         grades are actually updated on Canvas website.
 
 
 
