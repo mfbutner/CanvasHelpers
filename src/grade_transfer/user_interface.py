@@ -282,12 +282,12 @@ class UserInterface:
 
     def pre_update_announcement(self):
         self.line_separator()
-        print("Now upload the grades. Please be patient")
+        print("Now sending the grade update request(s) to Canvas. Please be patient")
         return
 
     @staticmethod
     def one_update_finish(name: str):
-        print("Finished updating " + name + ".")
+        print("Request to update " + name + " grades is sent to Canvas.")
         UserInterface.sub_line_separator()
         return
 
