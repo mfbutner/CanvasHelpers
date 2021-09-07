@@ -8,11 +8,14 @@ import csv
 from typing import List, Union
 from src.grade_transfer.third_party_student import ThirdPartyStudent
 
+# For detailed instructions, please refer to the steps in ExternalDocumentation (./ExternalDocumentation).
+
 
 class CanvasGradeTransfer:
     def __init__(self, course: Course,
                  gui_list: List[Union[str, None, Assignment]],
                  csv_path: str):
+        # Step 8.1
         self.course = course
         self.csv_path = csv_path
         self.gui_list = gui_list
@@ -20,10 +23,20 @@ class CanvasGradeTransfer:
         self.third_party_students_last_name_pool = []
         self.canvas_students_full_name_pool = []
         self.canvas_students_last_name_pool = []
+
+        # Step 8.2
         self.grade_book = self.create_empty_grade_book()
+
+        # Step 8.3
         self.third_party_students = self.create_third_party_student_list()
+
+        # Step 8.4
         self.canvas_students = set(course.get_users(enrollment_type=["student"]))
+
+        # Step 8.5
         self.create_canvas_name_pool()
+
+        # Step 8.6
         self.match_students()
 
     def create_third_party_student_list(self):
@@ -48,7 +61,6 @@ class CanvasGradeTransfer:
                         student.email = cell
                     elif type(key) == Assignment:
                         student.add_assignment(cell)
-
                 student.set_full_name()
                 student_set.add(student)
                 self.third_party_students_full_name_pool.append(student.full_name)
@@ -68,6 +80,7 @@ class CanvasGradeTransfer:
             self.canvas_students_last_name_pool.append(self.split_name(student.sortable_name)[1])
         return
 
+    # TODO: Find a more efficient algorithm to match students.
     def match_students(self):
         # do all email matches
         for third_student in self.third_party_students:
@@ -179,6 +192,7 @@ class CanvasGradeTransfer:
             i += 1
         return
 
+    # TODO: Find a more efficient algorithm to link students (CSV and Canvas pair) back together.
     def fill_in_grade_data(self):
         for student in self.third_party_students:
             if student.email_match:
@@ -247,6 +261,7 @@ class CanvasGradeTransfer:
                     student.manual_match = third_party_dic[name]["manual_match"]
         return
 
+    # TODO: Use other data structures than dictionary because at this point names are not guaranteed to be unique and SID/email may not exist.
     def get_leftover_third_party_students(self):
         student_dic = {}
         for student in self.third_party_students:

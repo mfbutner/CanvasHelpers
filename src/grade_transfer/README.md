@@ -1,5 +1,6 @@
 # CSV Canvas Grade Transfer
-> An improvement/alternative (?) of the current Canvas method of uploading grades from CSV files.
+> An improvement of the current Canvas method of uploading grades from CSV files by simplifying the required documents 
+> and speeding up the process.
 
 ## Table of Contents
 * [General Info](#general-information)
@@ -91,8 +92,6 @@ this grade upload.
 
 - Please visit [ExternalDocumentation](./ExternalDocumentation) for a more detailed workflow about this program. 
 
-[----------LEFT HERE-----------]
-
 
 
 ## Project Status
@@ -105,9 +104,12 @@ To do:
 
 - Find a more efficient algorithm to 
     1. Match students based on Email, SIDs, and names. 
-    2. Link the student [----------LEFT HERE-----------]
+    2. Link students together when filling in the grade book dictionary.
 
-- Fix TODOs in ExternalDocumentation.
+- Change the update announcements to after the grades are uploaded to Canvas.
+
+- Use other data structures than dictionary when announcing the leftover CSV students at the end because at this point 
+names are not guaranteed to be unique and SID/email may not exist.
 
 - Test more corner cases.
 

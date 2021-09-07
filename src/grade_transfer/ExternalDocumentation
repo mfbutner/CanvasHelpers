@@ -41,7 +41,7 @@ The logic of "start_grade_transfer.py" is as follows:
    8.4. Create a set which contains all students enrolled in the Canvas course (step 8.1).
    8.5. Add Canvas students' (step 8.4) last names and full names to the Canvas students' last name pool and full name
         pool respectively (step 8.1).
-   8.6. Match third party students (step 8.3) with Canvas students (step 8.4).
+   8.6. Match third party students (step 8.3) with Canvas students (step 8.4) [TODO: Find a more efficient algorithm to match students].
         8.6.1 [Primary Match (Match by Email or SID)]: Match all students who can be matched absolutely either by emails
               or SIDs. If matched, flag the third party student's corresponding boolean variable (email match or SID
               match) to be true (step 8.3) and remove the students' names from all four lists: third party students' full
@@ -81,21 +81,21 @@ The logic of "start_grade_transfer.py" is as follows:
 16. Repeat (step 15) for the last name matched students.
 
 17. Fill in the grade data. For every eligible (See NOTE 2) third party students (step 8.3), find their corresponding
-    Canvas student and upgrade their grade in the grade book (step 8.2). To upgrade the grade, for every assignment's
-    dictionary in the grade book (step 8.2), add a key-value pair where the key is the Canvas student's ID and the value
-    is another dictionary which contains "posted_grade" as the key and the corresponding assignment grade from third
-    party student's assignment list (step 8.3) as the value.
+    Canvas student and upgrade their grade in the grade book (step 8.2) [TODO: Find a more efficient algorithm to
+    link students back together].
+    To upgrade the grade, for every assignment's dictionary in the grade book (step 8.2), add a key-value pair where the
+    key is the Canvas student's ID and the value is another dictionary which contains "posted_grade" as the key and the
+    corresponding assignment grade from third party student's assignment list (step 8.3) as the value.
 
 18. Announce to the user that the grade is about to be transferred to Canvas. Update every students' grade per assignment
     using the "submission_bulk_update" function from "Assignment" in canvasapi.assignment (a Python API wrapper for
     Instructor's Canvas LMS.) Update the user as the requests of uploading each assignment's grades are sent to Canvas.
-    (See NOTE 4) [TODO: Maybe change the update to after the grades are uploaded to Canvas]
+    (See NOTE 4) [TODO: Change the updates to after the grades are uploaded to Canvas]
 
 19. Gather information (email and SID) of students whose grades are not transferred because they can't be matched by
     email, SID, or manually. Make it a dictionary where the keys are the student's full name and the values are another
     dictionary where the keys are "sid" and "email" and the values are the students' corresponding information.
-    [TODO: Need to change the data structure to be something other than dictionary because at this point names are not
-    guaranteed to be unique and SID/email may not exist.]
+    [TODO: Use other data structures than dictionary because at this point names are not guaranteed to be unique and SID/email may not exist.]
 
 20. Tell the user about the students (full name, email, and SID) whose grades didn't get transferred at this time (step
     19).
