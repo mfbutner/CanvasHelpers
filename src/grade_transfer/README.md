@@ -1,6 +1,6 @@
 # CSV Canvas Grade Transfer
 > An improvement of the current Canvas method of uploading grades from CSV files by simplifying the required documents 
-> and speeding up the process.
+> and matching students automatically based on emails, student IDs (SIDs) and names.
 
 ## Table of Contents
 * [General Info](#general-information)
@@ -32,7 +32,7 @@ This program transfers students' grades of one or more assignments from a CSV fi
     3. the path to the user's CSV file. 
 
 
-- Match students automatically by their emails and student IDs (SIDs) first, then match the rest of students by their
+- Match students automatically by their emails and SIDs first, then match the rest of students by their
 unique full names or last names and ask user to verify these name matches.
 
 - Notify the user about which students' grades are not successfully transferred from the CSV file at the end of the program. 
