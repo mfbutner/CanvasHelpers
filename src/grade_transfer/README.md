@@ -28,8 +28,8 @@ This program transfers students' grades of one or more assignments from a CSV fi
 ## Features
 - Simplify the grade transfer process by requiring only three things:
     1. Canvas url, 
-    2. user's Canvas token
-    3. the path to the user's CSV file. 
+    2. User's Canvas token
+    3. The path to the user's CSV file. 
 
 
 - Match students automatically by their emails and SIDs first, then match the rest of students by their
