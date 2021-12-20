@@ -81,7 +81,7 @@ class KudoPointGivingQuiz:
                 'question_name': f'Kudo Point {point}',
                 'question_text': 'Who do you want to give this Kudo Point to?',
                 'question_type': 'multiple_choice_question',
-                'answers': answers,
+                'answers': dict(enumerate(answers)), # switch back to just answers once Canvas fixes their bug
                 'points_possible': 1
             } for point in range(1, self.number_of_kudo_points + 1)
         ]
@@ -92,7 +92,6 @@ class KudoPointGivingQuiz:
                 'answer_html': student_name,
                 'answer_text': ','.join([str(s.id) for s in student]),
                 'answer_weight': 1
-
             } for student_name, student in self.students.items()
         ]
         answers.append({

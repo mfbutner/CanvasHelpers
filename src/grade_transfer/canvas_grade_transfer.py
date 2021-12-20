@@ -133,7 +133,12 @@ class CanvasGradeTransfer:
 
     def sid_check(self, csv_student: ThirdPartyStudent, canvas_student: User):
         if csv_student.sid is not None and canvas_student.sis_user_id is not None:
-            if int(csv_student.sid) == int(canvas_student.sis_user_id):
+            try:
+                csv_student_sid = int(csv_student.sid)
+                canvas_student_sid = int(canvas_student.sis_user_id)
+            except ValueError:
+                return
+            if csv_student_sid == canvas_student_sid:
                 csv_student.sid_match = True
                 self.remove_from_name_pool(csv_student, canvas_student)
         return
