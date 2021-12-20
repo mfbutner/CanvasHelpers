@@ -42,7 +42,7 @@ class UserInterface:
             try:
                 csv_path = input("Please specify the path to the third party CSV file from which you want to upload "
                                  "the grades: ")
-                # Check if 1.the file exits; 2.it has read permission; 3.it is unifomally coded
+                # Check if 1.the file exits; 2.it has read permission; 3.it is uniformly coded
                 with open(csv_path) as file:
                     for row in file:
                         pass
@@ -282,12 +282,12 @@ class UserInterface:
 
     def pre_update_announcement(self):
         self.line_separator()
-        print("Now upload the grades. Please be patient")
+        print("Now sending the grade update request(s) to Canvas. Please be patient")
         return
 
     @staticmethod
     def one_update_finish(name: str):
-        print("Finished updating " + name + ".")
+        print("Request to update " + name + " grades is sent to Canvas.")
         UserInterface.sub_line_separator()
         return
 
