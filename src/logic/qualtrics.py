@@ -36,7 +36,7 @@ class QualtricsStudent(NamedTuple):
 
 def get_missing_qualtrics_users(users: List[canvasapi.user.User], qualtrics_csv_path: str) -> \
         Tuple[List[canvasapi.user.User], List[QualtricsStudent]]:
-    canvas_students = {user.email: user for user in users}
+    canvas_students = {user.email: user for user in users if hasattr(user, 'email')}
     with open(qualtrics_csv_path, newline='') as csv_file:
         reader = csv.reader(csv_file)
         next(reader)
