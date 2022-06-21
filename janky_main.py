@@ -13,15 +13,20 @@ from src.logic.assignments import download_assignment_info
 from src.logic.kudo_points.giving_quiz_creator.kudo_point_giving_quiz import KudoPointGivingQuiz
 from src.logic.assignments.download_assignment_info import download_assignment_info
 
+# DO NOT ACTUALLY use this file for anything
 
 
 # https://canvas.ucdavis.edu/
-# ECS 36A
-# Upload File: D:\DDownloads\ECS 36ACanvasGradeUpload.csv
-# Assignment Groups: 4, 5, 6, 7, 8, 9, 10, 11, 12
-# CSV Columns: 1, 2, 5, 0, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 23, 25, 29, 26, 27, 28
+# ECS 36B
+# Upload File: D:\DDownloads\ECS36BCanvasGradeUpload.csv
+# Assignment Groups: 3, 4, 5, 6, 7, 8, 9
+# CSV Columns: 1, 2, 5, 0, 15, 6, 14, 16, 7, 8, 9, 18, 17, 10, 11, 12, 13
 
-
+# https://canvas.ucdavis.edu/
+# ECS 50
+# Upload File: D:\DDownloads\ECS50CanvasGradeUpload.csv
+# Assignment Groups: 1, 2, 3, 4, 5, 6, 7
+# CSV Columns: 1, 2, 5, 0, 18, 6, 7, 8, 9, 19, 22, 10, 11, 12, 13, 20, 21, 14, 15, 16, 23, 17, 24
 
 canvas_connection = canvasapi.Canvas('https://canvas.ucdavis.edu/',
                                      sys.argv[1])
@@ -135,11 +140,11 @@ def balance_ecs154a_kudo_points():
     create_extra_credit_balancer(ecs154a, dest_assignment_group)  # Kudo Point Extra Credit)
 
 
-def upload_ecs_36a_survey_completion():
-    course = ecs36a
-    canvas_survey_assignment_ids = 808040, 808063, 808064
+def upload_ecs_36b_survey_completion():
+    course = ecs36b
+    canvas_survey_assignment_ids = 864651, 864652
 
-    base_dir = 'D:\\GradeTransfers\\ECS36AWinter2022'
+    base_dir = 'D:\\GradeTransfers\\ECS36B'
     csv_files = os.listdir(base_dir)
     csv_files.sort()
     print(csv_files)
@@ -151,11 +156,11 @@ def upload_ecs_36a_survey_completion():
         upload_survey_completion(canvas_assignment, students, csv_file)
 
 
-def upload_ecs_154a_survey_completion():
-    course = ecs154a
-    canvas_survey_assignment_ids = 817231, 817244, 817245
+def upload_ecs_50_survey_completion():
+    course = ecs50
+    canvas_survey_assignment_ids = 864697, 864698
 
-    base_dir = 'D:\\GradeTransfers\\ECS154AWinter2022'
+    base_dir = 'D:\\GradeTransfers\\ECS50'
     csv_files = os.listdir(base_dir)
     csv_files.sort()
     print(csv_files)
@@ -183,10 +188,10 @@ def test_download_assignment_info():
 def test_kudo_point_creation():
     number_of_kudo_points = 2
     kudo_point_giving_group_ids = [469533, 469556]  # 36B, 50
-    assignment_name = 'Kudo Point Giving Study Group 1 Week 2'
+    assignment_name = 'Kudo Point Giving Study Group 4 Week 2'
     # assignment_group = course.get_assignment_group(285318)  # Assignment Group Kudo Point Giving  (285318)
     weeks_into_the_quarter = datetime.timedelta(
-        1 * 7)  # 1 was for this week change to 2 future me. Yes it really should be week 6 next time
+        8 * 7)  # 8 was for this week change to 9 future me. Yes it really should be week 9 next time
     first_due_date_of_the_quarter = datetime.datetime(2022, 4, 4, 23, 59)
     first_open_date_of_the_quarter = datetime.datetime(2022, 4, 4, 00, 1)
 
@@ -257,9 +262,9 @@ def test_download_groups_to_csv():
 
 
 def test_get_missing_qualtrics_users():
-    courses = [ecs36a, ecs154a]
-    csv_paths = ['''D:\DDownloads\Winter_2022___36A_Students.csv''',
-                 '''D:\DDownloads\Winter_2022___ECS_154A_Students.csv''']
+    courses = [ecs36b, ecs50]
+    csv_paths = ['''D:\DDownloads\ECS36BSpring2022.csv''',
+                 '''D:\DDownloads\ECS50Spring2022.csv''']
 
     # ecs_36A_students = ecs36a.get_users(enrollment_type=['student'])
     # ecs_32B_students = ecs32b.get_users(enrollment_type=['student'])
@@ -308,15 +313,15 @@ def test_download_assignment_info():
 def true_kudo_point_evaluation():
     assignment_points = 2
     course_info = [
-        {'course': ecs154a,
-         'kudo_point_giving_assignment_group_id': 428415,
-         'kudo_point_evaluation_group_id': 428416,
+        {'course': ecs50,
+         'kudo_point_giving_assignment_group_id': 469556,
+         'kudo_point_evaluation_group_id': 469557,
          'completion_statuses': []
          },
 
-        {'course': ecs36a,
-         'kudo_point_giving_assignment_group_id': 428413,
-         'kudo_point_evaluation_group_id': 428414,
+        {'course': ecs36b,
+         'kudo_point_giving_assignment_group_id': 469533,
+         'kudo_point_evaluation_group_id': 469534,
          'completion_statuses': []
          }
 
@@ -457,14 +462,14 @@ def winter2021ecs154a_kudo_point_evaluation():
 
 def main():
     # ones I normally use
-    test_kudo_point_creation()
+    # test_kudo_point_creation()
     # test_download_assignment_info()
-    # test_download_users_to_csv()
+    test_download_users_to_csv()
     # test_update_group_names_to_reflect_memberships()
     # test_get_missing_qualtrics_users()
     # true_kudo_point_evaluation()
-    # upload_ecs_36a_survey_completion()
-    # upload_ecs_154a_survey_completion()
+    # upload_ecs_36b_survey_completion()
+    # upload_ecs_50_survey_completion()
 
     # winter2021ecs36a_kudo_point_evaluation()
     # winter2021ecs154a_kudo_point_evaluation()
