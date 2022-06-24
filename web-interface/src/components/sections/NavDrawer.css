@@ -1,0 +1,11 @@
+.nav-drawer {
+	max-width: 30%;
+	min-width: 10%;
+	transition: min-width 1s, max-width 1s;
+	overflow: hidden;
+}
+
+.nav-drawer-open {
+	min-width: 0;
+	max-width: 0;
+}

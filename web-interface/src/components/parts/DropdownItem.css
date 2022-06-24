@@ -1,0 +1,16 @@
+.dropdown-item {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	padding: .5rem 1rem;
+}
+
+.dropdown-item-text {
+	flex-grow: 1;
+}
+
+.dropdown-item-download {
+	flex-grow: 0;
+}
