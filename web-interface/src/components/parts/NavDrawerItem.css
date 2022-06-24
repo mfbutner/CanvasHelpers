@@ -1,0 +1,10 @@
+.nav-drawer-item {
+	width: 100%;
+	padding: 1.5rem 1rem;
+	overflow-x: auto;
+	border: 1px solid #EFEFEF;
+}
+
+.nav-drawer-item:hover {
+	background-color: #EEEEEE;
+}

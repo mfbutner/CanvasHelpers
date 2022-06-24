@@ -1,3 +1,4 @@
+import downloadIcon from "../../static/download_icon.svg";
 import "./DropdownItem.css";
 
 export default function DropdownItem({ type, text, value, onClick }) {
@@ -10,7 +11,7 @@ export default function DropdownItem({ type, text, value, onClick }) {
 			</div>
 			{type === "download" && (
 				<button className="dropdown-item-download">
-					Download
+					<img src={downloadIcon} alt="Download"/>
 				</button>
 			)}
 		</div>

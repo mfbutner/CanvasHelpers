@@ -1,5 +1,6 @@
 import useGlobal from "../parts/GlobalData";
 import "./NavDrawer.css";
+import NavDrawerItem from "../parts/NavDrawerItem";
 
 export default function NavDrawer() {
 	const global = useGlobal();
@@ -7,7 +8,14 @@ export default function NavDrawer() {
 
 	return (
 		<nav className={`nav-drawer ${open ? "nav-drawer-open" : ""}`}>
-			9
+			<div className="nav-drawer-contents">
+				<NavDrawerItem>
+					Upload
+				</NavDrawerItem>
+				<NavDrawerItem>
+					Download
+				</NavDrawerItem>
+			</div>
 		</nav>
 	);
 }

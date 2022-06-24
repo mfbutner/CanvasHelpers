@@ -5,6 +5,11 @@
 	align-items: center;
 	width: 100%;
 	padding: .5rem 1rem;
+	border: 1px solid #DFDFDF;
+}
+
+.dropdown-item:hover {
+	background-color: #EAEAEA;
 }
 
 .dropdown-item-text {
@@ -13,4 +18,5 @@
 
 .dropdown-item-download {
 	flex-grow: 0;
+	cursor: pointer;
 }
