@@ -7,7 +7,7 @@ export default function Dropdown({ title, items, type }) {
 
 	const toggleSelect = value => {
 		const newSelected = [...selected];
-		if(value in selected) {
+		if(selected.includes(value)) {
 			newSelected.splice(newSelected.indexOf(value), 1);
 		} else {
 			newSelected.push(value);
@@ -28,7 +28,7 @@ export default function Dropdown({ title, items, type }) {
 							{...item}
 							type={type}
 							onClick={toggleSelect}
-							selected={item.value in selected}
+							selected={selected.includes(item.value)}
 						/>
 					))
 				}

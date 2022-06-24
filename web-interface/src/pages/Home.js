@@ -26,7 +26,7 @@ function Home() {
 				<Dropdown
 					title="Classes"
 					items={testData}
-					type="download"
+					type="select"
 				/>
 			</Content>
 		</div>

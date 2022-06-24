@@ -8,8 +8,13 @@
 	border: 1px solid #DFDFDF;
 }
 
+.dropdown-item-selected,
 .dropdown-item:hover {
 	background-color: #EAEAEA;
+}
+
+.dropdown-item-checkbox {
+
 }
 
 .dropdown-item-text {
