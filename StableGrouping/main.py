@@ -1,6 +1,4 @@
-
 from canvasapi import Canvas
-import sys
 import pandas as pd
 from makeGroups import makeGroups
 from checkValidGroup import invalidGroupDict
@@ -10,6 +8,9 @@ from canvasapi import Canvas
 from canvasapi.canvas_object import CanvasObject
 from studentClass import Student
 from parseStudent import parse, parseEmails, parsePartnerQuiz
+from dotenv import dotenv_values
+
+env = dotenv_values("../.env")
 
 def retrieveCSVfromCanvas(quiz:CanvasObject) :
        studentReport = quiz.create_report("student_analysis")
@@ -19,7 +20,7 @@ def retrieveCSVfromCanvas(quiz:CanvasObject) :
        # parse so only the process id remains
        reportProgressID = reportProgressURL.removeprefix('https://canvas.ucdavis.edu/api/v1/progress/')
 
-       # wait for student report to finish generating while the process has not completed or failed 
+       # wait for student report to finish generating while the process has not completed or failed
        while reportProgress != 'completed' and reportProgress != 'failed':
               reportProgressObj = canvas.get_progress(reportProgressID)
               reportProgress = reportProgressObj.workflow_state
@@ -30,9 +31,9 @@ def retrieveCSVfromCanvas(quiz:CanvasObject) :
 
        return studentData
 
-#Get the right class 
-API_URL = "https://canvas.ucdavis.edu/"
-API_KEY = sys.argv[1] #first command line parameter is your API KEY
+#Get the right class
+API_URL = env["API_URL"]
+API_KEY = env["API_KEY"]
 
 #Macros that will have to change to the appropriate class and survey number
 
@@ -52,7 +53,7 @@ studyGroupNumber = "Fifth Study Group"
 
 #Get the class data from canvas
 canvas = Canvas(API_URL, API_KEY)
-canvasClass = canvas.get_course(CLASS_ID)  
+canvasClass = canvas.get_course(CLASS_ID)
 
 # Get the right quiz
 quiz = canvasClass.get_quiz(QUIZ_ID)
@@ -65,7 +66,7 @@ reportProgressURL = studentReport.progress_url
 # parse so only the process id remains
 reportProgressID = reportProgressURL.removeprefix('https://canvas.ucdavis.edu/api/v1/progress/')
 
-# wait for student report to finish generating while the process has not completed or failed 
+# wait for student report to finish generating while the process has not completed or failed
 while reportProgress != 'completed' and reportProgress != 'failed':
        reportProgressObj = canvas.get_progress(reportProgressID)
        reportProgress = reportProgressObj.workflow_state
@@ -85,7 +86,7 @@ dictStudentDidNotTakeSurvey = parseEmails(dictStudentTakeSurvey, canvasClass)
 #partnerQuizData = retrieveCSVfromCanvas(quiz2)
 #parsePartnerQuiz(partnerQuizData ,canvasClass, dictStudentTakeSurvey, dictStudentDidNotTakeSurvey)
 
-#Find the people who were matchedBefore, place it into a dict 
+#Find the people who were matchedBefore, place it into a dict
 matchedBefore = invalidGroupDict(canvas, CLASS_ID)
 
 #Create the groups:
