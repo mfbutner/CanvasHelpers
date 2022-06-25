@@ -1,0 +1,25 @@
+{
+	"course": {
+		"id": 1599,
+		"name": "Sandbox"
+	},
+	"quiz_id": 109923,
+	"group_number": 1,
+	"patterns": {
+		"pronouns_select": "What are your preferred pronouns",
+		"pronouns_other": "If you answered \"Not Included\" on your pronouns, feel free to specify",
+		"prefer_same_gender": "What are your group makeup preferences on gender",
+		"prefer_synchronous": "Do you prefer to meet synchronously or asynchronously",
+		"time_free": "if you can be available for at least 20 minutes in the time frame, select yes. If not select no",
+		"prefer_communication_method": "Are you willing to meet in the following ways",
+		"prefer_communication_info": "Please double check your contact information for errors",
+		"prefer_to_lead": "Do you like to lead by introducing yourself first or arranging a time to meet",
+		"prefer_other_international": "If you are an international student",
+		"language_select": "What language would you prefer to meet in",
+		"language_other": "if your language was not available, feel free to specify",
+		"activity_select": "What would you like to do with your group",
+		"activity_specify": "What are some specific ideas that you would like to do in your group",
+		"priorities": "in which order do they matter the most to you",
+		"confidence": "How do you feel you are doing in this class"
+	}
+}
