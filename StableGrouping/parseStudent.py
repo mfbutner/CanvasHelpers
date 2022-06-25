@@ -50,35 +50,51 @@ def index_questions(all_questions, config):
             if re.search(patterns[index_key], question["question_text"]):
                 question_index[index_key] = question
                 continue
-        # Warning: No matches found for this question
-        print("No Match for Question:")
-        print(question["question_text"])
 
-    # print(question_index)
+        # Warning: No matches found for this question
+        if question not in question_index.values():
+            print("No Match for Question:")
+            print(question["question_text"])
+
+    print("===== Question Indexing Complete =====")
+    print("===== See Missed Questions Above =====")
     return question_index
 
 
-def parse_submissions(all_students, quiz, config):
+def filter_students_submitted(all_students, quiz_submissions):
+    students_submitted = {}
+    for submission in quiz_submissions:
+        for student in all_students.values():
+            # Side effect: If the student is not found in all_students, the submission is ignored
+            # The student either may be no longer enrolled or something has gone wrong
+            if student.idNum != submission.user_id:
+                continue
+
+            students_submitted[student.idNum] = student
+            break
+    return students_submitted
+
+
+def parse_submissions(students_submitted, quiz, config):
     statistics = list(quiz.get_statistics())[0]
     all_questions = statistics.question_statistics
     question_index = index_questions(all_questions, config)
 
-    # Get all submissions from the Canvas quiz
-    quiz_submissions = quiz.get_submissions()
+    # TODO: Parse each question in question_index one-by-one
+    # Example: question_index["pronouns_select"]
+    for answer in question_index["pronouns_select"]["answers"]:
+        answer_text = answer["text"]
+        for user_id in answer["user_ids"]:
+            students_submitted[user_id].pronouns = answer_text
+            # print("Updated: ")
+            # print(students_submitted[user_id].name)
+            # print(answer_text)
 
-    students_submitted = {}
-    for submission in quiz_submissions:
-        submission_student = None
-        for student in all_students:
-            if student.id == submission.user_id:
-                submission_student = Student(student.id)
-                break
+    # TODO: CONFIRMED WORKING UP UNTIL THIS POINT (Note: No edge cases have been tested)
+    #       (Comments have been placed where they might be issues)
 
-        students_submitted[submission.user_id] = submission_student
-        pass # TODO: Extract out questions
-
-
-    return students_submitted
+    # Returns nothing. Modifies students_submitted by filling their respective fields
+    return
 
 
 def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
