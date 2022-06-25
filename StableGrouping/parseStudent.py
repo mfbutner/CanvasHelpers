@@ -5,8 +5,26 @@ from canvasapi import Canvas
 from studentClass import Student
 
 
+def parse_students(canvas_students):
+    all_students = {}
+    for student in canvas_students:
+        student_instance = Student()
+        student_instance.idNum = student.id
+        student_instance.name = student.name
+        name = student.sortable_name.split(",")
+        if len(name) == 1:
+            student_instance.firstName = name[0]
+        elif len(name) != 0:
+            student_instance.firstName = name[1]
+            student_instance.lastName = name[0]
+        student_instance.schoolEmail = student.email
+        all_students[student.id] = student_instance
+
+    return all_students
+
+
 def index_questions(all_questions, config):
-    # Returns this object with None replaced with the corresponding index in all_questions for the property
+    # Returns this object with None replaced with the corresponding item from all_questions
     question_index = {
         "pronouns_select": None,
         "pronouns_other": None,
@@ -25,16 +43,16 @@ def index_questions(all_questions, config):
         "confidence": None
     }
 
-    patterns = config.patterns
-    for question_num, question in enumerate(all_questions):
-        for index_key in question_index:
-            # TODO: Fix possible but where multiple questions could match
-            if re.match(patterns[index_key], question.question_text):
-                question_index[index_key] = question_num
+    patterns = config["patterns"]
+    for question in all_questions:
+        for index_key in question_index.keys():
+            # TODO: Fix possibility that multiple questions could match
+            if re.search(patterns[index_key], question["question_text"]):
+                question_index[index_key] = question
                 continue
         # Warning: No matches found for this question
         print("No Match for Question:")
-        print(question.question_text)
+        print(question["question_text"])
 
     # print(question_index)
     return question_index
