@@ -1,0 +1,27 @@
+.dropdown-item {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	padding: .5rem 1rem;
+	border: 1px solid #DFDFDF;
+}
+
+.dropdown-item-selected,
+.dropdown-item:hover {
+	background-color: #EAEAEA;
+}
+
+.dropdown-item-checkbox {
+
+}
+
+.dropdown-item-text {
+	flex-grow: 1;
+}
+
+.dropdown-item-download {
+	flex-grow: 0;
+	cursor: pointer;
+}
