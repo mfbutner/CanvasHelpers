@@ -38,15 +38,15 @@ students_not_submitted = {idNum: student for (idNum, student) in all_students.it
 # Modifies Student instances in students_submitted by updating their properties with their quiz responses
 parse_submissions(students_submitted, quiz, config)
 
-#Find the people who were matchedBefore, place it into a dict
-matchedBefore = invalidGroupDict(canvas, config.course.id)
 
-#Create the groups:
-groups = makeGroups(dictStudentTakeSurvey, dictStudentDidNotTakeSurvey, matchedBefore)
+# Find the people who were matchedBefore, place it into a dict
+matchedBefore = invalidGroupDict(canvas, config["course"]["id"])
 
+# Create the groups:
+groups = makeGroups(students_submitted, students_not_submitted, matchedBefore)
 
-#Now that groups are matched, send emails and form groups
-sendConvo(canvas, config.course.id, groups, config.group_number)
+# Now that groups are matched, send emails and form groups
+sendConvo(canvas, config["course"]["id"], groups, config["group_number"])
 
-#Anaylze the groups: how many students with a preference got it?
+# Anaylze the groups: how many students with a preference got it?
 gradeGroups(groups, matchedBefore)
