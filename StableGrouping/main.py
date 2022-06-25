@@ -1,14 +1,11 @@
 from canvasapi import Canvas
-import pandas as pd
 from makeGroups import makeGroups
 from checkValidGroup import invalidGroupDict
 from analyzeCode import gradeGroups
 from sendCanvasConvo import sendConvo
-from canvasapi.canvas_object import CanvasObject
-from studentClass import Student
-from parseStudent import parse_students, parse, parseEmails, parsePartnerQuiz, parse_submissions
-import json
+from parseStudent import parse_students, parse, parseEmails, parsePartnerQuiz, parse_submissions, filter_students_submitted
 from dotenv import dotenv_values
+import json
 
 # Load .env file with environment variables from project root
 env = dotenv_values("../.env")
@@ -20,47 +17,26 @@ config_file = open("../config.json")
 config = json.load(config_file)
 config_file.close()
 
-# Macros that will have to change to the appropriate class and survey number
-
-# ECS 36A
-# CLASS_ID = 574775 # ECS 36A
-# QUIZ_ID = 123073 # ECS 36A main quiz
-# className = "ECS 36A"
-
-# ECS 36B
-# CLASS_ID = 569280 #36B
-# QUIZ_ID = 123095 # ECS 36B main quiz
-# className = "ECS 36B"
-# QUIZ_ID2 = 1 # who do you want to be with quiz
-
-# studyGroupNumber = "Fifth Study Group"
-
 # Use API Key and URL to authenticate upcoming Canvas API Calls
 canvas = Canvas(API_URL, API_KEY)
 
 # Obtain selected course from the Canvas API
-course = canvas.get_course(config.course.id)
+course = canvas.get_course(config["course"]["id"])
 
 # Get a list of all students still enrolled in the course
 students = course.get_users(enrollment_type="student")
-# Parse students into Student class instances
+# Parse students into Student class instances. Sets basic info: idNum, name, name (first and last), and email
 all_students = parse_students(students)
 
 # Get selected Canvas quiz to match partners with
-quiz = course.get_quiz(config.quiz_id)
+quiz = course.get_quiz(config["quiz_id"])
 
-# Parse the student data of those that took the survey
-students_submitted = parse_submissions(students, quiz, config)
+# Separate the all_students dictionary into two dictionaries: One for those who submitted and one for those who haven't
+students_submitted = filter_students_submitted(all_students, quiz.get_submissions())
+students_not_submitted = {idNum: student for (idNum, student) in all_students.items() if idNum not in students_submitted}
 
-dictStudentTakeSurvey = parse(studentData, config.course.id, course)
-
-#Finds out who did not take survey (also updates the entire class with their school emails)
-dictStudentDidNotTakeSurvey = parseEmails(dictStudentTakeSurvey, course)
-
-#Find the appropriate quiz
-#quiz2 = canvasClass.get_quiz(QUIZ_ID2)
-#partnerQuizData = retrieveCSVfromCanvas(quiz2)
-#parsePartnerQuiz(partnerQuizData ,canvasClass, dictStudentTakeSurvey, dictStudentDidNotTakeSurvey)
+# Modifies Student instances in students_submitted by updating their properties with their quiz responses
+parse_submissions(students_submitted, quiz, config)
 
 #Find the people who were matchedBefore, place it into a dict
 matchedBefore = invalidGroupDict(canvas, config.course.id)
