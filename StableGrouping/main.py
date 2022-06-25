@@ -6,7 +6,7 @@ from analyzeCode import gradeGroups
 from sendCanvasConvo import sendConvo
 from canvasapi.canvas_object import CanvasObject
 from studentClass import Student
-from parseStudent import parse, parseEmails, parsePartnerQuiz, parse_submissions
+from parseStudent import parse_students, parse, parseEmails, parsePartnerQuiz, parse_submissions
 import json
 from dotenv import dotenv_values
 
@@ -41,13 +41,15 @@ canvas = Canvas(API_URL, API_KEY)
 # Obtain selected course from the Canvas API
 course = canvas.get_course(config.course.id)
 
-# Get a list of all students enrolled in the course
-students = course.get_users()
+# Get a list of all students still enrolled in the course
+students = course.get_users(enrollment_type="student")
+# Parse students into Student class instances
+all_students = parse_students(students)
 
 # Get selected Canvas quiz to match partners with
 quiz = course.get_quiz(config.quiz_id)
 
-#Parse the student data of those that took the survey
+# Parse the student data of those that took the survey
 students_submitted = parse_submissions(students, quiz, config)
 
 dictStudentTakeSurvey = parse(studentData, config.course.id, course)

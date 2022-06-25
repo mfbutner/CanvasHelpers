@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # this is a class containing student information
 class Student:
-    
+
     def __init__(self, idNumInput = 0, nameInput = "default_name", emailInput = "default_email", firstNameInput = "default_firstName", lastNameInput = "default_lastName"):
         # Student identification information
         self.name = nameInput
@@ -26,12 +26,12 @@ class Student:
 
         # contact preference and information
         self.contactPreference = [False, False, False, True]
-        self.contactInformation = ["defaultDiscordName#2424", "(000) 000-0000", "deafultEmail@gmail.com"]
+        self.contactInformation = ["defaultDiscordName#2424", "(000) 000-0000", "defaultEmail@gmail.com"]
 
         # If student prefers being the leader
         self.preferLeader = False
 
-        # Is the student international and would they like to be with anothe international student
+        # Is the student international and would they like to be with another international student
         # 0 - not international 1 - no preference 2 - is international and would like to match
         self.international = 0
 
@@ -40,7 +40,7 @@ class Student:
 
         # What the student prefers to do.
         self.option1 = "default"
-        self.option2 = "deafult"
+        self.option2 = "default"
         self.freeResponse = "default"
 
         # The what the student prioritizes in a study group most to least.
@@ -51,12 +51,12 @@ class Student:
 
         # partner the student wants
         self.partner = "default"
-        
+
         # the email of the partner that the student wants
         self.partnerEmail = "default"
-        
-    
-    def __str__(self): 
+
+
+    def __str__(self):
         fullString = ""
         fullString = "Name: " + self.name + " First Name: " + self.firstName + " Last Name: " + self.lastName + " idNum: " + str(self.idNum) + " schoolEmail: " + self.schoolEmail
         fullString += " Pronouns: " + self.pronouns + " preferSame: " + str(self.preferSame) + "\n"
