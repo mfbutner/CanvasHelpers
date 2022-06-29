@@ -91,6 +91,21 @@ def parse_submissions(students_submitted, quiz, config):
             # print(students_submitted[user_id].name)
             # print(answer_text)
     # multiple choices only
+    # try by Shang, question_index["prefer_same_gender"]
+    #  0 - Not same pronouns 1 - No preference 2 - Prefer the same pronouns
+    #         self.preferSame = 1
+    for answer in question_index["prefer_same_gender"]["answers"]:
+        answer_text = answer["text"]
+        for user_id in answer["user_ids"]:
+            if answer_text == "I would prefer another person who as the same pronouns as I do.":
+                students_submitted[user_id].preferSame = 2
+            elif answer_text == "I would prefer another person who does not have the same pronouns as I do.":
+                students_submitted[user_id].preferSame = 0
+            else:
+                students_submitted[user_id].preferSame = 1
+    # use if statement for now
+
+
 
 
     # TODO: CONFIRMED WORKING UP UNTIL THIS POINT (Note: No edge cases have been tested)
