@@ -125,9 +125,11 @@ def parse_submissions(students_submitted, course, quiz, config):
             # print(students_submitted[user_id].name)
             # print(answer_text)
     # multiple choices only
-    # try by Shang, question_index["prefer_same_gender"]
+    # try by Shang
+    # question_index["prefer_same_gender"]
     #  0 - Not same pronouns 1 - No preference 2 - Prefer the same pronouns
-    #         self.preferSame = 1
+    # self.preferSame = 1
+    # use if statement for now
     for answer in question_index["prefer_same_gender"]["answers"]:
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
@@ -137,9 +139,62 @@ def parse_submissions(students_submitted, course, quiz, config):
                 students_submitted[user_id].preferSame = 0
             else:
                 students_submitted[user_id].preferSame = 1
-    # use if statement for now
 
+    # prefer_synchronous
+    # 0 - No preference 1 - Synchronous 2 - Asynchronous
+    # self.preferAsy = 0
+    for answer in question_index["prefer_synchronous"]["answers"]:
+        answer_text = answer["text"]
+        for user_id in answer["user_ids"]:
+            if answer_text == "Synchronously":
+                students_submitted[user_id].preferAsy = 1
+            elif answer_text == "Asynchronously":
+                students_submitted[user_id].preferAsy = 2
+            else:
+                students_submitted[user_id].preferAsy = 0
+    # prefer_Leader
+    for answer in question_index["prefer_to_lead"]["answers"]:
+        answer_text = answer["text"]
+        for user_id in answer["user_ids"]:
+            students_submitted[user_id].preferLeader = answer_text
 
+    # prefer_other_international
+    # 0 - not international 1 - no preference 2 - is international and would like to match
+    # international = 0
+    for answer in question_index["prefer_other_international"]["answers"]:
+        answer_text = answer["text"]
+        for user_id in answer["user_ids"]:
+            if answer_text == "I am not an international student.":
+                students_submitted[user_id].international = 0
+            elif answer_text == "I would like to be placed with another international student.":
+                students_submitted[user_id].international = 2
+            else:
+                students_submitted[user_id].international = 1
+
+    # # activity_select
+    # not sure how to match with
+    #     # What the student prefers to do.
+    #     self.option1 = "default"
+    #     self.option2 = "default"
+    #     self.freeResponse = "default"
+    # for answer in question_index["activity_select"]["answers"]:
+    #     answer_text = answer["text"]
+    #     for user_id in answer["user_ids"]:
+    #         students_submitted[user_id].pronouns = answer_text
+
+    # confidence
+    # How confident the student feels (0 - 2) default is 1
+    # confidence = 1
+    # not sure which is confidence = 2
+    for answer in question_index["confidence"]["answers"]:
+        answer_text = answer["text"]
+        for user_id in answer["user_ids"]:
+            if answer_text == "I'm confident.":
+                students_submitted[user_id].confidence = 2
+            elif answer_text == "I could really use some help.":
+                students_submitted[user_id].confidence = 0
+            else:
+                students_submitted[user_id].confidence = 1
 
 
     # TODO: CONFIRMED WORKING UP UNTIL THIS POINT (Note: No edge cases have been tested)
