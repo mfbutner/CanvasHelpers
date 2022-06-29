@@ -3,7 +3,7 @@ import canvasapi
 import pandas as pd
 from canvasapi import Canvas
 from studentClass import Student
-
+import json
 
 def parse_students(canvas_students):
     all_students = {}
@@ -86,9 +86,12 @@ def parse_submissions(students_submitted, quiz, config):
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             students_submitted[user_id].pronouns = answer_text
+
             # print("Updated: ")
             # print(students_submitted[user_id].name)
             # print(answer_text)
+    # multiple choices only
+
 
     # TODO: CONFIRMED WORKING UP UNTIL THIS POINT (Note: No edge cases have been tested)
     #       (Comments have been placed where they might be issues)

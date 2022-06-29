@@ -1,0 +1,1378 @@
+{
+  "pronouns_select": {
+    "id": "1095683",
+    "question_type": "multiple_choice_question",
+    "question_text": "\n<p>What are your preferred pronouns?</p>\n<p>This information will <strong>NOT</strong> be shared with other students.\u00a0\u00a0</p>\n",
+    "position": 1,
+    "responses": 2,
+    "answers": [
+      {
+        "id": "5465",
+        "text": "She/Hers",
+        "correct": true,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "7954",
+        "text": "He/him/his",
+        "correct": false,
+        "responses": 2,
+        "user_ids": [
+          226787,
+          228027
+        ],
+        "user_names": [
+          "Rebekah Grace",
+          "Howard Wang"
+        ]
+      },
+      {
+        "id": "6771",
+        "text": "They/them",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "3851",
+        "text": "Prefer not to say",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "5858",
+        "text": "Not Included",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      }
+    ],
+    "answered_student_count": 2,
+    "top_student_count": 2,
+    "middle_student_count": 0,
+    "bottom_student_count": 0,
+    "correct_student_count": 0,
+    "incorrect_student_count": 2,
+    "correct_student_ratio": 0.0,
+    "incorrect_student_ratio": 1.0,
+    "correct_top_student_count": 0,
+    "correct_middle_student_count": 0,
+    "correct_bottom_student_count": 0,
+    "variance": 0.0,
+    "stdev": 0.0,
+    "difficulty_index": 0.0,
+    "alpha": null,
+    "point_biserials": [
+      {
+        "answer_id": 5465,
+        "point_biserial": null,
+        "correct": true,
+        "distractor": false
+      },
+      {
+        "answer_id": 7954,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      },
+      {
+        "answer_id": 6771,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      },
+      {
+        "answer_id": 3851,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      },
+      {
+        "answer_id": 5858,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      }
+    ]
+  },
+  "pronouns_other": {
+    "id": "1095684",
+    "question_type": "essay_question",
+    "question_text": "\n<p>If you answered \"Not Included\" on your pronouns, feel free to specify:</p>\n<p>This information will <strong>NOT</strong> be shared with other students.</p>\n",
+    "position": 2,
+    "responses": 1,
+    "graded": 0,
+    "full_credit": 0,
+    "point_distribution": [
+      {
+        "score": 0.0,
+        "count": 2
+      }
+    ],
+    "answers": [
+      {
+        "user_ids": [
+          226787,
+          228027
+        ],
+        "user_names": [
+          "Rebekah Grace",
+          "Howard Wang"
+        ],
+        "responses": 2,
+        "id": "ungraded",
+        "score": 0.0,
+        "full_credit": false
+      }
+    ]
+  },
+  "prefer_same_gender": {
+    "id": "1095685",
+    "question_type": "multiple_choice_question",
+    "question_text": "What are your group makeup preferences on gender?\u00a0 We will attempt to make the best groups possible.<br>This information will <strong>NOT</strong> be shared with other students.",
+    "position": 3,
+    "responses": 1,
+    "answers": [
+      {
+        "id": "9000",
+        "text": "I would prefer another person who as the same pronouns as I do.",
+        "correct": true,
+        "responses": 1,
+        "user_ids": [
+          228027
+        ],
+        "user_names": [
+          "Howard Wang"
+        ]
+      },
+      {
+        "id": "4180",
+        "text": "I would prefer another person who does not have the same pronouns as I do.",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "8457",
+        "text": "No Preference",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "none",
+        "text": "No Answer",
+        "correct": false,
+        "responses": 1,
+        "user_ids": [
+          226787
+        ],
+        "user_names": [
+          "Rebekah Grace"
+        ]
+      }
+    ],
+    "answered_student_count": 1,
+    "top_student_count": 1,
+    "middle_student_count": 0,
+    "bottom_student_count": 0,
+    "correct_student_count": 1,
+    "incorrect_student_count": 0,
+    "correct_student_ratio": 1.0,
+    "incorrect_student_ratio": 0.0,
+    "correct_top_student_count": 1,
+    "correct_middle_student_count": 0,
+    "correct_bottom_student_count": 0,
+    "variance": 0,
+    "stdev": 0.0,
+    "difficulty_index": 1.0,
+    "alpha": null,
+    "point_biserials": [
+      {
+        "answer_id": 9000,
+        "point_biserial": null,
+        "correct": true,
+        "distractor": false
+      },
+      {
+        "answer_id": 4180,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      }
+    ]
+  },
+  "prefer_synchronous": {
+    "id": "1095686",
+    "question_type": "multiple_choice_question",
+    "question_text": "Do you prefer to meet synchronously or asynchronously?",
+    "position": 4,
+    "responses": 1,
+    "answers": [
+      {
+        "id": "3539",
+        "text": "Synchronously",
+        "correct": true,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "7531",
+        "text": "No Preference",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "6372",
+        "text": "Asynchronously",
+        "correct": false,
+        "responses": 1,
+        "user_ids": [
+          228027
+        ],
+        "user_names": [
+          "Howard Wang"
+        ]
+      },
+      {
+        "id": "none",
+        "text": "No Answer",
+        "correct": false,
+        "responses": 1,
+        "user_ids": [
+          226787
+        ],
+        "user_names": [
+          "Rebekah Grace"
+        ]
+      }
+    ],
+    "answered_student_count": 1,
+    "top_student_count": 1,
+    "middle_student_count": 0,
+    "bottom_student_count": 0,
+    "correct_student_count": 0,
+    "incorrect_student_count": 1,
+    "correct_student_ratio": 0.0,
+    "incorrect_student_ratio": 1.0,
+    "correct_top_student_count": 0,
+    "correct_middle_student_count": 0,
+    "correct_bottom_student_count": 0,
+    "variance": 0,
+    "stdev": 0.0,
+    "difficulty_index": 0.0,
+    "alpha": null,
+    "point_biserials": [
+      {
+        "answer_id": 3539,
+        "point_biserial": null,
+        "correct": true,
+        "distractor": false
+      },
+      {
+        "answer_id": 7531,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      },
+      {
+        "answer_id": 6372,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      }
+    ]
+  },
+  "time_free": {
+    "id": "1097730",
+    "question_type": "multiple_dropdowns_question",
+    "question_text": "\n<p>For each section of time- if you can be available for at least 20 minutes in the time frame, select yes. If not select no.</p>\n<p>\u00a0</p>\n<p><strong>ALL TIMES ARE IN PST</strong>. If you are not in Davis, you may need to convert.</p>\n<p>Also you may need to scroll quite a bit that way --&gt; because there are 7 days</p>\n<p>\u00a0</p>\n<table style=\"border-collapse: collapse; width: 100%; height: 203px;\" border=\"1\">\n<tbody>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\"></td>\n<td style=\"width: 12.5%; height: 29px;\">Sunday</td>\n<td style=\"width: 12.5%; height: 29px;\">Monday</td>\n<td style=\"width: 12.5%; height: 29px;\">Tuesday</td>\n<td style=\"width: 12.5%; height: 29px;\">Wednesday</td>\n<td style=\"width: 12.5%; height: 29px;\">Thursday</td>\n<td style=\"width: 12.5%; height: 29px;\">Friday</td>\n<td style=\"width: 12.5%; height: 29px;\">Saturday</td>\n</tr>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\">midnight - 4 am</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sunday1]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Monday1]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Tuesday1]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Wednesday1]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Thursday1]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Friday1]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Saturday1]</td>\n</tr>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\">4 am - 8 am</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sunday2]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Monday2]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Tuesday2]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Wednesday2]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Thursday2]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Friday2]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Saturday2]</td>\n</tr>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\">8 am - noon</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sunday3]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Monday3]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Tuesday3]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Wednesday3]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Thursday3]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Friday3]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Saturday3]</td>\n</tr>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\">noon - 4 pm</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sunday4]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Monday4]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Tuesday4]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Wednesday4]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Thursday4]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Friday4]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Saturday4]</td>\n</tr>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\">4 pm - 8 pm</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sunday5]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Monday5]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Tuesday5]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Wednesday5]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Thursday5]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Friday5]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Saturday5]</td>\n</tr>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\">8 pm - midnight</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sunday6]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Monday6]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Tuesday6]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Wednesday6]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Thursday6]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Friday6]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Saturday6]</td>\n</tr>\n</tbody>\n</table>\n<p>\u00a0</p>\n",
+    "position": 5,
+    "responses": 0,
+    "answered": 0,
+    "correct": 0,
+    "partially_correct": 0,
+    "incorrect": 1,
+    "answer_sets": [
+      {
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "text": "",
+        "answers": [
+          {
+            "id": "5250",
+            "text": "SU1",
+            "correct": true,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "3015",
+            "text": "False",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "none",
+            "text": "No Answer",
+            "correct": false,
+            "responses": 1,
+            "user_ids": [
+              228027
+            ],
+            "user_names": [
+              "Howard Wang"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "prefer_communication_method": {
+    "id": "1095687",
+    "question_type": "multiple_answers_question",
+    "question_text": "\n<p>Are you willing to meet in the following ways:</p>\n<p><strong>Please note</strong>, that if your group does not all agree on a meeting place you will default to Canvas Groups.</p>\n<p>\u00a0</p>\n",
+    "position": 6,
+    "responses": 1,
+    "correct": 0,
+    "partially_correct": 0,
+    "answers": [
+      {
+        "id": "7225",
+        "text": "Discord",
+        "correct": true,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "8387",
+        "text": "Text/Phone Number",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "2947",
+        "text": "Email",
+        "correct": false,
+        "responses": 1,
+        "user_ids": [
+          228027
+        ],
+        "user_names": [
+          "Howard Wang"
+        ]
+      },
+      {
+        "id": "8596",
+        "text": "Canvas Groups",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "none",
+        "text": "No Answer",
+        "correct": false,
+        "responses": 1,
+        "user_ids": [
+          226787
+        ],
+        "user_names": [
+          "Rebekah Grace"
+        ]
+      }
+    ]
+  },
+  "prefer_communication_info": {
+    "id": "1095688",
+    "question_type": "fill_in_multiple_blanks_question",
+    "question_text": "\n<p>Please double check your contact information for errors.</p>\n<p>Your contact information will be shared with your group only if the entire group is willing to meet that way.</p>\n<p>I.e. only if each person in the group is willing to meet on Discord will they receive your Discord handle.\u00a0 They will, regardless, be given the school email connected to your canvas account.</p>\n<p>\u00a0</p>\n<p>Discord Handle: [Discord]</p>\n<p>Phone Number: [Phone]</p>\n<p>Email: [Email]</p>\n<p>\u00a0</p>\n",
+    "position": 7,
+    "responses": 1,
+    "answered": 0,
+    "correct": 0,
+    "partially_correct": 0,
+    "incorrect": 2,
+    "answer_sets": [
+      {
+        "id": "8f5cc6430613f1c12f36965050bb7197",
+        "text": "Discord",
+        "answers": [
+          {
+            "id": "3907",
+            "text": "Ans",
+            "correct": true,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "none",
+            "text": "No Answer",
+            "correct": false,
+            "responses": 1,
+            "user_ids": [
+              226787
+            ],
+            "user_names": [
+              "Rebekah Grace"
+            ]
+          },
+          {
+            "id": "other",
+            "text": "Other",
+            "correct": false,
+            "responses": 1,
+            "user_ids": [
+              228027
+            ],
+            "user_names": [
+              "Howard Wang"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "bcc254b55c4a1babdf1dcb82c207506b",
+        "text": "Phone",
+        "answers": [
+          {
+            "id": "1567",
+            "text": "Ans",
+            "correct": true,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "none",
+            "text": "No Answer",
+            "correct": false,
+            "responses": 2,
+            "user_ids": [
+              226787,
+              228027
+            ],
+            "user_names": [
+              "Rebekah Grace",
+              "Howard Wang"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ce8ae9da5b7cd6c3df2929543a9af92d",
+        "text": "Email",
+        "answers": [
+          {
+            "id": "827",
+            "text": "Ans",
+            "correct": true,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "none",
+            "text": "No Answer",
+            "correct": false,
+            "responses": 2,
+            "user_ids": [
+              226787,
+              228027
+            ],
+            "user_names": [
+              "Rebekah Grace",
+              "Howard Wang"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "prefer_to_lead": {
+    "id": "1095689",
+    "question_type": "multiple_choice_question",
+    "question_text": "\n<p>How do you like to interact with your groups?</p>\n<p>\u00a0</p>\n<p>Do you like to lead by introducing yourself first or arranging a time to meet?</p>\n<p>Do you like to follow by waiting for someone else to introduce themselves first?</p>\n<p>\u00a0</p>\n<p>This information will <strong>NOT</strong> be shared with other students.</p>\n",
+    "position": 8,
+    "responses": 1,
+    "answers": [
+      {
+        "id": "1432",
+        "text": "I like to lead.",
+        "correct": true,
+        "responses": 1,
+        "user_ids": [
+          228027
+        ],
+        "user_names": [
+          "Howard Wang"
+        ]
+      },
+      {
+        "id": "8216",
+        "text": "I like to follow.",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "none",
+        "text": "No Answer",
+        "correct": false,
+        "responses": 1,
+        "user_ids": [
+          226787
+        ],
+        "user_names": [
+          "Rebekah Grace"
+        ]
+      }
+    ],
+    "answered_student_count": 1,
+    "top_student_count": 1,
+    "middle_student_count": 0,
+    "bottom_student_count": 0,
+    "correct_student_count": 1,
+    "incorrect_student_count": 0,
+    "correct_student_ratio": 1.0,
+    "incorrect_student_ratio": 0.0,
+    "correct_top_student_count": 1,
+    "correct_middle_student_count": 0,
+    "correct_bottom_student_count": 0,
+    "variance": 0,
+    "stdev": 0.0,
+    "difficulty_index": 1.0,
+    "alpha": null,
+    "point_biserials": [
+      {
+        "answer_id": 1432,
+        "point_biserial": null,
+        "correct": true,
+        "distractor": false
+      },
+      {
+        "answer_id": 8216,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      }
+    ]
+  },
+  "prefer_other_international": {
+    "id": "1095690",
+    "question_type": "multiple_choice_question",
+    "question_text": "If you are an international student, would you like to be placed in a group with other internationals students?",
+    "position": 9,
+    "responses": 1,
+    "answers": [
+      {
+        "id": "4004",
+        "text": "I would like to be placed with another international student.",
+        "correct": true,
+        "responses": 1,
+        "user_ids": [
+          228027
+        ],
+        "user_names": [
+          "Howard Wang"
+        ]
+      },
+      {
+        "id": "7320",
+        "text": "No preference",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "5769",
+        "text": "I am not an international student.",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "none",
+        "text": "No Answer",
+        "correct": false,
+        "responses": 1,
+        "user_ids": [
+          226787
+        ],
+        "user_names": [
+          "Rebekah Grace"
+        ]
+      }
+    ],
+    "answered_student_count": 1,
+    "top_student_count": 1,
+    "middle_student_count": 0,
+    "bottom_student_count": 0,
+    "correct_student_count": 1,
+    "incorrect_student_count": 0,
+    "correct_student_ratio": 1.0,
+    "incorrect_student_ratio": 0.0,
+    "correct_top_student_count": 1,
+    "correct_middle_student_count": 0,
+    "correct_bottom_student_count": 0,
+    "variance": 0,
+    "stdev": 0.0,
+    "difficulty_index": 1.0,
+    "alpha": null,
+    "point_biserials": [
+      {
+        "answer_id": 4004,
+        "point_biserial": null,
+        "correct": true,
+        "distractor": false
+      },
+      {
+        "answer_id": 7320,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      },
+      {
+        "answer_id": 5769,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      }
+    ]
+  },
+  "language_select": {
+    "id": "1095692",
+    "question_type": "multiple_dropdowns_question",
+    "question_text": "\n<p>What language would you prefer to meet in? [Language]</p>\n<p>Note, we will match the best we can but multiple people with the same language other than English may not be possible in all groups.</p>\n<p>\u00a0</p>\n",
+    "position": 10,
+    "responses": 1,
+    "answered": 1,
+    "correct": 0,
+    "partially_correct": 0,
+    "incorrect": 2,
+    "answer_sets": [
+      {
+        "id": "4994a8ffeba4ac3140beb89e8d41f174",
+        "text": "Language",
+        "answers": [
+          {
+            "id": "229",
+            "text": "English",
+            "correct": true,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "4055",
+            "text": "Mandarin",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "7627",
+            "text": "Cantonese",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "9821",
+            "text": "Spanish",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "2270",
+            "text": "Arabic",
+            "correct": false,
+            "responses": 1,
+            "user_ids": [
+              228027
+            ],
+            "user_names": [
+              "Howard Wang"
+            ]
+          },
+          {
+            "id": "982",
+            "text": "Hindi",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "9240",
+            "text": "Bengali",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "8678",
+            "text": "Portuguese",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "9772",
+            "text": "Russian",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "7200",
+            "text": "Japanese",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "9320",
+            "text": "Lahnda",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "6110",
+            "text": "Javanese",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "8521",
+            "text": "Turkish",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "918",
+            "text": "Korean",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "4493",
+            "text": "French",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "4382",
+            "text": "German",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "8360",
+            "text": "Vietnamese",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "2446",
+            "text": "Not included",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "none",
+            "text": "No Answer",
+            "correct": false,
+            "responses": 1,
+            "user_ids": [
+              226787
+            ],
+            "user_names": [
+              "Rebekah Grace"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "language_other": {
+    "id": "1095693",
+    "question_type": "essay_question",
+    "question_text": "Not all languages could fit in the drop down, so if your language was not available, feel free to specify below.",
+    "position": 11,
+    "responses": 0,
+    "graded": 0,
+    "full_credit": 0,
+    "point_distribution": [
+      {
+        "score": 0.0,
+        "count": 2
+      }
+    ],
+    "answers": [
+      {
+        "user_ids": [
+          226787,
+          228027
+        ],
+        "user_names": [
+          "Rebekah Grace",
+          "Howard Wang"
+        ],
+        "responses": 2,
+        "id": "ungraded",
+        "score": 0.0,
+        "full_credit": false
+      }
+    ]
+  },
+  "activity_select": {
+    "id": "1095694",
+    "question_type": "multiple_choice_question",
+    "question_text": "\n<p>What would you like to do with your group?\u00a0</p>\n<p>This information may be shared with other students.</p>\n",
+    "position": 12,
+    "responses": 1,
+    "answers": [
+      {
+        "id": "7861",
+        "text": "Play a game",
+        "correct": true,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "8371",
+        "text": "Talk about the class",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "1155",
+        "text": "Talk about something that is not the class",
+        "correct": false,
+        "responses": 1,
+        "user_ids": [
+          228027
+        ],
+        "user_names": [
+          "Howard Wang"
+        ]
+      },
+      {
+        "id": "6667",
+        "text": "Watch a show/movie",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "none",
+        "text": "No Answer",
+        "correct": false,
+        "responses": 1,
+        "user_ids": [
+          226787
+        ],
+        "user_names": [
+          "Rebekah Grace"
+        ]
+      }
+    ],
+    "answered_student_count": 1,
+    "top_student_count": 1,
+    "middle_student_count": 0,
+    "bottom_student_count": 0,
+    "correct_student_count": 0,
+    "incorrect_student_count": 1,
+    "correct_student_ratio": 0.0,
+    "incorrect_student_ratio": 1.0,
+    "correct_top_student_count": 0,
+    "correct_middle_student_count": 0,
+    "correct_bottom_student_count": 0,
+    "variance": 0,
+    "stdev": 0.0,
+    "difficulty_index": 0.0,
+    "alpha": null,
+    "point_biserials": [
+      {
+        "answer_id": 7861,
+        "point_biserial": null,
+        "correct": true,
+        "distractor": false
+      },
+      {
+        "answer_id": 8371,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      },
+      {
+        "answer_id": 1155,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      },
+      {
+        "answer_id": 6667,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      }
+    ]
+  },
+  "activity_specify": {
+    "id": "1095695",
+    "question_type": "essay_question",
+    "question_text": "\n<p>What are some specific ideas that you would like to do in your group?</p>\n<p>Ex: play among us, watch Avatar, compare music tastes.</p>\n<p>These responses will be anonymously shared with your group mates.\u00a0 \u00a0(You will see all 5 responses, but not who wrote them down).</p>\n",
+    "position": 13,
+    "responses": 1,
+    "graded": 0,
+    "full_credit": 0,
+    "point_distribution": [
+      {
+        "score": 0.0,
+        "count": 2
+      }
+    ],
+    "answers": [
+      {
+        "user_ids": [
+          226787,
+          228027
+        ],
+        "user_names": [
+          "Rebekah Grace",
+          "Howard Wang"
+        ],
+        "responses": 2,
+        "id": "ungraded",
+        "score": 0.0,
+        "full_credit": false
+      }
+    ]
+  },
+  "priorities": {
+    "id": "1097731",
+    "question_type": "multiple_dropdowns_question",
+    "question_text": "\n<p>Out of all the choices made above, in which order do they matter the most to you?</p>\n<p>Note: We will do our best to match people how they wish to be matched, but it will not be possible to make perfect groups all the time.</p>\n<p>(Please use every option once and only once)</p>\n<p>Top Choice: [top]</p>\n<p>Second Choice: [second]</p>\n<p>Third Choice: [third]</p>\n<p>Fourth Choice: [fourth]</p>\n<p>Fifth Choice: [fifth]</p>\n",
+    "position": 14,
+    "responses": 1,
+    "answered": 0,
+    "correct": 0,
+    "partially_correct": 0,
+    "incorrect": 1,
+    "answer_sets": [
+      {
+        "id": "b28354b543375bfa94dabaeda722927f",
+        "text": "top",
+        "answers": [
+          {
+            "id": "7711",
+            "text": "Matching Time to Meet",
+            "correct": true,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "2243",
+            "text": "Gender",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "6333",
+            "text": "International",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "7985",
+            "text": "Language",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "8514",
+            "text": "What They Want to Do",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "none",
+            "text": "No Answer",
+            "correct": false,
+            "responses": 1,
+            "user_ids": [
+              228027
+            ],
+            "user_names": [
+              "Howard Wang"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a9f0e61a137d86aa9db53465e0801612",
+        "text": "second",
+        "answers": [
+          {
+            "id": "1396",
+            "text": "Matching Time to Meet",
+            "correct": true,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "9971",
+            "text": "Gender",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "7448",
+            "text": "International",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "4691",
+            "text": "Language",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "504",
+            "text": "What They Want to Do",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "none",
+            "text": "No Answer",
+            "correct": false,
+            "responses": 1,
+            "user_ids": [
+              228027
+            ],
+            "user_names": [
+              "Howard Wang"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "dd5c8bf51558ffcbe5007071908e9524",
+        "text": "third",
+        "answers": [
+          {
+            "id": "3293",
+            "text": "Matching Time to Meet",
+            "correct": true,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "5722",
+            "text": "Gender",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "8405",
+            "text": "International",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "8243",
+            "text": "Language",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "709",
+            "text": "What They Want to Do",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "none",
+            "text": "No Answer",
+            "correct": false,
+            "responses": 1,
+            "user_ids": [
+              228027
+            ],
+            "user_names": [
+              "Howard Wang"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "c0759f2416498708841e7975566360ce",
+        "text": "fourth",
+        "answers": [
+          {
+            "id": "1845",
+            "text": "Matching Time to Meet",
+            "correct": true,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "4823",
+            "text": "Gender",
+            "correct": false,
+            "responses": 1,
+            "user_ids": [
+              228027
+            ],
+            "user_names": [
+              "Howard Wang"
+            ]
+          },
+          {
+            "id": "6064",
+            "text": "International",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "8911",
+            "text": "Language",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "5056",
+            "text": "What They Want to Do",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          }
+        ]
+      },
+      {
+        "id": "0883a6520e6eb6c9304dcfb71034d053",
+        "text": "fifth",
+        "answers": [
+          {
+            "id": "8533",
+            "text": "Matching Time to Meet",
+            "correct": true,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "9474",
+            "text": "Gender",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "9470",
+            "text": "International",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "6856",
+            "text": "Language",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "1291",
+            "text": "What They Want to Do",
+            "correct": false,
+            "responses": 0,
+            "user_ids": [],
+            "user_names": []
+          },
+          {
+            "id": "none",
+            "text": "No Answer",
+            "correct": false,
+            "responses": 1,
+            "user_ids": [
+              228027
+            ],
+            "user_names": [
+              "Howard Wang"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "confidence": {
+    "id": "1122189",
+    "question_type": "multiple_choice_question",
+    "question_text": "\n<p>How do you feel you are doing in this class?</p>\n<p>\u00a0</p>\n<p>This information will <strong>not</strong> be shared.</p>\n",
+    "position": 15,
+    "responses": 0,
+    "answers": [
+      {
+        "id": "3809",
+        "text": "I'm confident.",
+        "correct": true,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "5974",
+        "text": "I have some questions.",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "4468",
+        "text": "I could really use some help.",
+        "correct": false,
+        "responses": 0,
+        "user_ids": [],
+        "user_names": []
+      },
+      {
+        "id": "none",
+        "text": "No Answer",
+        "correct": false,
+        "responses": 1,
+        "user_ids": [
+          228027
+        ],
+        "user_names": [
+          "Howard Wang"
+        ]
+      }
+    ],
+    "answered_student_count": 0,
+    "top_student_count": 0,
+    "middle_student_count": 0,
+    "bottom_student_count": 0,
+    "correct_student_count": 0,
+    "incorrect_student_count": 0,
+    "correct_student_ratio": 0,
+    "incorrect_student_ratio": 0,
+    "correct_top_student_count": 0,
+    "correct_middle_student_count": 0,
+    "correct_bottom_student_count": 0,
+    "variance": 0,
+    "stdev": 0.0,
+    "difficulty_index": 0,
+    "alpha": null,
+    "point_biserials": [
+      {
+        "answer_id": 3809,
+        "point_biserial": null,
+        "correct": true,
+        "distractor": false
+      },
+      {
+        "answer_id": 5974,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      },
+      {
+        "answer_id": 4468,
+        "point_biserial": null,
+        "correct": false,
+        "distractor": true
+      }
+    ]
+  }
+}
