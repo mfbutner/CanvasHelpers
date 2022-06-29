@@ -23,7 +23,38 @@ def parse_students(canvas_students):
     return all_students
 
 
-def index_questions(all_questions, config):
+def reindex_essay_questions(course, quiz, question_index):
+    quiz_assignment = course.get_assignment(quiz.assignment_id)
+    quiz_submissions = quiz_assignment.get_submissions(include="submission_history")
+    quiz_filtered_submissions = [submission for submission in quiz_submissions if submission.submitted_at != None]
+
+    
+
+    for question_key, question in question_index.items():
+        if question["question_type"] != "essay_question":
+            continue
+
+        question_id = question["id"]
+        reindexed_dict = {}
+        question_index[question_key] = reindexed_dict
+
+        # TODO: Account for people submitting twice (Keep latest using submission.attempt)
+        for submission in quiz_filtered_submissions:
+            # TODO: Check to make sure submission_history is always a single item
+            submitter_id = submission.user_id
+            submission_details = submission.submission_history[0]["submission_data"]
+            for answer in submission_details:
+                if str(answer["question_id"]) == question_id:
+                    reindexed_dict[submitter_id] = answer
+                    break
+
+    print("===== Reindexed Essay Questions ======")
+
+
+def index_questions(course, quiz, config):
+    statistics = list(quiz.get_statistics())[0]
+    all_questions = statistics.question_statistics
+
     # Returns this object with None replaced with the corresponding item from all_questions
     question_index = {
         "pronouns_select": None,
@@ -58,6 +89,11 @@ def index_questions(all_questions, config):
 
     print("===== Question Indexing Complete =====")
     print("===== See Missed Questions Above =====")
+
+    # Change the format of free response (essay_question) questions by replacing their key: values with responses instead of useless data
+    # Modifies question_index directly
+    reindex_essay_questions(course, quiz, question_index)
+
     return question_index
 
 
@@ -75,10 +111,8 @@ def filter_students_submitted(all_students, quiz_submissions):
     return students_submitted
 
 
-def parse_submissions(students_submitted, quiz, config):
-    statistics = list(quiz.get_statistics())[0]
-    all_questions = statistics.question_statistics
-    question_index = index_questions(all_questions, config)
+def parse_submissions(students_submitted, course, quiz, config):
+    question_index = index_questions(course, quiz, config)
 
     # TODO: Parse each question in question_index one-by-one
     # Example: question_index["pronouns_select"]

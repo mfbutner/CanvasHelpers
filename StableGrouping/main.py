@@ -7,7 +7,7 @@ from parseStudent import parse_students, parse, parseEmails, parsePartnerQuiz, p
 from dotenv import dotenv_values
 import json
 
-# Load .env file with environment variables from project root
+# Load .env file with environment variables from project root (Same folder as config.json, .gitignore, and more)
 env = dotenv_values("../.env")
 API_URL = env["API_URL"]
 API_KEY = env["API_KEY"]
@@ -36,7 +36,7 @@ students_submitted = filter_students_submitted(all_students, quiz.get_submission
 students_not_submitted = {idNum: student for (idNum, student) in all_students.items() if idNum not in students_submitted}
 
 # Modifies Student instances in students_submitted by updating their properties with their quiz responses
-parse_submissions(students_submitted, quiz, config)
+parse_submissions(students_submitted, course, quiz, config)
 
 
 # Find the people who were matchedBefore, place it into a dict
