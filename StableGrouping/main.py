@@ -38,6 +38,8 @@ students_not_submitted = {idNum: student for (idNum, student) in all_students.it
 # Modifies Student instances in students_submitted by updating their properties with their quiz responses
 parse_submissions(students_submitted, course, quiz, config)
 
+print("Work In Progress (Quitting early)")
+quit(1)
 
 # Find the people who were matchedBefore, place it into a dict
 matchedBefore = invalidGroupDict(canvas, config["course"]["id"])
