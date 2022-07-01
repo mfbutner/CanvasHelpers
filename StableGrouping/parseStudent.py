@@ -28,10 +28,9 @@ def reindex_essay_questions(course, quiz, question_index):
     quiz_submissions = quiz_assignment.get_submissions(include="submission_history")
     quiz_filtered_submissions = [submission for submission in quiz_submissions if submission.submitted_at != None]
 
-    
-
     for question_key, question in question_index.items():
-        if question["question_type"] != "essay_question":
+        question_type = question["question_type"]
+        if question_type != "essay_question" and question_type != "fill_in_multiple_blanks_question":
             continue
 
         question_id = question["id"]
