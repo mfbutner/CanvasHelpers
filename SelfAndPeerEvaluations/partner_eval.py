@@ -182,7 +182,7 @@ class PartnerEvalQuiz:
     def __create_solo_justify_question(self) -> dict:
         return {
             "question_name": "Solo Submission Justification",
-            "question_text": "<h3>Solo Submission Justification</h3><p>Please explain why you didn't submit with a partner. If you spoke with me already about your reason, please put that here and whether or not I approved your reason.</p>",
+            "question_text": "<h3>Solo Submission Justification</h3><p>If you did not submit with a partner, please explain why. If you spoke with me already about your reason, please put that here and whether or not I approved your reason.</p>",
             "question_type": "essay_question",
             "points_possible": 1,
         }
