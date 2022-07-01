@@ -1,6 +1,6 @@
 import canvasapi
 import datetime
-from typing import List, Optional
+from typing import Optional
 
 
 class PartnerEvalQuiz:
@@ -42,7 +42,7 @@ class PartnerEvalQuiz:
             "lock_at": self.lock_date,
         }
 
-    def __create_quiz_questions(self) -> List[dict]:
+    def __create_quiz_questions(self) -> list[dict]:
         quiz_questions = []
         quiz_questions.append(self.__create_integrity_question())
         quiz_questions.extend(self.__create_eval_questions("self"))
@@ -61,7 +61,7 @@ class PartnerEvalQuiz:
             "points_possible": 1,
         }
 
-    def __create_eval_questions(self, subject: str) -> List[dict]:
+    def __create_eval_questions(self, subject: str) -> list[dict]:
         eval_questions = []
         eval_questions.append(self.__create_eval_questions_header(subject))
         eval_questions.append(self.__create_organization_question(subject))
@@ -187,7 +187,7 @@ class PartnerEvalQuiz:
             "points_possible": 1,
         }
 
-    def __create_quantitative_contribution_question(self) -> List[dict]:
+    def __create_quantitative_contribution_question(self) -> list[dict]:
         choices = [
             "0% vs 100% ==> Your partner did (almost) everything while you didn't do (almost) anything",
             "25% vs 75% ==> Your partner contributed substantially more than you",
