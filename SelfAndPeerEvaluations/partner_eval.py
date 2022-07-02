@@ -1,6 +1,8 @@
 import canvasapi
 import datetime
 from typing import Optional
+import random  # only here for generating rand sandbox SID
+from collections import OrderedDict
 
 
 class PartnerEvalQuiz:
@@ -161,12 +163,40 @@ class PartnerEvalQuiz:
         }
 
     def __create_identify_partner_question(self) -> dict:
-        # TODO: handle duplicate student issue
-        students = []
-        for student in self.course.get_users(
+        # FIXME: messy and hacky way to handle dupes
+        raw_students = {}
+        raw_students = OrderedDict()
+        dup_list = set()
+        for raw_student in course.get_users(
             sort="username", enrollment_type=["student"]
         ):
-            students.append(student.sortable_name)
+            if (
+                raw_student.sis_user_id is None
+            ):  # FIXME: delete for real class; not all sandbox student have SID
+                raw_student.sis_user_id = random.randint(0, 100)
+
+            if raw_student.sortable_name in dup_list:
+                SID = str(raw_student.sis_user_id)
+                raw_students[
+                    raw_student.sortable_name + " (XXXXX" + SID[-4:] + ")"
+                ] = raw_student.sis_user_id
+            elif raw_student.sortable_name in raw_students.keys():
+                dup_list.add(raw_student.sortable_name)
+
+                orignal_SID = str(raw_students[raw_student.sortable_name])
+                raw_students[
+                    raw_student.sortable_name + " (XXXXX" + orignal_SID[-4:] + ")"
+                ] = orignal_SID
+                raw_students.pop(raw_student.sortable_name)
+
+                dup_SID = str(raw_student.sis_user_id)
+                raw_students[
+                    raw_student.sortable_name + " (XXXXX" + dup_SID[-4:] + ")"
+                ] = raw_student.sis_user_id
+            else:
+                raw_students[raw_student.sortable_name] = raw_student.sis_user_id
+
+        students = raw_students.keys()
         answers = [{"answer_text": student, "answer_weight": 1} for student in students]
         answers.append(
             {"answer_text": "I did not submit with a partner.", "answer_weight": 1}
