@@ -3,14 +3,14 @@
 		"id": 1599,
 		"name": "Sandbox"
 	},
-	"quiz_id": 109923,
+	"quiz_id": 178978,
 	"group_number": 1,
 	"patterns": {
 		"pronouns_select": "What are your preferred pronouns",
 		"pronouns_other": "If you answered \"Not Included\" on your pronouns, feel free to specify",
 		"prefer_same_gender": "What are your group makeup preferences on gender",
 		"prefer_synchronous": "Do you prefer to meet synchronously or asynchronously",
-		"time_free": "if you can be available for at least 20 minutes in the time frame, select yes. If not select no",
+		"time_free": "if you can be available for at least 20 minutes in the time frame, select the day/TimeSlot. If not select no.",
 		"prefer_communication_method": "Are you willing to meet in the following ways",
 		"prefer_communication_info": "Please double check your contact information for errors",
 		"prefer_to_lead": "Do you like to lead by introducing yourself first or arranging a time to meet",
