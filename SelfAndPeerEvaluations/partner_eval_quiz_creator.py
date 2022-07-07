@@ -42,6 +42,7 @@ class PartnerEvalQuiz:
             "unlock_at": self.unlock_date,
             "due_at": self.due_date,
             "lock_at": self.lock_date,
+            "allowed_attempts": 10,
         }
 
     def __create_quiz_questions(self) -> list[dict]:
@@ -297,7 +298,7 @@ if __name__ == "__main__":
     canvas = canvasapi.Canvas(url, key)
     course = canvas.get_course(1599)  # sandbox course ID
 
-    assignment_name = "testing partner eval prog(1)"
-
-    quiz = PartnerEvalQuiz(course, assignment_name)
-    quiz.upload_to_canvas()
+    assignment_names = ["quiz 1", "quiz 2", "quiz 3"]
+    for _ in assignment_names:
+        quiz = PartnerEvalQuiz(course, _)
+        quiz.upload_to_canvas()
