@@ -258,8 +258,12 @@ class PartnerEvalQuiz:
 
         quiz = self.course.create_quiz(quiz_info)
         for quiz_question in quiz_questions:
-            print("Uploading", quiz_question["question_name"], "question")
             quiz.create_question(question=quiz_question)
+
+        canvas_assignment = course.get_assignment(quiz.assignment_id)
+        canvas_assignment.edit(
+            assignment={"omit_from_final_grade": True, "published": True}
+        )
 
         print("Finished upload!")
 
