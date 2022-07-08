@@ -171,15 +171,14 @@ def parse_submissions(students_submitted, course, quiz, config):
                 students_submitted[user_id].international = 1
 
     # # activity_select
+    # Q7 on the Canvas quiz question
     # not sure how to match with
-    #     # What the student prefers to do.
+    #     What the student prefers to do.
     #     self.option1 = "default"
-    #     self.option2 = "default"
-    #     self.freeResponse = "default"
-    # for answer in question_index["activity_select"]["answers"]:
-    #     answer_text = answer["text"]
-    #     for user_id in answer["user_ids"]:
-    #         students_submitted[user_id].pronouns = answer_text
+    for answer in question_index["activity_select"]["answers"]:
+        answer_text = answer["text"]
+        for user_id in answer["user_ids"]:
+            students_submitted[user_id].option1 = answer_text
 
     # confidence
     # How confident the student feels (0 - 2) default is 1
@@ -194,6 +193,14 @@ def parse_submissions(students_submitted, course, quiz, config):
                 students_submitted[user_id].confidence = 0
             else:
                 students_submitted[user_id].confidence = 1
+
+    # try multiple drop down questions
+    #time_free
+    # for answer in question_index["time_free"]["answers_sets"]:
+    #     for answer_text in answer["answers"]:
+    #         answer_text1 = answer["text"]
+    #         students_submitted[user_id].
+
 
 
     # TODO: CONFIRMED WORKING UP UNTIL THIS POINT (Note: No edge cases have been tested)
