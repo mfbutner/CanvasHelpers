@@ -113,22 +113,15 @@ def filter_students_submitted(all_students, quiz_submissions):
 def parse_submissions(students_submitted, course, quiz, config):
     question_index = index_questions(course, quiz, config)
 
-    # TODO: Parse each question in question_index one-by-one
-    # Example: question_index["pronouns_select"]
     for answer in question_index["pronouns_select"]["answers"]:
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             students_submitted[user_id].pronouns = answer_text
 
-            # print("Updated: ")
-            # print(students_submitted[user_id].name)
-            # print(answer_text)
-    # multiple choices only
-    # try by Shang
-    # question_index["prefer_same_gender"]
-    #  0 - Not same pronouns 1 - No preference 2 - Prefer the same pronouns
-    # self.preferSame = 1
-    # use if statement for now
+    # 0 - Not same pronouns
+    # 1 - No preference (Default)
+    # 2 - Prefer the same pronouns
+    # Using if statements for now
     for answer in question_index["prefer_same_gender"]["answers"]:
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
@@ -139,9 +132,9 @@ def parse_submissions(students_submitted, course, quiz, config):
             else:
                 students_submitted[user_id].preferSame = 1
 
-    # prefer_synchronous
-    # 0 - No preference 1 - Synchronous 2 - Asynchronous
-    # self.preferAsy = 0
+    # 0 - No preference (Default)
+    # 1 - Synchronous
+    # 2 - Asynchronous
     for answer in question_index["prefer_synchronous"]["answers"]:
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
@@ -151,15 +144,15 @@ def parse_submissions(students_submitted, course, quiz, config):
                 students_submitted[user_id].preferAsy = 2
             else:
                 students_submitted[user_id].preferAsy = 0
-    # prefer_Leader
+
     for answer in question_index["prefer_to_lead"]["answers"]:
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             students_submitted[user_id].preferLeader = answer_text
 
-    # prefer_other_international
-    # 0 - not international 1 - no preference 2 - is international and would like to match
-    # international = 0
+    # 0 - Not international (Default)
+    # 1 - No preference
+    # 2 - Is international and would like to match with international
     for answer in question_index["prefer_other_international"]["answers"]:
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
@@ -170,20 +163,17 @@ def parse_submissions(students_submitted, course, quiz, config):
             else:
                 students_submitted[user_id].international = 1
 
-    # # activity_select
     # Q7 on the Canvas quiz question
-    # not sure how to match with
-    #     What the student prefers to do.
-    #     self.option1 = "default"
+    # Default: "default"
+    # Sets option1 (option2 ignored)
     for answer in question_index["activity_select"]["answers"]:
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             students_submitted[user_id].option1 = answer_text
 
-    # confidence
-    # How confident the student feels (0 - 2) default is 1
-    # confidence = 1
-    # not sure which is confidence = 2
+    # 0 - Could use some help
+    # 1 - Have some questions (Default)
+    # 2 - Confident
     for answer in question_index["confidence"]["answers"]:
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
@@ -195,16 +185,11 @@ def parse_submissions(students_submitted, course, quiz, config):
                 students_submitted[user_id].confidence = 1
 
     # try multiple drop down questions
-    #time_free
+    # time_free
     # for answer in question_index["time_free"]["answers_sets"]:
     #     for answer_text in answer["answers"]:
     #         answer_text1 = answer["text"]
     #         students_submitted[user_id].
-
-
-
-    # TODO: CONFIRMED WORKING UP UNTIL THIS POINT (Note: No edge cases have been tested)
-    #       (Comments have been placed where they might be issues)
 
     # Returns nothing. Modifies students_submitted by filling their respective fields
     return
