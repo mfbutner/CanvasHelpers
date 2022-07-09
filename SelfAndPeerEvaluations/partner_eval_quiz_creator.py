@@ -5,7 +5,7 @@ import random  # only here for generating rand sandbox SID
 from collections import OrderedDict
 
 
-class PartnerEvalQuiz:
+class PartnerEvalQuizCreator:
     def __init__(
         self,
         course: canvasapi.course.Course,
@@ -52,7 +52,7 @@ class PartnerEvalQuiz:
         quiz_questions.append(self.__create_identify_partner_question())
         quiz_questions.append(self.__create_solo_justify_question())
         quiz_questions.extend(self.__create_eval_questions("partner"))
-        quiz_questions.extend(self.__create_quantitative_contribution_question())
+        quiz_questions.append(self.__create_quantitative_contribution_question())
         return quiz_questions
 
     def __create_integrity_question(self) -> dict:
@@ -165,6 +165,8 @@ class PartnerEvalQuiz:
 
     def __create_identify_partner_question(self) -> dict:
         # FIXME: messy and hacky way to handle dupes
+        # FIXME: does not account for duplicate students that DON'T have a SID
+        # FIXME: does not account for duplicate students with same sortable name AND same last 4 digit SID
         raw_students = {}
         raw_students = OrderedDict()
         dup_list = set()
@@ -218,7 +220,7 @@ class PartnerEvalQuiz:
             "points_possible": 1,
         }
 
-    def __create_quantitative_contribution_question(self) -> list[dict]:
+    def __create_quantitative_contribution_question(self) -> dict:
         choices = [
             "0% vs 100% ==> Your partner did (almost) everything while you didn't do (almost) anything",
             "25% vs 75% ==> Your partner contributed substantially more than you",
@@ -226,31 +228,17 @@ class PartnerEvalQuiz:
             "75% vs 25% ==> You contributed substantially more than your partner",
             "100% vs 0% ==> You did (almost) everything while your partner didn't do (almost) anything",
         ]
-        questions = []
-        questions.append(
-            {
-                "question_name": "Quantitative contribution",
-                "question_text": "<h3>Quantitative contribution</h3><p>Express your and your partner's respective contributions to the project in a quantitative way.</p>",
-                "question_type": "text_only_question",
-            }
-        )
-        questions.append(
-            {
-                "question_name": "Project contribution",
-                "question_text": "<h3>Project contribution</h3><p>How would you quantify your and your partner's respective contribution to the project?</p>",
-                "question_type": "multiple_choice_question",
-                "answers": dict(
-                    enumerate(
-                        [
-                            {"answer_text": choice, "answer_weight": 1}
-                            for choice in choices
-                        ]
-                    )
-                ),
-                "points_possible": 1,
-            }
-        )
-        return questions
+        return {
+            "question_name": "Project contribution",
+            "question_text": "<h3>Project contribution</h3><p>How would you quantify your and your partner's respective contribution to the project?</p>",
+            "question_type": "multiple_choice_question",
+            "answers": dict(
+                enumerate(
+                    [{"answer_text": choice, "answer_weight": 1} for choice in choices]
+                )
+            ),
+            "points_possible": 1,
+        }
 
     def upload_to_canvas(self) -> None:
         print("Uploading quiz assignment to canvas")
@@ -300,5 +288,5 @@ if __name__ == "__main__":
 
     assignment_names = ["quiz 1", "quiz 2", "quiz 3"]
     for _ in assignment_names:
-        quiz = PartnerEvalQuiz(course, _)
+        quiz = PartnerEvalQuizCreator(course, _)
         quiz.upload_to_canvas()
