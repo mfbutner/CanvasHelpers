@@ -148,7 +148,7 @@ def parse_submissions(students_submitted, course, quiz, config):
     for answer in question_index["prefer_to_lead"]["answers"]:
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
-            students_submitted[user_id].preferLeader = (answer_text == "I like to lead.")
+            students_submitted[user_id].preferLeader = answer_text
 
     # 0 - Not international (Default)
     # 1 - No preference
@@ -184,38 +184,33 @@ def parse_submissions(students_submitted, course, quiz, config):
             else:
                 students_submitted[user_id].confidence = 1
 
+    # try multiple drop down questions
     # time_free
-    daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    # have trouble with testing this
+    vector = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
     for answer in question_index["time_free"]["answer_sets"]:
         answer_text = answer["text"]
-        day_text = answer_text[0:3]
-        if day_text in daysOfWeek:
-            first_index = daysOfWeek.index(day_text)
-            second_index = int(answer_text[3]) - 1
-            for response in answer["answers"]:
-                available = response["correct"]
-                if not available:
-                    continue
-
-                for user_id in response["user_ids"]:
-                    students_submitted[user_id].meetingTimes[first_index][second_index] = available
+        if answer_text in vector:
+            first_index = vector.index(answer["text"][0:2])
+            second_index = int(answer["text"][3])
+            for tmp in answer["answers"]:
+                if (tmp["correct"]== True and tmp["response"] == 1):
+                    students_submitted[tmp["user_ids"]].meetingTimes[first_index][second_index] = True
 
     # priorities
-    if False:
-        priority_list = ["top","second","third","fourth","fifth"]
-        for answer in question_index["priorities"]["answer_sets"]:
-            answer_text = answer["text"]
-            if answer_text in priority_list:
-                index = priority_list.index(answer["text"])
-                for tmp in answer["answers"]:
-                    if (tmp["correct"] == True):
-                        students_submitted[tmp["user_ids"]].priorityList[index] = tmp["text"]
-
-    # language_select
-    for answer in question_index["language_select"]["answer_sets"][0]["answers"]:
+    vector1 = ["top","second","third","fourth","fifth"]
+    for answer in question_index["priorities"]["answer_sets"]:
         answer_text = answer["text"]
-        for user_id in answer["user_ids"]:
-            students_submitted[user_id].language = answer_text
+        if answer_text in vector1:
+            index = vector.index(answer["text"])
+            for tmp in answer["answers"]:
+                if (tmp["correct"]== True and tmp["response"] == 1):
+                    students_submitted[tmp["user_ids"]].priorityList[index] = tmp["text"]
+
+    # langauge select
+    for answer in question_index["language_select"]["answer_sets"]["answers"]:
+        if (answer["correct"] == True and answer["response"] == 1):
+            students_submitted[answer["user_ids"]].language = answer["text"]
 
 
 
