@@ -148,7 +148,7 @@ def parse_submissions(students_submitted, course, quiz, config):
     for answer in question_index["prefer_to_lead"]["answers"]:
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
-            students_submitted[user_id].preferLeader = answer_text
+            students_submitted[user_id].preferLeader = (answer_text == "I like to lead.")
 
     # 0 - Not international (Default)
     # 1 - No preference
