@@ -186,10 +186,36 @@ def parse_submissions(students_submitted, course, quiz, config):
 
     # try multiple drop down questions
     # time_free
-    # for answer in question_index["time_free"]["answers_sets"]:
-    #     for answer_text in answer["answers"]:
-    #         answer_text1 = answer["text"]
-    #         students_submitted[user_id].
+    # have trouble with testing this
+    vector = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+    for answer in question_index["time_free"]["answer_sets"]:
+        answer_text = answer["text"]
+        if answer_text in vector:
+            first_index = vector.index(answer["text"][0:2])
+            second_index = int(answer["text"][3])
+            for tmp in answer["answers"]:
+                if (tmp["correct"]== True and tmp["response"] == 1):
+                    students_submitted[tmp["user_ids"]].meetingTimes[first_index][second_index] =True
+
+    # priorities
+    vector1 = ["top","second","third","fourth","fifth"]
+    for answer in question_index["time_free"]["answer_sets"]:
+        answer_text = answer["text"]
+        if answer_text in vector1:
+            index = vector.index(answer["text"])
+            for tmp in answer["answers"]:
+                if (tmp["correct"]== True and tmp["response"] == 1):
+                    students_submitted[tmp["user_ids"]].priorityList[index] = tmp["text"]
+
+    # langauge select
+    for answer in question_index["time_free"]["answer_sets"]["answers"]:
+        if (answer["correct"] == True and answer["response"] == 1):
+            students_submitted[answer["user_ids"]].language = answer["text"]
+
+
+
+
+
 
     # Returns nothing. Modifies students_submitted by filling their respective fields
     return
