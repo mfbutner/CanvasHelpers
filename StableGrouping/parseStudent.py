@@ -184,18 +184,21 @@ def parse_submissions(students_submitted, course, quiz, config):
             else:
                 students_submitted[user_id].confidence = 1
 
-    # try multiple drop down questions
     # time_free
-    # have trouble with testing this
-    vector = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+    daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     for answer in question_index["time_free"]["answer_sets"]:
         answer_text = answer["text"]
-        if answer_text in vector:
-            first_index = vector.index(answer["text"][0:2])
-            second_index = int(answer["text"][3])
-            for tmp in answer["answers"]:
-                if (tmp["correct"]== True and tmp["response"] == 1):
-                    students_submitted[tmp["user_ids"]].meetingTimes[first_index][second_index] = True
+        day_text = answer_text[0:3]
+        if day_text in daysOfWeek:
+            first_index = daysOfWeek.index(day_text)
+            second_index = int(answer_text[3]) - 1
+            for response in answer["answers"]:
+                available = response["correct"]
+                if not available:
+                    continue
+
+                for user_id in response["user_ids"]:
+                    students_submitted[user_id].meetingTimes[first_index][second_index] = available
 
     # priorities
     if False:
