@@ -198,19 +198,21 @@ def parse_submissions(students_submitted, course, quiz, config):
                     students_submitted[tmp["user_ids"]].meetingTimes[first_index][second_index] = True
 
     # priorities
-    vector1 = ["top","second","third","fourth","fifth"]
-    for answer in question_index["priorities"]["answer_sets"]:
-        answer_text = answer["text"]
-        if answer_text in vector1:
-            index = vector.index(answer["text"])
-            for tmp in answer["answers"]:
-                if (tmp["correct"]== True and tmp["response"] == 1):
-                    students_submitted[tmp["user_ids"]].priorityList[index] = tmp["text"]
+    if False:
+        priority_list = ["top","second","third","fourth","fifth"]
+        for answer in question_index["priorities"]["answer_sets"]:
+            answer_text = answer["text"]
+            if answer_text in priority_list:
+                index = priority_list.index(answer["text"])
+                for tmp in answer["answers"]:
+                    if (tmp["correct"] == True):
+                        students_submitted[tmp["user_ids"]].priorityList[index] = tmp["text"]
 
-    # langauge select
-    for answer in question_index["language_select"]["answer_sets"]["answers"]:
-        if (answer["correct"] == True and answer["response"] == 1):
-            students_submitted[answer["user_ids"]].language = answer["text"]
+    # language_select
+    for answer in question_index["language_select"]["answer_sets"][0]["answers"]:
+        answer_text = answer["text"]
+        for user_id in answer["user_ids"]:
+            students_submitted[user_id].language = answer_text
 
 
 
