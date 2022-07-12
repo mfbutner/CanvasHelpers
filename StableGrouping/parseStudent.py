@@ -195,11 +195,11 @@ def parse_submissions(students_submitted, course, quiz, config):
             second_index = int(answer["text"][3])
             for tmp in answer["answers"]:
                 if (tmp["correct"]== True and tmp["response"] == 1):
-                    students_submitted[tmp["user_ids"]].meetingTimes[first_index][second_index] =True
+                    students_submitted[tmp["user_ids"]].meetingTimes[first_index][second_index] = True
 
     # priorities
     vector1 = ["top","second","third","fourth","fifth"]
-    for answer in question_index["time_free"]["answer_sets"]:
+    for answer in question_index["priorities"]["answer_sets"]:
         answer_text = answer["text"]
         if answer_text in vector1:
             index = vector.index(answer["text"])
@@ -208,12 +208,9 @@ def parse_submissions(students_submitted, course, quiz, config):
                     students_submitted[tmp["user_ids"]].priorityList[index] = tmp["text"]
 
     # langauge select
-    for answer in question_index["time_free"]["answer_sets"]["answers"]:
+    for answer in question_index["language_select"]["answer_sets"]["answers"]:
         if (answer["correct"] == True and answer["response"] == 1):
             students_submitted[answer["user_ids"]].language = answer["text"]
-
-
-
 
 
 
