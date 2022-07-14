@@ -219,15 +219,19 @@ def parse_submissions(students_submitted, course, quiz, config):
 
     # pronouns_other
     for user_id, answer in question_index["pronouns_other"].items():
-        if students_submitted[user_id].pronouns == "Not included":
-            students_submitted[user_id].pronouns = answer["text"]
-        # TODO delete <p>?:
+        if students_submitted[user_id].pronouns == "Not Included":
+            str = answer["text"]
+            first_close = str.find('>')
+            end_close = str.rfind('<')
+            students_submitted[user_id].pronouns = str[first_close + 1:end_close]
 
     # language_other
     for user_id, answer in question_index["language_other"].items():
-        if students_submitted[user_id].pronouns == "Not included":
-            students_submitted[user_id].pronouns = answer["text"]
-        # TODO delete <p>?:
+        if students_submitted[user_id].language == "Not included":
+            str = answer["text"]
+            first_close = str.find('>')
+            end_close = str.rfind('<')
+            students_submitted[user_id].language = str[first_close + 1:end_close]
 
     # Returns nothing. Modifies students_submitted by filling their respective fields
     return
