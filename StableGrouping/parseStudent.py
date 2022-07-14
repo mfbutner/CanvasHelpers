@@ -122,6 +122,7 @@ def parse_submissions(students_submitted, course, quiz, config):
     # 1 - No preference (Default)
     # 2 - Prefer the same pronouns
     # Using if statements for now
+
     for answer in question_index["prefer_same_gender"]["answers"]:
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
@@ -201,15 +202,14 @@ def parse_submissions(students_submitted, course, quiz, config):
                     students_submitted[user_id].meetingTimes[first_index][second_index] = available
 
     # priorities
-    if False:
-        priority_list = ["top","second","third","fourth","fifth"]
-        for answer in question_index["priorities"]["answer_sets"]:
-            answer_text = answer["text"]
-            if answer_text in priority_list:
-                index = priority_list.index(answer["text"])
-                for tmp in answer["answers"]:
-                    if (tmp["correct"] == True):
-                        students_submitted[tmp["user_ids"]].priorityList[index] = tmp["text"]
+    priority_list = ["top","second","third","fourth","fifth"]
+    for answer in question_index["priorities"]["answer_sets"]:
+        answer_text = answer["text"]
+        if answer_text in priority_list:
+            index = priority_list.index(answer["text"])
+            for tmp in answer["answers"]:
+                for user_id in tmp["user_ids"]:
+                    students_submitted[user_id].priorityList[index] = tmp["text"]
 
     # language_select
     for answer in question_index["language_select"]["answer_sets"][0]["answers"]:
