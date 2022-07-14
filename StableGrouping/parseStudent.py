@@ -109,6 +109,11 @@ def filter_students_submitted(all_students, quiz_submissions):
             break
     return students_submitted
 
+def remove_any_tags(str):
+    first_close = str.find('>')
+    end_close = str.rfind('<')
+    return str[first_close + 1:end_close]
+
 
 def parse_submissions(students_submitted, course, quiz, config):
     question_index = index_questions(course, quiz, config)
@@ -220,18 +225,12 @@ def parse_submissions(students_submitted, course, quiz, config):
     # pronouns_other
     for user_id, answer in question_index["pronouns_other"].items():
         if students_submitted[user_id].pronouns == "Not Included":
-            str = answer["text"]
-            first_close = str.find('>')
-            end_close = str.rfind('<')
-            students_submitted[user_id].pronouns = str[first_close + 1:end_close]
+            students_submitted[user_id].pronouns = remove_any_tags(answer["text"])
 
     # language_other
     for user_id, answer in question_index["language_other"].items():
         if students_submitted[user_id].language == "Not included":
-            str = answer["text"]
-            first_close = str.find('>')
-            end_close = str.rfind('<')
-            students_submitted[user_id].language = str[first_close + 1:end_close]
+            students_submitted[user_id].language = remove_any_tags(answer["text"])
 
     # Returns nothing. Modifies students_submitted by filling their respective fields
     return
