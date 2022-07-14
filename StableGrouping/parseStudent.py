@@ -212,7 +212,17 @@ def parse_submissions(students_submitted, course, quiz, config):
         if (answer["correct"] == True and answer["response"] == 1):
             students_submitted[answer["user_ids"]].language = answer["text"]
 
+    # pronouns_other
+    for user_id, answer in question_index["pronouns_other"].items():
+        if students_submitted[user_id].pronouns == "Not included":
+            students_submitted[user_id].pronouns = answer["text"]
+        # TODO delete <p>?:
 
+    # language_other
+    for user_id, answer in question_index["language_other"].items():
+        if students_submitted[user_id].pronouns == "Not included":
+            students_submitted[user_id].pronouns = answer["text"]
+        # TODO delete <p>?:
 
     # Returns nothing. Modifies students_submitted by filling their respective fields
     return
