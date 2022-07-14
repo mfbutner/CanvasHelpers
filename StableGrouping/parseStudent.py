@@ -232,6 +232,19 @@ def parse_submissions(students_submitted, course, quiz, config):
         if students_submitted[user_id].language == "Not included":
             students_submitted[user_id].language = remove_any_tags(answer["text"])
 
+    #prefer_communication_method
+    counter = -1
+    for each_entity in question_index["prefer_communication_method"]["answers"]:
+        counter = counter + 1
+        for user_id in each_entity["user_ids"]:
+            students_submitted[user_id].contactPreference[counter] = True
+
+    # prefer_communication_method
+    for user_id, answer in question_index["prefer_communication_info"].items():
+            students_submitted[user_id].contactInformation[0] = answer["answer_for_Discord"]
+            students_submitted[user_id].contactInformation[1] = answer["answer_for_Phone"]
+            students_submitted[user_id].contactInformation[2] = answer["answer_for_Email"]
+
     # Returns nothing. Modifies students_submitted by filling their respective fields
     return
 
