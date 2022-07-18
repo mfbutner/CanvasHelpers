@@ -26,7 +26,7 @@ def addExtras(quintuplets: list, leftoverStudents: list, matchBefore: dict):
             if len(quintuplets[i]) != 5:
                 #Skip this index because its not a valid group of five
                 continue
-            
+
             #Test whether the group has matched before
             tempList = [student]
             tempList.extend(quintuplets[i])
@@ -36,17 +36,17 @@ def addExtras(quintuplets: list, leftoverStudents: list, matchBefore: dict):
                 if tempScore > maxScore:
                     index = i
                     maxScore = tempScore
-        
+
         if index == -1:
             print("Error: literally could not find student a group to match to, so I stuck the student in the first group")
             index = 0
-        
+
         quintuplets[index].append(student)
-    
+
     return quintuplets
 
 def moveStudentsGroups(quintuplets: list, ans: dict, singles: dict, aloneStudents: dict, quads: list):
-    
+
     for key in ans:
         if key != None and ans[key]!= None:
             tempList = [aloneStudents[int(str(key))]]
@@ -58,8 +58,8 @@ def moveStudentsGroups(quintuplets: list, ans: dict, singles: dict, aloneStudent
                     tempList.extend(quad)
 
             quintuplets.append(tempList)
-    
-#When you have a preference list of 
+
+#When you have a preference list of
 def removeImpossibleQuin(ans: dict, matchDict: dict, students: dict, aloneStudents:dict, aloneSupposedToBeMatched:list, quadSupposedToBeMatched: list):
     remainingAlone = []
     remainingQuads = []
@@ -103,7 +103,7 @@ def removeImpossibleQuin(ans: dict, matchDict: dict, students: dict, aloneStuden
 
             if isValidGroup(matchDict, tempList) != 0:
                 keysToTakeOut.append(key)
-            
+
     for key in keysToTakeOut:
         #Find the students that correspond to these keys
         remainingAlone.append(aloneStudents[int(str(key))])
@@ -114,14 +114,14 @@ def removeImpossibleQuin(ans: dict, matchDict: dict, students: dict, aloneStuden
                 remainingQuads.append(quad)
                 break
         ans.pop(key)
-    
+
     aloneSupposedToBeMatched.clear()
     quadSupposedToBeMatched.clear()
 
     aloneSupposedToBeMatched.extend(remainingAlone)
     quadSupposedToBeMatched.extend(remainingQuads)
 
-    return 
+    return
 
 def makeQuintuplets(quads: list, aloneStudents: dict, singles: dict, matchBefore: dict):
     #Each quad needs to match with one alone Student
@@ -145,15 +145,15 @@ def makeQuintuplets(quads: list, aloneStudents: dict, singles: dict, matchBefore
     while (not finished) and i < 5:
         preferenceListOnes = preferenceAsymmetricalSort(extraStudentsAlone, extraStudentsQuads, "GroupByOne", matchBefore)
         preferenceListQuads = preferenceAsymmetricalSort(extraStudentsQuads, extraStudentsAlone, "OneByGroup", matchBefore)
-        
+
         game = StableMarriage.create_from_dictionaries(preferenceListOnes, preferenceListQuads)
         ans = game.solve()
 
-        
+
         removeImpossibleQuin(ans, matchBefore, singles, aloneStudents, extraStudentsAlone, extraStudentsQuads)
-        
+
         moveStudentsGroups(quintuplets, ans, singles, aloneStudents, quads)
-        
+
         if len(extraStudentsAlone) == 0:
             finished = True
         i = i+ 1
@@ -161,7 +161,7 @@ def makeQuintuplets(quads: list, aloneStudents: dict, singles: dict, matchBefore
         if len(extraStudentsAlone) != len(extraStudentsQuads):
             print("Errror: size mismatch in makeQuintuplets")
 
-    
+
     listUsedIndexesAlone = list()
     listUsedIndexesQuads = list()
     groupsToMake = list()
@@ -174,7 +174,7 @@ def makeQuintuplets(quads: list, aloneStudents: dict, singles: dict, matchBefore
                     listUsedIndexesAlone.append(index1)
                     listUsedIndexesQuads.append(index2)
                     groupsToMake.append([index1, index2])
-    
+
     usedAlone = list()
     usedQuads = list()
     for groupToMake in groupsToMake:
@@ -186,7 +186,7 @@ def makeQuintuplets(quads: list, aloneStudents: dict, singles: dict, matchBefore
 
     for student in usedAlone:
         extraStudentsAlone.remove(student)
-    
+
     for student in usedQuads:
         extraStudentsQuads.remove(student)
 
@@ -194,12 +194,12 @@ def makeQuintuplets(quads: list, aloneStudents: dict, singles: dict, matchBefore
         tempList = extraStudentsQuads[index]
         tempList.append(extraStudentsAlone[index])
         quintuplets.append(tempList)
-    
+
     extraStudentsAlone.clear()
     extraStudentsQuads.clear()
-    
+
     return quintuplets
-    
+
 def removeImpossibleTwo(game: dict, matchDict: dict, students: dict, pairs: list, studentSupposedToBeMatched: list):
     #create an empty list to store all the removed students
     extraStudents = []
@@ -237,12 +237,12 @@ def removeImpossibleTwo(game: dict, matchDict: dict, students: dict, pairs: list
                     tempList[3] = pair[1]
                 if flag1 and flag2:
                     break
-            
+
             #If the two people cannot be in the group, then we are going to remove the first person
             if isValidGroup(matchDict, tempList) != 0:
                 #Delete both people from the list and move them into extraStudents
                 keysToTakeOut.append(key)
-            
+
 
     for key in keysToTakeOut:
         #Need to add back both students in the pair
@@ -255,11 +255,11 @@ def removeImpossibleTwo(game: dict, matchDict: dict, students: dict, pairs: list
         game.pop(key)
 
     return extraStudents
-    
+
 def moveStudentsTwo(ans: dict, quads: list, students: dict, pairs: list):
     #Keep a list of all the used keys so we don't add a pair twice
     usedKeys = []
-    
+
     #Make student-student if matchType is OneByOne
     for key in ans:
         if key != None and ans[key]!= None:
@@ -289,13 +289,13 @@ def moveStudentsTwo(ans: dict, quads: list, students: dict, pairs: list):
 
                 #Add the set of two students to the quad list
                 quads.append(tempList)
-    
+
     return quads
 
 #There are some options from game that we cannot actually use, so we need to take them out of game, and return the unused students to make the next run as extra students
 #game: a list of student's with another student's id as the key- these are "good" matches
 #matchedDict: a dictionary of student id matches to check who has matched before
-#I need the full list of students 
+#I need the full list of students
 def removeImpossibleOne(game: dict, matchDict: dict, students: dict, studentsSupposedToBeMatched: list):
     #create an empty list to store all the removed students
     extraStudents = []
@@ -328,23 +328,23 @@ def removeImpossibleOne(game: dict, matchDict: dict, students: dict, studentsSup
                 keysToTakeOut.append(key)
                 continue
 
-    
+
     #For each key to take out, add that student to extraStudents
     for key in keysToTakeOut:
         extraStudents.append(students[int(str(key))])
         game.pop(key)
 
-    return extraStudents      
+    return extraStudents
 
-#Move the now correct student pairs into the actual pairs   
+#Move the now correct student pairs into the actual pairs
 def moveStudentsOne(ans: dict, pairs: list, students: dict):
     #Keep a list of all the used keys so we don't add a pair twice
 
-    
+
     usedKeys = []
 
     #Make student-student if matchType is OneByOne
-    
+
     for key in ans:
         if key != None and ans[key]!= None:
             thisStudentKey = int(str(key))
@@ -354,31 +354,31 @@ def moveStudentsOne(ans: dict, pairs: list, students: dict):
             if not (otherStudentKey in usedKeys):
                 usedKeys.append(thisStudentKey)
                 pairs.append([students[thisStudentKey], students[otherStudentKey]])
-    
+
     return
 
-#Make pairs of student-student 
+#Make pairs of student-student
 def makePairs(students: dict, matchDict: dict):
     #Make a copy that won't change the orignal students
     extraStudents = []
 
     for student in students:
         extraStudents.append((students[student]))
-        
+
     pairs = []
 
-    #Control mechanisms for the loop: check if all the students have been paired, and that the list has not been 
+    #Control mechanisms for the loop: check if all the students have been paired, and that the list has not been
     finished = False
     if len(extraStudents) == 0:
         finished = True
-    
+
     i = 0
     #You don't want to loop too many times, but run five times at most to find good matches that have not matched before
     while(not finished and i < 10):
         preferenceList = preferenceSymmetricalSort(extraStudents, "OneByOne", matchDict)
         game = StableRoommates.create_from_dictionary(preferenceList)
         ans = game.solve()
-        
+
         #remove the students who did not find matches out, delete them from the ans dict
         extraStudents = removeImpossibleOne(ans, matchDict, students, extraStudents)
 
@@ -391,7 +391,7 @@ def makePairs(students: dict, matchDict: dict):
             break
 
         i = i + 1
-    
+
     for index in range(5):
         listUsedIndexes = list()
         pairsToMake = list()
@@ -407,7 +407,7 @@ def makePairs(students: dict, matchDict: dict):
         for pairToMake in pairsToMake:
             pairs.append([extraStudents[pairToMake[0]], extraStudents[pairToMake[1]]])
             usedStudents.extend([extraStudents[pairToMake[0]], extraStudents[pairToMake[1]]])
-        
+
 
         for student in usedStudents:
             extraStudents.remove(student)
@@ -422,7 +422,7 @@ def makePairs(students: dict, matchDict: dict):
             pairs.append([extraStudents[index], extraStudents[index+1]])
     extraStudents.clear()
 
-    
+
     #Return the pairs list (list[Student, Student])
     return pairs
 #We probaby want to fold this code in with make pairs eventually, but for now it's here
@@ -434,7 +434,7 @@ def makeQuads(students: dict, matchDict: dict, pairs: list):
 
     for pair in pairs:
         extraStudents.append(pair)
-        
+
     quads = []
 
     #Control mechanisms for the loop: check if all the pairs been put into quads
@@ -442,17 +442,17 @@ def makeQuads(students: dict, matchDict: dict, pairs: list):
     if len(extraStudents) == 0:
         finished = True
     i = 0
-    
+
     #You don't want to loop too many times, but run five times at most to find good matches that have not matched before
     while(not finished and i < 10):
         preferenceList = preferenceSymmetricalSort(extraStudents, "TwoByTwo", matchDict)
         game = StableRoommates.create_from_dictionary(preferenceList)
         ans = game.solve()
 
-        
+
         #remove the students who did not find matches out, delete them from the ans dict
         extraStudents = removeImpossibleTwo(ans, matchDict, students, pairs, extraStudents)
-        
+
         #Take the remaining, succesful students, and place them into pairs
         moveStudentsTwo(ans, quads, students, pairs)
 
@@ -460,7 +460,7 @@ def makeQuads(students: dict, matchDict: dict, pairs: list):
         if len(extraStudents) == 0:
             finished = True
         i = i + 1
-    
+
     for index in range(5):
         listUsedIndexes = list()
         pairsToMake = list()
@@ -476,7 +476,7 @@ def makeQuads(students: dict, matchDict: dict, pairs: list):
         for pairToMake in pairsToMake:
             quads.append([extraStudents[pairToMake[0]][0], extraStudents[pairToMake[0]][1], extraStudents[pairToMake[1]][0], extraStudents[pairToMake[1]][1]])
             usedStudents.extend([extraStudents[pairToMake[0]], extraStudents[pairToMake[1]]])
-        
+
 
         for student in usedStudents:
             extraStudents.remove(student)
@@ -505,8 +505,8 @@ def findMinIndex(quads: list, matchedBefore: dict, noTakeList:list):
 
 def cleanQuads(quads: list, singles: dict, numGroups: int, matchedBefore: dict):
     if len(quads) == numGroups:
-        return 
-    
+        return
+
     noTakeList = list()
     #In the case that there are too many quads, break up the least happy ones
     while(len(quads) > numGroups):
@@ -524,17 +524,14 @@ def cleanQuads(quads: list, singles: dict, numGroups: int, matchedBefore: dict):
     if len(quads) < numGroups:
         print("ERROR: the number of quads should match the number of needed groups")
 
-    
-#Take a list of the possible stuednts 
+
+# Take a list of the possible stuednts
 def makeGroups(singles: dict, extraStudents: dict, matchBefore: dict):
-
-
-
-    #Calculate the number of needed groups
+    # Calculate the number of needed groups
     lenClass = len(singles) + len(extraStudents)
-    numGroups = lenClass//5
+    numGroups = lenClass // 5
 
-    i = 0 #temp
+    i = 0 # temp
 
     #move students from extras to free singles until I have 4/5 the class and its divisible by 4
     while(len(singles) < numGroups*4 and len(extraStudents) > 0):
@@ -551,7 +548,7 @@ def makeGroups(singles: dict, extraStudents: dict, matchBefore: dict):
             #Else you can just add extraStudents in to the singles list
             student = extraStudents.popitem()
             singles[student[0]] = student[1]
-    
+
     index = 0
     singlesOther = dict()
     singles1 = dict()
@@ -569,16 +566,16 @@ def makeGroups(singles: dict, extraStudents: dict, matchBefore: dict):
                     if(student1Key not in idPlacedInPairs and student2Key not in idPlacedInPairs):
                         pairs.append([singles[student1Key], singles[student2Key]])
                         idPlacedInPairs.extend([student1Key, student2Key])
-                    
+
                     flag = True
-        
+
         if not flag and placeIn1Flag:
             singles2[student1Key] = singles[student1Key]
             placeIn1Flag = False
         elif not flag:
             singles1[student1Key] = singles[student1Key]
             placeIn1Flag = True
-        
+
     for pair in pairs:
         print(pair[0].name, pair[1].name)
 
@@ -594,10 +591,10 @@ def makeGroups(singles: dict, extraStudents: dict, matchBefore: dict):
     #Place the pairs together
     for i in range(len(pairs1)):
         pairs.append(pairs1[i])
-    for i in range(len(pairs2)):    
+    for i in range(len(pairs2)):
         pairs.append(pairs2[i])
 
-    
+
     #Make the pairs into quads
     quads = makeQuads(singles, matchBefore, pairs)
 

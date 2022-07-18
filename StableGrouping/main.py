@@ -33,7 +33,7 @@ quiz = course.get_quiz(config["quiz_id"])
 
 # Separate the all_students dictionary into two dictionaries: One for those who submitted and one for those who haven't
 students_submitted = filter_students_submitted(all_students, quiz.get_submissions())
-students_not_submitted = {idNum: student for (idNum, student) in all_students.items() if idNum not in students_submitted}
+students_not_submitted = {s_id: student for (s_id, student) in all_students.items() if s_id not in students_submitted}
 
 # Modifies Student instances in students_submitted by updating their properties with their quiz responses
 parse_submissions(students_submitted, course, quiz, config)
@@ -50,5 +50,5 @@ groups = makeGroups(students_submitted, students_not_submitted, matchedBefore)
 # Now that groups are matched, send emails and form groups
 sendConvo(canvas, config["course"]["id"], groups, config["group_number"])
 
-# Anaylze the groups: how many students with a preference got it?
+# Analyze the groups: how many students with a preference got it?
 gradeGroups(groups, matchedBefore)
