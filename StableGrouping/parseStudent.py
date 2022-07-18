@@ -265,11 +265,15 @@ def parse_submissions(students_submitted, course, quiz, config):
         for user_id in each_entity["user_ids"]:
             students_submitted[user_id].contactPreference[counter] = True
 
-    # prefer_communication_method
+    # prefer_communication_info
     for user_id, answer in question_index["prefer_communication_info"].items():
         students_submitted[user_id].contactInformation[0] = answer["answer_for_Discord"]
         students_submitted[user_id].contactInformation[1] = answer["answer_for_Phone"]
         students_submitted[user_id].contactInformation[2] = answer["answer_for_Email"]
+
+    # activity_specify
+    for user_id, answer in question_index["activity_specify"].items():
+        students_submitted[user_id].freeResponse = remove_any_tags(answer["text"])
 
     # Returns nothing. Modifies students_submitted by filling their respective fields
     return
