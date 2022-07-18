@@ -5,6 +5,7 @@ from canvasapi import Canvas
 from studentClass import Student
 import json
 
+
 def parse_students(canvas_students):
     all_students = {}
     for student in canvas_students:
@@ -109,6 +110,7 @@ def filter_students_submitted(all_students, quiz_submissions):
             break
     return students_submitted
 
+
 def remove_any_tags(str):
     first_close = str.find('>')
     end_close = str.rfind('<')
@@ -207,7 +209,7 @@ def parse_submissions(students_submitted, course, quiz, config):
                     students_submitted[user_id].meetingTimes[first_index][second_index] = available
 
     # priorities
-    priority_list = ["top","second","third","fourth","fifth"]
+    priority_list = ["top", "second", "third", "fourth", "fifth"]
     for answer in question_index["priorities"]["answer_sets"]:
         answer_text = answer["text"]
         if answer_text in priority_list:
@@ -232,7 +234,7 @@ def parse_submissions(students_submitted, course, quiz, config):
         if students_submitted[user_id].language == "Not included":
             students_submitted[user_id].language = remove_any_tags(answer["text"])
 
-    #prefer_communication_method
+    # prefer_communication_method
     counter = -1
     for each_entity in question_index["prefer_communication_method"]["answers"]:
         counter = counter + 1
@@ -241,18 +243,18 @@ def parse_submissions(students_submitted, course, quiz, config):
 
     # prefer_communication_method
     for user_id, answer in question_index["prefer_communication_info"].items():
-            students_submitted[user_id].contactInformation[0] = answer["answer_for_Discord"]
-            students_submitted[user_id].contactInformation[1] = answer["answer_for_Phone"]
-            students_submitted[user_id].contactInformation[2] = answer["answer_for_Email"]
+        students_submitted[user_id].contactInformation[0] = answer["answer_for_Discord"]
+        students_submitted[user_id].contactInformation[1] = answer["answer_for_Phone"]
+        students_submitted[user_id].contactInformation[2] = answer["answer_for_Email"]
 
     # Returns nothing. Modifies students_submitted by filling their respective fields
     return
 
 
-def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
-    #Fill the dictionary and the student lists
+def parse(studentData: pd, CLASS_ID: int, canvasClass: canvasapi.course.Course):
+    # Fill the dictionary and the student lists
     dictSt = {}
-    #ECS 36B
+    # ECS 36B
     pronounsQ = '1252650'
     pronounsFree = '1252651'
     genderMatchQ = '1252652'
@@ -271,10 +273,10 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
     priorityQ = '1252663'
     studentPerfQ = '1252664'
 
-    #ECS 36A
-    #Set default to ECS 36B, but it could also be 36A
-    #This will need to be changed each time the quiz is changed
-    if CLASS_ID == 574775: # ECS 36A
+    # ECS 36A
+    # Set default to ECS 36B, but it could also be 36A
+    # This will need to be changed each time the quiz is changed
+    if CLASS_ID == 574775:  # ECS 36A
         pronounsQ = '1252518'
         pronounsFree = '1252519'
         genderMatchQ = '1252520'
@@ -293,8 +295,9 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
         priorityQ = '1252531'
         studentPerfQ = '1252532'
 
-# the list of question ids of questions
-    questionList = [pronounsQ, pronounsFree, genderMatchQ, syncQ, timeQ, commPreferenceQ, commValuesQ, leaderQ, internationalQ, languageQ, languageFree, groupWantsQ, groupWantsFree, priorityQ, studentPerfQ]
+    # the list of question ids of questions
+    questionList = [pronounsQ, pronounsFree, genderMatchQ, syncQ, timeQ, commPreferenceQ, commValuesQ, leaderQ,
+                    internationalQ, languageQ, languageFree, groupWantsQ, groupWantsFree, priorityQ, studentPerfQ]
     # all columns in the student data csv. Need for full question string
     fullQuestionList = studentData.columns.values.tolist()
     # print(fullQuestionList)
@@ -306,8 +309,8 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
             if id in question:
                 questionsLoc.append(loc)
     # for item in questionList:
-      #  questionsFull.append([word for word in fullQuestionList if item in word])
-    #for item in questionsFull:
+    #  questionsFull.append([word for word in fullQuestionList if item in word])
+    # for item in questionsFull:
     #    questionLoc.append(studentData.columns.get_loc(item))
     questionsDict = dict(zip(questionList, questionsLoc))
     questionsDict['id'] = studentData.columns.get_loc('id')
@@ -320,10 +323,10 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
         if row[questionsDict['id']] not in students_still_enrolled:
             continue
 
-        #name and id
+        # name and id
         tempStudent = Student(row[questionsDict['id']], row[questionsDict['name']])
 
-        #pronouns that the student prefers
+        # pronouns that the student prefers
         tempArr = row[questionsDict[pronounsQ]]
 
         freeResponse = row[questionsDict[pronounsFree]]
@@ -331,9 +334,9 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
             if tempArr == "Not Included":
                 tempStudent.pronouns = freeResponse
             else:
-                tempStudent.pronouns  = tempArr
+                tempStudent.pronouns = tempArr
 
-        #preferSame is True if the student would like to share their group with someone of the same gender
+        # preferSame is True if the student would like to share their group with someone of the same gender
         tempArr = row[questionsDict[genderMatchQ]]
         if type(tempArr) is str:
             if tempArr == "I would prefer another person who as the same pronouns as I do.":
@@ -343,19 +346,17 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
             elif tempArr == "No preference":
                 tempStudent.preferSame = 1
 
-
-        #meeting times - Sun - Sat, Midnight-4, 4-8, 8-noon, etc  [0][0] is sunday at midnight to 4 time slot
+        # meeting times - Sun - Sat, Midnight-4, 4-8, 8-noon, etc  [0][0] is sunday at midnight to 4 time slot
         tempArr = row[questionsDict[timeQ]]
         if type(tempArr) is str:
             meetingTimes = tempArr.split(",")
-            daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri","Sat"]
+            daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
             for i in range(7):
                 for j in range(1, 7):
                     if daysOfWeek[i] + str(j) in meetingTimes:
                         tempStudent.meetingTimes[i][(j - 1)] = True
 
-
-        #asynch (2), synch (1), no pref (0)- how the student would like to meet
+        # asynch (2), synch (1), no pref (0)- how the student would like to meet
         studentSync = row[questionsDict[syncQ]]
         if type(studentSync) is str:
             if studentSync == "Synchronously":
@@ -365,7 +366,7 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
             else:
                 tempStudent.preferAsy = 0
 
-        #contact pref - Discord, Phone, Email, Canvas - 2 = yes, 1 = no preference, 0 = not comfortable
+        # contact pref - Discord, Phone, Email, Canvas - 2 = yes, 1 = no preference, 0 = not comfortable
         tempArr = (row[questionsDict[commPreferenceQ]])
         if type(tempArr) is str:
             contactPreference = tempArr.split(",")
@@ -379,14 +380,14 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
             if "Canvas Groups" in contactPreference:
                 (tempStudent.contactPreference)[3] = True
 
-        #contact info - [DiscordHandle, PhoneNumber, personal@email.com]
+        # contact info - [DiscordHandle, PhoneNumber, personal@email.com]
         tempArr = (row[questionsDict[commValuesQ]])
         if type(tempArr) is str:
             contactInfo = tempArr.split(",")
             for i in range(3):
                 tempStudent.contactInformation[i] = contactInfo[i]
 
-        #prefer leader- True if they prefer to be the leader, false otherwise
+        # prefer leader- True if they prefer to be the leader, false otherwise
         studentLeader = row[questionsDict[leaderQ]]
         if type(studentLeader) is str:
             if studentLeader == "I like to lead.":
@@ -394,7 +395,7 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
             else:
                 tempStudent.preferLeader = False
 
-        #country - Country of Origin
+        # country - Country of Origin
         '''
         tempArr = (row[studentData.columns.str.contains(countryQ)].tolist())
         freeResponse = row[studentData.columns.str.contains(countryFree)].tolist()
@@ -423,7 +424,7 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
         freeResponse.clear()
         '''
 
-        #international student preference
+        # international student preference
         tempArr = row[questionsDict[internationalQ]]
         if type(tempArr) is str:
             if tempArr == "I would like to be placed with another international student.":
@@ -433,7 +434,7 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
             elif tempArr == "I am not an international student.":
                 tempStudent.international = 0
 
-        #languages - Preferred language
+        # languages - Preferred language
         languageSelect = row[questionsDict[languageQ]]
         notIncluedeLanguage = row[questionsDict[languageFree]]
         if type(languageSelect) is str:
@@ -442,8 +443,7 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
             else:
                 tempStudent.language = languageSelect
 
-
-        #Preferred stuff to do - the drop downs and free response
+        # Preferred stuff to do - the drop downs and free response
         tempArr = (row[questionsDict[groupWantsQ]])
         # Take the array of one item and check if its the right type,
         # then assign to the variable
@@ -453,7 +453,7 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
         if type(tempResponse) is str:
             tempStudent.freeResponse = tempResponse
 
-        #Priority of what they want
+        # Priority of what they want
         freeResponse = row[questionsDict[priorityQ]]
         if type(freeResponse) is str:
             priority = freeResponse.split(",")
@@ -471,12 +471,13 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
             elif tempArr == "I could really use some help.":
                 tempStudent.confidence = 0
 
-        #Add the student to the dictionary of all students
+        # Add the student to the dictionary of all students
         dictSt[row[questionsDict['id']]] = tempStudent
 
     return dictSt
 
-def parseEmails(dictSt:dict, canvasClass:Canvas):
+
+def parseEmails(dictSt: dict, canvasClass: Canvas):
     missingSt = {}
 
     # update student dictionary to include people who did not take, as well as list composed of students who did not take the test
@@ -498,17 +499,17 @@ def parseEmails(dictSt:dict, canvasClass:Canvas):
 
     return missingSt
 
+
 # temporary stopgap for adding partner option
 # add the actual question to the full quiz
-def parsePartnerQuiz (quizData:pd, CLASS_ID:int , dictSt:dict, missingSt:dict) :
-
+def parsePartnerQuiz(quizData: pd, CLASS_ID: int, dictSt: dict, missingSt: dict):
     personNameQ = '1162587'
-    personEmailQ =  '1162588'
-    if CLASS_ID == 516271 :
+    personEmailQ = '1162588'
+    if CLASS_ID == 516271:
         personNameQ = '1162590'
         personEmailQ = '1162591'
 
-    questionList = [personNameQ, personEmailQ]    # all columns in the student data csv. Need for full question string
+    questionList = [personNameQ, personEmailQ]  # all columns in the student data csv. Need for full question string
     fullQuestionList = quizData.columns.values.tolist()
     # print(fullQuestionList)
     # numerical location of the question
@@ -527,15 +528,15 @@ def parsePartnerQuiz (quizData:pd, CLASS_ID:int , dictSt:dict, missingSt:dict) :
         id = row[questionsDict['id']]
         temp = row[questionsDict[personNameQ]]
         if type(temp) is str and (len(temp)):
-            if id in dictSt :
+            if id in dictSt:
                 dictSt[id].partner = temp
-            else :
+            else:
                 missingSt[id].partner = temp
 
         temp = row[questionsDict[personEmailQ]]
         if type(temp) is str and (len(temp)):
 
-            if id in dictSt :
+            if id in dictSt:
                 dictSt[id].partnerEmail = temp
-            else :
+            else:
                 missingSt[id].partnerEmail = temp
