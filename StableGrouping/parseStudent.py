@@ -158,11 +158,11 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             if answer_text == "I would prefer another person who as the same pronouns as I do.":
-                students_submitted[user_id].preferSame = PreferGender.same_pronouns
+                students_submitted[user_id].preferSame = PreferGender.same_pronouns.value
             elif answer_text == "I would prefer another person who does not have the same pronouns as I do.":
-                students_submitted[user_id].preferSame = PreferGender.diff_pronouns
+                students_submitted[user_id].preferSame = PreferGender.diff_pronouns.value
             else:
-                students_submitted[user_id].preferSame = PreferGender.dont_care_pronouns
+                students_submitted[user_id].preferSame = PreferGender.dont_care_pronouns.value
 
     # 0 - No preference (Default)
     # 1 - Synchronous
@@ -171,11 +171,11 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             if answer_text == "Synchronously":
-                students_submitted[user_id].preferAsy = PreferAsync.like_sync
+                students_submitted[user_id].preferAsy = PreferAsync.like_sync.value
             elif answer_text == "Asynchronously":
-                students_submitted[user_id].preferAsy = PreferAsync.like_async
+                students_submitted[user_id].preferAsy = PreferAsync.like_async.value
             else:
-                students_submitted[user_id].preferAsy = PreferAsync.dont_care_async
+                students_submitted[user_id].preferAsy = PreferAsync.dont_care_async.value
 
     for answer in question_index["prefer_to_lead"]["answers"]:
         answer_text = answer["text"]
@@ -189,11 +189,11 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             if answer_text == "I am not an international student.":
-                students_submitted[user_id].international = PreferInternat.not_internat
+                students_submitted[user_id].international = PreferInternat.not_internat.value
             elif answer_text == "I would like to be placed with another international student.":
-                students_submitted[user_id].international = PreferInternat.prefer_internat_partner
+                students_submitted[user_id].international = PreferInternat.prefer_internat_partner.value
             else:
-                students_submitted[user_id].international = PreferInternat.dont_care_internat
+                students_submitted[user_id].international = PreferInternat.dont_care_internat.value
 
     # Q7 on the Canvas quiz question
     # Default: "default"
@@ -210,11 +210,11 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             if answer_text == "I'm confident.":
-                students_submitted[user_id].confidence = confident.is_confident
+                students_submitted[user_id].confidence = confident.is_confident.value
             elif answer_text == "I could really use some help.":
-                students_submitted[user_id].confidence = confident.not_confident
+                students_submitted[user_id].confidence = confident.not_confident.value
             else:
-                students_submitted[user_id].confidence = confident.default_confidence
+                students_submitted[user_id].confidence = confident.default_confidence.value
 
     # time_free
     daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
