@@ -3,7 +3,7 @@ from makeGroups import makeGroups
 from checkValidGroup import invalidGroupDict
 from analyzeCode import gradeGroups
 from sendCanvasConvo import sendConvo
-from parseStudent import parse_students, parse, parseEmails, parsePartnerQuiz, parse_submissions, filter_students_submitted
+from parseStudent import parse_students, parse_submissions, filter_students_submitted, parsePartnerQuiz
 from dotenv import dotenv_values
 import json
 

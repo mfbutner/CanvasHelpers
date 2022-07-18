@@ -1,36 +1,36 @@
 import re
 from enum import Enum
-from canvasapi import Canvas, course
 from studentClass import Student
 import pandas as pd
 import json
 
 
-class preferGender(Enum):
-    samePronouns = 2
-    diffPronouns = 0
-    dontCarePronouns = 1
+class PreferGender(Enum):
+    same_pronouns = 2
+    diff_pronouns = 0
+    dont_care_pronouns = 1
 
 
-class preferAsync(Enum):
-    likeSync = 1
-    likeAsync = 2
-    dontCareAsync = 0
+class PreferAsync(Enum):
+    like_sync = 1
+    like_async = 2
+    dont_care_async = 0
 
 
-class preferInternat(Enum):
-    notInternat = 0
-    preferInternatPartner = 2
-    dontCareInternat = 1
+class PreferInternat(Enum):
+    not_internat = 0
+    prefer_internat_partner = 2
+    dont_care_internat = 1
 
 
-class Confident(Enum):
-    isConfident = 2
-    notConfident = 0
-    defaultConfidence = 1
+class confident(Enum):
+    is_confident = 2
+    not_confident = 0
+    default_confidence = 1
 
 
 def parse_students(canvas_students):
+    # TODO: The equivalent of this in the old code ignored students without emails. Check if this is needed
     all_students = {}
     for student in canvas_students:
         student_instance = Student()
@@ -135,10 +135,10 @@ def filter_students_submitted(all_students, quiz_submissions):
     return students_submitted
 
 
-def remove_any_tags(str):
-    first_close = str.find('>')
-    end_close = str.rfind('<')
-    return str[first_close + 1:end_close]
+def remove_any_tags(source_str):
+    first_close = source_str.find('>')
+    end_close = source_str.rfind('<')
+    return source_str[first_close + 1:end_close]
 
 
 def parse_submissions(students_submitted, course, quiz, config):
@@ -158,11 +158,11 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             if answer_text == "I would prefer another person who as the same pronouns as I do.":
-                students_submitted[user_id].preferSame = preferGender.samePronouns
+                students_submitted[user_id].preferSame = PreferGender.same_pronouns
             elif answer_text == "I would prefer another person who does not have the same pronouns as I do.":
-                students_submitted[user_id].preferSame = preferGender.diffPronouns
+                students_submitted[user_id].preferSame = PreferGender.diff_pronouns
             else:
-                students_submitted[user_id].preferSame = preferGender.dontCarePronouns
+                students_submitted[user_id].preferSame = PreferGender.dont_care_pronouns
 
     # 0 - No preference (Default)
     # 1 - Synchronous
@@ -171,11 +171,11 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             if answer_text == "Synchronously":
-                students_submitted[user_id].preferAsy = preferAsync.likeSync
+                students_submitted[user_id].preferAsy = PreferAsync.like_sync
             elif answer_text == "Asynchronously":
-                students_submitted[user_id].preferAsy = preferAsync.likeAsync
+                students_submitted[user_id].preferAsy = PreferAsync.like_async
             else:
-                students_submitted[user_id].preferAsy = preferAsync.dontCareAsync
+                students_submitted[user_id].preferAsy = PreferAsync.dont_care_async
 
     for answer in question_index["prefer_to_lead"]["answers"]:
         answer_text = answer["text"]
@@ -189,11 +189,11 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             if answer_text == "I am not an international student.":
-                students_submitted[user_id].international = preferInternat.notInternat
+                students_submitted[user_id].international = PreferInternat.not_internat
             elif answer_text == "I would like to be placed with another international student.":
-                students_submitted[user_id].international = preferInternat.preferInternatPartner
+                students_submitted[user_id].international = PreferInternat.prefer_internat_partner
             else:
-                students_submitted[user_id].international = preferInternat.dontCareInternat
+                students_submitted[user_id].international = PreferInternat.dont_care_internat
 
     # Q7 on the Canvas quiz question
     # Default: "default"
@@ -210,11 +210,11 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             if answer_text == "I'm confident.":
-                students_submitted[user_id].confidence = Confident.isConfident
+                students_submitted[user_id].confidence = confident.is_confident
             elif answer_text == "I could really use some help.":
-                students_submitted[user_id].confidence = Confident.notConfident
+                students_submitted[user_id].confidence = confident.not_confident
             else:
-                students_submitted[user_id].confidence = Confident.defaultConfidence
+                students_submitted[user_id].confidence = confident.default_confidence
 
     # time_free
     daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -273,257 +273,6 @@ def parse_submissions(students_submitted, course, quiz, config):
 
     # Returns nothing. Modifies students_submitted by filling their respective fields
     return
-
-
-def parse(studentData:pd, CLASS_ID: int, canvasClass:course.Course):
-    #Fill the dictionary and the student lists
-    dictSt = {}
-    #ECS 36B
-    pronounsQ = '1252650'
-    pronounsFree = '1252651'
-    genderMatchQ = '1252652'
-    syncQ = '1252653'
-    timeQ = '1252654'
-    commPreferenceQ = '1252655'
-    commValuesQ = '1252656'
-    leaderQ = '1252657'
-    countryQ = '1091825'
-    countryFree = '1091826'
-    internationalQ = '1252658'
-    languageQ = '1252659'
-    languageFree = '1252660'
-    groupWantsQ = '1252661'
-    groupWantsFree = '1252662'
-    priorityQ = '1252663'
-    studentPerfQ = '1252664'
-
-    #ECS 36A
-    #Set default to ECS 36B, but it could also be 36A
-    #This will need to be changed each time the quiz is changed
-    if CLASS_ID == 574775: # ECS 36A
-        pronounsQ = '1252518'
-        pronounsFree = '1252519'
-        genderMatchQ = '1252520'
-        syncQ = '1252521'
-        timeQ = '1252522'
-        commPreferenceQ = '1252523'
-        commValuesQ = '1252524'
-        leaderQ = '1252525'
-        countryQ = '1091825'
-        countryFree = '1091826'
-        internationalQ = '1252526'
-        languageQ = '1252527'
-        languageFree = '1252528'
-        groupWantsQ = '1252529'
-        groupWantsFree = '1252530'
-        priorityQ = '1252531'
-        studentPerfQ = '1252532'
-
-# the list of question ids of questions
-    questionList = [pronounsQ, pronounsFree, genderMatchQ, syncQ, timeQ, commPreferenceQ, commValuesQ, leaderQ, internationalQ, languageQ, languageFree, groupWantsQ, groupWantsFree, priorityQ, studentPerfQ]
-    # all columns in the student data csv. Need for full question string
-    fullQuestionList = studentData.columns.values.tolist()
-    # print(fullQuestionList)
-    # numerical location of the question
-    questionsLoc = []
-    # iterate through all column names in csv and add location of matching id to list
-    for loc, question in enumerate(fullQuestionList):
-        for id in questionList:
-            if id in question:
-                questionsLoc.append(loc)
-    # for item in questionList:
-      #  questionsFull.append([word for word in fullQuestionList if item in word])
-    #for item in questionsFull:
-    #    questionLoc.append(studentData.columns.get_loc(item))
-    questionsDict = dict(zip(questionList, questionsLoc))
-    questionsDict['id'] = studentData.columns.get_loc('id')
-    questionsDict['name'] = studentData.columns.get_loc('name')
-
-    students_still_enrolled = canvasClass.get_users(enrollment_type=('student',), sort='username')
-    students_still_enrolled = {student.id for student in students_still_enrolled}
-
-    for row in studentData.itertuples(index=False, name=None):
-        if row[questionsDict['id']] not in students_still_enrolled:
-            continue
-
-        #name and id
-        tempStudent = Student(row[questionsDict['id']], row[questionsDict['name']])
-
-        #pronouns that the student prefers
-        tempArr = row[questionsDict[pronounsQ]]
-
-        freeResponse = row[questionsDict[pronounsFree]]
-        if len(tempArr) != 0:
-            if tempArr == "Not Included":
-                tempStudent.pronouns = freeResponse
-            else:
-                tempStudent.pronouns  = tempArr
-
-        #preferSame is True if the student would like to share their group with someone of the same gender
-        tempArr = row[questionsDict[genderMatchQ]]
-        if type(tempArr) is str:
-            if tempArr == "I would prefer another person who as the same pronouns as I do.":
-                tempStudent.preferSame = preferGender.samePronouns
-            elif tempArr == "I would prefer another person who does not have the same pronouns as I do.":
-                tempStudent.preferSame = preferGender.diffPronouns
-            elif tempArr == "No preference":
-                tempStudent.preferSame = preferGender.dontCarePronouns
-
-
-        #meeting times - Sun - Sat, Midnight-4, 4-8, 8-noon, etc  [0][0] is sunday at midnight to 4 time slot
-        tempArr = row[questionsDict[timeQ]]
-        if type(tempArr) is str:
-            meetingTimes = tempArr.split(",")
-            daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri","Sat"]
-            for i in range(7):
-                for j in range(1, 7):
-                    if daysOfWeek[i] + str(j) in meetingTimes:
-                        tempStudent.meetingTimes[i][(j - 1)] = True
-
-
-        #asynch (2), synch (1), no pref (0)- how the student would like to meet
-        studentSync = row[questionsDict[syncQ]]
-        if type(studentSync) is str:
-            if studentSync == "Synchronously":
-                tempStudent.preferAsy = preferAsync.likeSync
-            elif studentSync == "Asynchronously":
-                tempStudent.preferAsy = preferAsync.likeAsync
-            else:
-                tempStudent.preferAsy = preferAsync.dontCareAsync
-
-        #contact pref - Discord, Phone, Email, Canvas - 2 = yes, 1 = no preference, 0 = not comfortable
-        tempArr = (row[questionsDict[commPreferenceQ]])
-        if type(tempArr) is str:
-            contactPreference = tempArr.split(",")
-            # Parse which contact method student wants from a list
-            if "Discord" in contactPreference:
-                (tempStudent.contactPreference)[0] = True
-            if "Text/Phone Number" in contactPreference:
-                (tempStudent.contactPreference)[1] = True
-            if "Email" in contactPreference:
-                (tempStudent.contactPreference)[2] = True
-            if "Canvas Groups" in contactPreference:
-                (tempStudent.contactPreference)[3] = True
-
-        #contact info - [DiscordHandle, PhoneNumber, personal@email.com]
-        tempArr = (row[questionsDict[commValuesQ]])
-        if type(tempArr) is str:
-            contactInfo = tempArr.split(",")
-            for i in range(3):
-                tempStudent.contactInformation[i] = contactInfo[i]
-
-        #prefer leader- True if they prefer to be the leader, false otherwise
-        studentLeader = row[questionsDict[leaderQ]]
-        if type(studentLeader) is str:
-            if studentLeader == "I like to lead.":
-                tempStudent.preferLeader = True
-            else:
-                tempStudent.preferLeader = False
-
-        #country - Country of Origin
-        '''
-        tempArr = (row[studentData.columns.str.contains(countryQ)].tolist())
-        freeResponse = row[studentData.columns.str.contains(countryFree)].tolist()
-        
-        if type(tempArr[0]) is str:
-            countryResult = tempArr[0].split(",")
-            if len(countryResult) == 2:
-                if countryResult[0] == "Not Included":
-                    tempStudent.countryOfOrigin = freeResponse[0]
-                else:
-                    tempStudent.countryOfOrigin = tempArr[0]
-            elif len(countryResult) == 1:
-                if countryResult[0] == "Yes" or tempArr[0] == "No":
-                    #preferCountry - True if they would like to have a groupmate from the same country
-                    if tempArr[0] == "No":
-                        tempStudent.preferCountry = False
-                    else: 
-                        tempStudent.preferCountry = True 
-                else:
-                    if tempArr[1] == "No":
-                        tempStudent.preferCountry = False
-                    else: 
-                        tempStudent.preferCountry = True
-                    
-        tempArr.clear()
-        freeResponse.clear()
-        '''
-
-        #international student preference
-        tempArr = row[questionsDict[internationalQ]]
-        if type(tempArr) is str:
-            if tempArr == "I would like to be placed with another international student.":
-                tempStudent.international = preferInternat.preferInternatPartner
-            elif tempArr == "No preference":
-                tempStudent.international = preferInternat.dontCareInternat
-            elif tempArr == "I am not an international student.":
-                tempStudent.international = preferInternat.notInternat
-
-        #languages - Preferred language
-        languageSelect = row[questionsDict[languageQ]]
-        notIncluedeLanguage = row[questionsDict[languageFree]]
-        if type(languageSelect) is str:
-            if languageSelect == "Not Included":
-                tempStudent.language = notIncluedeLanguage
-            else:
-                tempStudent.language = languageSelect
-
-
-        #Preferred stuff to do - the drop downs and free response
-        tempArr = (row[questionsDict[groupWantsQ]])
-        # Take the array of one item and check if its the right type,
-        # then assign to the variable
-        if type(tempArr) is str:
-            tempStudent.option1 = tempArr
-        tempResponse = row[questionsDict[groupWantsFree]]
-        if type(tempResponse) is str:
-            tempStudent.freeResponse = tempResponse
-
-        #Priority of what they want
-        freeResponse = row[questionsDict[priorityQ]]
-        if type(freeResponse) is str:
-            priority = freeResponse.split(",")
-            while len(priority) < 5:
-                priority.append("default")
-            tempStudent.priorityList = priority
-
-        # how the student feels in the class
-        tempArr = row[questionsDict[studentPerfQ]]
-        if type(tempArr) is str:
-            if tempArr == "I'm confident.":
-                tempStudent.confidence = Confident.isConfident
-            elif tempArr == "I have some questions.":
-                tempStudent.confidence = Confident.defaultConfidence
-            elif tempArr == "I could really use some help.":
-                tempStudent.confidence = Confident.notConfident
-
-        #Add the student to the dictionary of all students
-        dictSt[row[questionsDict['id']]] = tempStudent
-
-    return dictSt
-
-
-def parseEmails(dictSt:dict, canvasClass:Canvas):
-    missingSt = {}
-
-    # update student dictionary to include people who did not take, as well as list composed of students who did not take the test
-    # the class and add default emails to all students
-    for user in canvasClass.get_users(enrollment_type=['student']):
-        if user.id not in dictSt:
-            if not hasattr(user, 'email'):
-                continue
-            name = user.sortable_name.split(",")
-            temp = Student(user.id, user.name, user.email, name[1], name[0])
-            missingSt[user.id] = temp
-        else:
-            name = user.sortable_name.split(",")
-            tempStudent = dictSt[user.id]
-            tempStudent.schoolEmail = user.email
-            tempStudent.firstName = name[1]
-            tempStudent.lastName = name[0]
-            dictSt[user.id] = tempStudent
-
-    return missingSt
 
 
 # temporary stopgap for adding partner option
