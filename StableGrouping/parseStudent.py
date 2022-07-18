@@ -4,6 +4,28 @@ import pandas as pd
 from canvasapi import Canvas
 from studentClass import Student
 import json
+import Enum from enum
+
+class preferGender(Enum):
+    samePronouns = 2
+    diffPronouns = 0
+    dontcarePronouns = 1
+
+class preferAsync(Enum):
+    likeSync = 1
+    likeAsync = 2
+    dontcareAsync = 0
+
+class preferInternat(Enum):
+    notInternat = 0
+    preferInternatPartner = 2
+    dontcareInternat = 1
+
+class Confident(Enum):
+    isConfident = 2
+    notConfident = 0
+    defaultConfident = 1
+
 
 def parse_students(canvas_students):
     all_students = {}
@@ -127,11 +149,11 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             if answer_text == "I would prefer another person who as the same pronouns as I do.":
-                students_submitted[user_id].preferSame = 2
+                students_submitted[user_id].preferSame = preferGender.samePronouns
             elif answer_text == "I would prefer another person who does not have the same pronouns as I do.":
-                students_submitted[user_id].preferSame = 0
+                students_submitted[user_id].preferSame = preferGender.diffPronouns
             else:
-                students_submitted[user_id].preferSame = 1
+                students_submitted[user_id].preferSame = preferGender.dontcarePronouns
 
     # 0 - No preference (Default)
     # 1 - Synchronous
@@ -140,11 +162,11 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             if answer_text == "Synchronously":
-                students_submitted[user_id].preferAsy = 1
+                students_submitted[user_id].preferAsy = preferAsync.likeSync
             elif answer_text == "Asynchronously":
-                students_submitted[user_id].preferAsy = 2
+                students_submitted[user_id].preferAsy = preferAsync.likeAsync
             else:
-                students_submitted[user_id].preferAsy = 0
+                students_submitted[user_id].preferAsy = preferAsync.dontcareAsync
 
     for answer in question_index["prefer_to_lead"]["answers"]:
         answer_text = answer["text"]
@@ -158,11 +180,11 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             if answer_text == "I am not an international student.":
-                students_submitted[user_id].international = 0
+                students_submitted[user_id].international = preferInternat.notInternat
             elif answer_text == "I would like to be placed with another international student.":
-                students_submitted[user_id].international = 2
+                students_submitted[user_id].international = preferInternat.preferInternatPartner
             else:
-                students_submitted[user_id].international = 1
+                students_submitted[user_id].international = preferInternat.dontcareInternat
 
     # Q7 on the Canvas quiz question
     # Default: "default"
@@ -179,11 +201,11 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer["text"]
         for user_id in answer["user_ids"]:
             if answer_text == "I'm confident.":
-                students_submitted[user_id].confidence = 2
+                students_submitted[user_id].confidence = Confident.isConfident
             elif answer_text == "I could really use some help.":
-                students_submitted[user_id].confidence = 0
+                students_submitted[user_id].confidence = Confident.notConfident
             else:
-                students_submitted[user_id].confidence = 1
+                students_submitted[user_id].confidence = Confident.defaultConfident
 
     # time_free
     daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -311,11 +333,11 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
         tempArr = row[questionsDict[genderMatchQ]]
         if type(tempArr) is str:
             if tempArr == "I would prefer another person who as the same pronouns as I do.":
-                tempStudent.preferSame = 2
+                tempStudent.preferSame = preferGender.samePronouns
             elif tempArr == "I would prefer another person who does not have the same pronouns as I do.":
-                tempStudent.preferSame = 0
+                tempStudent.preferSame = preferGender.diffPronouns
             elif tempArr == "No preference":
-                tempStudent.preferSame = 1
+                tempStudent.preferSame = preferGender.dontcarePronouns
 
 
         #meeting times - Sun - Sat, Midnight-4, 4-8, 8-noon, etc  [0][0] is sunday at midnight to 4 time slot
@@ -333,11 +355,11 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
         studentSync = row[questionsDict[syncQ]]
         if type(studentSync) is str:
             if studentSync == "Synchronously":
-                tempStudent.preferAsy = 1
+                tempStudent.preferAsy = preferAsync.likeSync
             elif studentSync == "Asynchronously":
-                tempStudent.preferAsy = 2
+                tempStudent.preferAsy = preferAsync.likeAsync
             else:
-                tempStudent.preferAsy = 0
+                tempStudent.preferAsy = preferAsync.dontcareAsync
 
         #contact pref - Discord, Phone, Email, Canvas - 2 = yes, 1 = no preference, 0 = not comfortable
         tempArr = (row[questionsDict[commPreferenceQ]])
@@ -401,11 +423,11 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
         tempArr = row[questionsDict[internationalQ]]
         if type(tempArr) is str:
             if tempArr == "I would like to be placed with another international student.":
-                tempStudent.international = 2
+                tempStudent.international = preferInternat.preferInternatPartner
             elif tempArr == "No preference":
-                tempStudent.international = 1
+                tempStudent.international = preferInternat.dontcareInternat
             elif tempArr == "I am not an international student.":
-                tempStudent.international = 0
+                tempStudent.international = preferInternat.notInternat
 
         #languages - Preferred language
         languageSelect = row[questionsDict[languageQ]]
@@ -439,11 +461,11 @@ def parse(studentData:pd, CLASS_ID: int, canvasClass:canvasapi.course.Course):
         tempArr = row[questionsDict[studentPerfQ]]
         if type(tempArr) is str:
             if tempArr == "I'm confident.":
-                tempStudent.confidence = 2
+                tempStudent.confidence = Confident.isConfident
             elif tempArr == "I have some questions.":
-                tempStudent.confidence = 1
+                tempStudent.confidence = Confident.defaultConfident
             elif tempArr == "I could really use some help.":
-                tempStudent.confidence = 0
+                tempStudent.confidence = Confident.notConfident
 
         #Add the student to the dictionary of all students
         dictSt[row[questionsDict['id']]] = tempStudent
