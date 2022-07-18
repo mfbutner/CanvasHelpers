@@ -4,22 +4,26 @@ import pandas as pd
 from canvasapi import Canvas
 from studentClass import Student
 import json
-import Enum from enum
+from enum import Enum
+
 
 class preferGender(Enum):
     samePronouns = 2
     diffPronouns = 0
     dontcarePronouns = 1
 
+
 class preferAsync(Enum):
     likeSync = 1
     likeAsync = 2
     dontcareAsync = 0
 
+
 class preferInternat(Enum):
     notInternat = 0
     preferInternatPartner = 2
     dontcareInternat = 1
+
 
 class Confident(Enum):
     isConfident = 2
