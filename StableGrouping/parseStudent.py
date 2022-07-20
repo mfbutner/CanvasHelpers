@@ -259,11 +259,19 @@ def parse_submissions(students_submitted, course, quiz, config):
             students_submitted[user_id].language = remove_any_tags(answer["text"])
 
     # prefer_communication_method
-    counter = -1
     for each_entity in question_index["prefer_communication_method"]["answers"]:
-        counter = counter + 1
-        for user_id in each_entity["user_ids"]:
-            students_submitted[user_id].contactPreference[counter] = True
+        if(each_entity["text"] == "Discord"):
+            for user_id in each_entity["user_ids"]:
+                students_submitted[user_id].contactPreference[0] = True
+        elif (each_entity["text"] == "Text/Phone Number"):
+            for user_id in each_entity["user_ids"]:
+                students_submitted[user_id].contactPreference[1] = True
+        elif (each_entity["text"] == "Email"):
+            for user_id in each_entity["user_ids"]:
+                students_submitted[user_id].contactPreference[2] = True
+        elif (each_entity["text"] == "Canvas Groups"):
+            for user_id in each_entity["user_ids"]:
+                students_submitted[user_id].contactPreference[3] = True
 
     # prefer_communication_info
     for user_id, answer in question_index["prefer_communication_info"].items():
