@@ -270,7 +270,7 @@ class PartnerEvalQuizCreator:
             print('"Partner Evaluations" category does not exist!')
             print('Creating "Partner Evalutions" assignment group')
             partner_eval_ag = course.create_assignment_group(
-                name="Partner Evalulations", group_weight=0
+                name="Partner Evalulations", group_weight=10
             )
         else:
             print("Not making a new assignment group since ")
