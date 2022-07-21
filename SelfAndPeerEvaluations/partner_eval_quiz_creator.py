@@ -10,10 +10,10 @@ class PartnerEvalQuizCreator:
         self,
         course: canvasapi.course.Course,
         assignment_name: str,
-        assignment_group_id: int = 0,
         unlock_date: Optional[datetime.datetime] = None,
         due_date: Optional[datetime.datetime] = None,
         lock_date: Optional[datetime.datetime] = None,
+        assignment_group_id: int = 0,
     ):
         self.course = course
         self.assignment_name = assignment_name
@@ -286,7 +286,14 @@ if __name__ == "__main__":
     canvas = canvasapi.Canvas(url, key)
     course = canvas.get_course(1599)  # sandbox course ID
 
-    assignment_names = ["quiz 1", "quiz 2", "quiz 3"]
+    # first_due = datetime.datetime(2022, 7, 20, 23, 59)
+    # first_open = datetime.datetime(2022, 7, 20, 19, 00)
+    assignment_names = ["quiz 1", "quiz 2", "quiz 3", "quiz 4"]
     for _ in assignment_names:
+        # due = first_due + datetime.timedelta(weeks_into_the_quarter * 7)
+        # close = due + datetime.timedelta(days=1)
+        # open_d = first_open + datetime.timedelta(weeks_into_the_quarter * 7)
+        # quiz = PartnerEvalQuizCreator(course, _, open_d, due, close)
         quiz = PartnerEvalQuizCreator(course, _)
         quiz.upload_to_canvas()
+        # weeks_into_the_quarter += 1
