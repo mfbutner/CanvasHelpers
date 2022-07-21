@@ -1,5 +1,6 @@
 import canvasapi
 from collections import defaultdict
+import datetime
 import random
 import re
 import statistics
@@ -18,23 +19,23 @@ class PartnerEvalQuizGrader:
             if assignment_group
             else self.__find_partner_eval_ag(course)
         )
+        # make sure that assignment group has assignment attribute
         if not hasattr(self.assignment_group, "assignments"):
-            print(
-                "ERROR: The assignment group was not called with the include assignments flag."
+            self.assignment_group = course.get_assignment_group(
+                self.assignment_group.id, include=["assignments"]
             )
-            exit(1)
 
         self.students = self.__get_students()
 
     def __find_partner_eval_ag(
-        self, course: canvasapi.course.Course
+        self,
+        course: canvasapi.course.Course,
     ) -> canvasapi.assignment.AssignmentGroup:
+        # Looks for assignment group named "Partner Evaluations"
+        # If no assignment group is found, ends program
         partner_eval_ag = None
 
         for ag in course.get_assignment_groups():
-            # FIXME: this is too strict
-            #        we should be able to match similar assignment groups
-            #        or, allow user to create their own ag
             if ag.name == "Partner Evalulations":
                 partner_eval_ag = ag
 
@@ -50,7 +51,8 @@ class PartnerEvalQuizGrader:
         for assignment_info in self.assignment_group.assignments:
             self.quiz_grades.append(self.__get_quiz_grade(assignment_info))
 
-    def __get_quiz_grade(self, assignment_info: dict):
+    def __get_quiz_grade(self, assignment_info: dict) -> dict:
+        # TODO: break this function up into smaller parts
         quiz_grade = defaultdict(lambda: defaultdict(list))
         assignment_id = assignment_info["id"]
         # we assume all assignments in assignment group are valid quizzes
@@ -140,9 +142,8 @@ class PartnerEvalQuizGrader:
         # rematch missing students
         for student_user_id in rematching_list:
             # use the student id as the value and find the partner id from the keys
-            # this assumes that the partner correctly identified the student
-            # if there is no partner who identified the student, then
-            #    the student's partner_id is None
+            # this assumes that the partner correctly identified the student so exactly one partner to one student
+            # if there is no partner who identified the student, then the student's partner_id is None
             partner_id = [
                 key for key, value in partner_dict.items() if value == student_user_id
             ]
@@ -190,11 +191,28 @@ class PartnerEvalQuizGrader:
         clean_students = {student: raw_students[student][1] for student in raw_students}
         return clean_students
 
-    def upload_grades_to_canvas(self):
-        # TODO: actually uplaod to canvas
+    def upload_grades_to_canvas(self, assignment_name="Group Work"):
         self.__get_quiz_grades()
         self.__make_individual_stats()
         grades = self.__make_final_grades()
+        assignment = self.course.create_assignment(
+            assignment={
+                "name": assignment_name,
+                "description": "Your overall group work score based on the past Partner Evaluation assignments.",
+                "assignment_group_id": self.assignment_group.id,
+                "submission_types": ["none"],
+                "points_possible": 100,
+                "due_at": datetime.datetime.now().isoformat(),
+                "lock_at": datetime.datetime.now().isoformat(),
+                "unlock_at": datetime.datetime.now().isoformat(),
+                "published": True,
+            }
+        )
+        assignment.submissions_bulk_update(
+            grade_data={id: {"posted_grade": grade} for id, grade in grades.items()}
+        )
+
+        # debugging purposes
         for k, v in grades.items():
             print(f"ID {k} will receive {round(v,2 )} as their final score")
 
@@ -303,6 +321,14 @@ class PartnerEvalQuizIndividualStats:
                 * 100
             )
         final_score = 0.4 * project_engagement_score + 0.6 * project_contrib_score
+        print(
+            "id:",
+            self.id,
+            "proj:",
+            project_engagement_score,
+            "contrib:",
+            project_contrib_score,
+        )
         return final_score
 
 
@@ -313,4 +339,4 @@ if __name__ == "__main__":
     canvas = canvasapi.Canvas(url, key)
     course = canvas.get_course(1599)  # sandbox course ID
     grader = PartnerEvalQuizGrader(course)
-    grader.upload_grades_to_canvas()
+    grader.upload_grades_to_canvas("test grading")
