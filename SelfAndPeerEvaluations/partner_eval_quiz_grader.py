@@ -11,7 +11,6 @@ class PartnerEvalQuizGrader:
         course: canvasapi.course.Course,
         assignment_group: canvasapi.assignment.AssignmentGroup = 0,
     ):
-        # TODO: make sure that get_assignment_groups is called with include=['assignment']
         self.course = course
 
         self.assignment_group = (
@@ -69,13 +68,13 @@ class PartnerEvalQuizGrader:
             "Strongly agree": 4,
         }
         # self evals
-        for question_stats in stats.question_statistics[10:16]:
+        for question_stats in stats.question_statistics[1:7]:
             for answer in question_stats["answers"]:
                 reg_str = "<h3>(.*?)</h3>"
                 subject = re.match(reg_str, question_stats["question_text"]).group(1)
                 try:
                     for user_id in answer["user_ids"]:
-                        quiz_grade[partner_id_map[user_id]][subject].append(
+                        quiz_grade[user_id][subject].append(
                             qual_mappings[answer["text"]]
                         )
                 except KeyError:  # skip responses that have no students
@@ -129,11 +128,7 @@ class PartnerEvalQuizGrader:
                     partner_id = self.students[answer["text"]]
                 # check if multiple students picked the same partner
                 if len(answer["user_ids"]) > 1:
-                    # TODO: match the mixmatches
-                    print("too many students picked this person!")
-                    print("we need to match")
-
-                    for user_id in answer["user_id"]:
+                    for user_id in answer["user_ids"]:
                         rematching_list.append(user_id)
 
                     # we assume that at least one person of the pair picked correctly
@@ -144,14 +139,18 @@ class PartnerEvalQuizGrader:
 
         # rematch missing students
         for student_user_id in rematching_list:
-            partner_id = str(
-                [key for key, value in partner_dict.items() if value == student_user_id]
-            )
-            partner_dict[student_user_id] = partner_id
-
+            # use the student id as the value and find the partner id from the keys
+            # this assumes that the partner correctly identified the student
+            # if there is no partner who identified the student, then
+            #    the student's partner_id is None
+            partner_id = [
+                key for key, value in partner_dict.items() if value == student_user_id
+            ]
+            partner_dict[student_user_id] = partner_id[0] if len(partner_id) else "None"
         return partner_dict
 
-    # make dict where keys are student names and value is student canvas user ids
+    # make dict where keys are student names and value is a list [SID, canvas ID]
+    # returns a dict where keys are student names and value is canvas ID (not SID!)
     # FIXME: messy and hacky way to handle dupes
     def __get_students(self) -> dict:
         raw_students = defaultdict(list)
@@ -171,17 +170,17 @@ class PartnerEvalQuizGrader:
                 ].extend([raw_student.sis_user_id, raw_student.id])
             elif raw_student.sortable_name in raw_students.keys():
                 dup_list.add(raw_student.sortable_name)
-                SID = str(raw_student.sis_user_id)
 
+                # rewrite the initial dupe student to include their id
                 orignal_SID = str(raw_students[raw_student.sortable_name])
                 raw_students[
-                    raw_student.sortable_name + " (XXXXX" + SID[-4:] + ")"
-                ].extend([raw_student.sis_user_id, raw_student.id])
+                    raw_student.sortable_name + " (XXXXX" + orignal_SID[-4:] + ")"
+                ].extend(raw_students[raw_student.sortable_name])
                 raw_students.pop(raw_student.sortable_name)
 
                 dup_SID = str(raw_student.sis_user_id)
                 raw_students[
-                    raw_student.sortable_name + " (XXXXX" + SID[-4:] + ")"
+                    raw_student.sortable_name + " (XXXXX" + dup_SID[-4:] + ")"
                 ].extend([raw_student.sis_user_id, raw_student.id])
             else:
                 raw_students[raw_student.sortable_name].extend(
@@ -231,12 +230,12 @@ class PartnerEvalQuizIndividualStats:
         for quiz_grade in quiz_grades:
             if id not in quiz_grade.keys():
                 # student did not submit this assignment give them defaults
-                org_avgs.append(0)
-                com_avgs.append(0)
-                coop_avgs.append(0)
-                atti_avgs.append(0)
-                idea_avgs.append(0)
-                code_avgs.append(0)
+                org_avgs.append(1)
+                com_avgs.append(1)
+                coop_avgs.append(1)
+                atti_avgs.append(1)
+                idea_avgs.append(1)
+                code_avgs.append(1)
                 contrib_avgs.append(0)
                 deviation_1_avgs.append(0)
                 deviation_2_avgs.append(0)
@@ -250,17 +249,25 @@ class PartnerEvalQuizIndividualStats:
             contrib_avgs.append(
                 statistics.fmean(quiz_grade[id]["Project contribution"])
             )
-            deviation_1_avgs.append(
-                statistics.fmean(
-                    quiz_grade[id][quality][0] - quiz_grade[id][quality][1]
-                    for quality in quiz_grade[id].keys()
-                    if quality != "Project contribution"
+            deviation_1_vals = []
+            for quality in quiz_grade[id].keys():
+                if quality == "Project contribution":
+                    continue
+
+                if len(quiz_grade[id][quality]) == 1:
+                    deviation_1_vals.append(0)
+                else:
+                    deviation_1_vals.append(
+                        quiz_grade[id][quality][0] - quiz_grade[id][quality][1]
+                    )
+            deviation_1_avgs.append(statistics.fmean(deviation_1_vals))
+            if len(quiz_grade[id]["Project contribution"]) > 1:
+                deviation_2_avgs.append(
+                    quiz_grade[id]["Project contribution"][0]
+                    - quiz_grade[id]["Project contribution"][1]
                 )
-            )
-            deviation_2_avgs.append(
-                quiz_grade[id]["Project contribution"][0]
-                - quiz_grade[id]["Project contribution"][1]
-            )
+            else:
+                deviation_2_avgs.append(0)
 
         project_engagement_avgs = []
         for quality in org_avgs, com_avgs, coop_avgs, atti_avgs, idea_avgs, code_avgs:
