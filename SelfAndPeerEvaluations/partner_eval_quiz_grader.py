@@ -4,20 +4,21 @@ import datetime
 import random
 import re
 import statistics
+from grader_utils import *
 
 
 class PartnerEvalQuizGrader:
     def __init__(
         self,
         course: canvasapi.course.Course,
-        assignment_group: canvasapi.assignment.AssignmentGroup = 0,
+        assignment_group: canvasapi.assignment.AssignmentGroup = None,
     ):
         self.course = course
 
         self.assignment_group = (
             assignment_group
-            if assignment_group
-            else self.__find_partner_eval_ag(course)
+            if assignment_group is not None
+            else find_partner_eval_ag(course)
         )
         # make sure that assignment group has assignment attribute
         if not hasattr(self.assignment_group, "assignments"):
@@ -49,14 +50,15 @@ class PartnerEvalQuizGrader:
     def __get_quiz_grades(self):
         self.quiz_grades = []
         for assignment_info in self.assignment_group.assignments:
-            self.quiz_grades.append(self.__get_quiz_grade(assignment_info))
+            assignment = self.course.get_assignment(assignment_info["id"])
+            if not hasattr(assignment, "quiz_id"):
+                continue
+            self.quiz_grades.append(self.__get_quiz_grade(assignment))
 
-    def __get_quiz_grade(self, assignment_info: dict) -> dict:
+    def __get_quiz_grade(self, assignment: canvasapi.assignment.Assignment) -> dict:
         # TODO: break this function up into smaller parts
         quiz_grade = defaultdict(lambda: defaultdict(list))
-        assignment_id = assignment_info["id"]
-        # we assume all assignments in assignment group are valid quizzes
-        assignment = self.course.get_assignment(assignment_id)
+
         quiz = self.course.get_quiz(assignment.quiz_id)
         stats = list(quiz.get_statistics())[0]  # what is happening here
         # partner_id question is question 8
