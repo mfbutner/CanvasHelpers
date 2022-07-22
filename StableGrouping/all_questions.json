@@ -4,31 +4,51 @@
         "question_type": "multiple_choice_question",
         "question_text": "\n<p>What are your preferred pronouns?</p>\n<p>This information will <strong>NOT</strong> be shared with other students.&nbsp;&nbsp;</p>\n",
         "position": 1,
-        "responses": 1,
+        "responses": 11,
         "answers": [
             {
                 "id": "5465",
                 "text": "She/Hers",
                 "correct": true,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 3,
+                "user_ids": [
+                    343300,
+                    343307,
+                    343293
+                ],
+                "user_names": [
+                    "Definitely Human",
+                    "What'sTheName",
+                    "John Steven Roger"
+                ]
             },
             {
                 "id": "7954",
                 "text": "He/him/his",
                 "correct": false,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 1,
+                "user_ids": [
+                    343298
+                ],
+                "user_names": [
+                    "Good Child"
+                ]
             },
             {
                 "id": "6771",
                 "text": "They/them",
                 "correct": false,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 3,
+                "user_ids": [
+                    343301,
+                    343308,
+                    343309
+                ],
+                "user_names": [
+                    "Very Good Child",
+                    "None undefined",
+                    "GuessMyName"
+                ]
             },
             {
                 "id": "3851",
@@ -42,29 +62,49 @@
                 "id": "5858",
                 "text": "Not Included",
                 "correct": false,
-                "responses": 1,
+                "responses": 4,
                 "user_ids": [
+                    343306,
+                    343304,
+                    343297,
                     272467
                 ],
                 "user_names": [
+                    "Sarah Smith",
+                    "IAmAlsoGood",
+                    "I-Have A. Name",
                     "Francis Boid"
+                ]
+            },
+            {
+                "id": "none",
+                "text": "No Answer",
+                "correct": false,
+                "responses": 2,
+                "user_ids": [
+                    343299,
+                    343302
+                ],
+                "user_names": [
+                    "Bobby Johnson",
+                    "Bare Minimum"
                 ]
             }
         ],
-        "answered_student_count": 1,
-        "top_student_count": 0,
-        "middle_student_count": 1,
+        "answered_student_count": 11,
+        "top_student_count": 11,
+        "middle_student_count": 0,
         "bottom_student_count": 0,
-        "correct_student_count": 0,
-        "incorrect_student_count": 1,
-        "correct_student_ratio": 0.0,
-        "incorrect_student_ratio": 1.0,
-        "correct_top_student_count": 0,
+        "correct_student_count": 3,
+        "incorrect_student_count": 8,
+        "correct_student_ratio": 0.2727272727272727,
+        "incorrect_student_ratio": 0.7272727272727273,
+        "correct_top_student_count": 3,
         "correct_middle_student_count": 0,
         "correct_bottom_student_count": 0,
-        "variance": 0,
-        "stdev": 0.0,
-        "difficulty_index": 0.0,
+        "variance": 0.1983471074380165,
+        "stdev": 0.4453617714151233,
+        "difficulty_index": 0.2727272727272727,
         "alpha": null,
         "point_biserials": [
             {
@@ -104,24 +144,48 @@
         "question_type": "essay_question",
         "question_text": "\n<p>If you answered \"Not Included\" on your pronouns, feel free to specify:</p>\n<p>This information will <strong>NOT</strong> be shared with other students.</p>\n",
         "position": 2,
-        "responses": 1,
+        "responses": 7,
         "graded": 0,
         "full_credit": 0,
         "point_distribution": [
             {
                 "score": 0.0,
-                "count": 1
+                "count": 13
             }
         ],
         "answers": [
             {
                 "user_ids": [
+                    343306,
+                    343301,
+                    343308,
+                    343309,
+                    343304,
+                    343300,
+                    343307,
+                    343299,
+                    343297,
+                    343293,
+                    343298,
+                    343302,
                     272467
                 ],
                 "user_names": [
+                    "Sarah Smith",
+                    "Very Good Child",
+                    "None undefined",
+                    "GuessMyName",
+                    "IAmAlsoGood",
+                    "Definitely Human",
+                    "What'sTheName",
+                    "Bobby Johnson",
+                    "I-Have A. Name",
+                    "John Steven Roger",
+                    "Good Child",
+                    "Bare Minimum",
                     "Francis Boid"
                 ],
-                "responses": 1,
+                "responses": 13,
                 "id": "ungraded",
                 "score": 0.0,
                 "full_credit": false
@@ -133,17 +197,25 @@
         "question_type": "multiple_choice_question",
         "question_text": "What are your group makeup preferences on gender?&nbsp; We will attempt to make the best groups possible.<br>This information will <strong>NOT</strong> be shared with other students.",
         "position": 3,
-        "responses": 1,
+        "responses": 12,
         "answers": [
             {
                 "id": "9000",
                 "text": "I would prefer another person who as the same pronouns as I do.",
                 "correct": true,
-                "responses": 1,
+                "responses": 5,
                 "user_ids": [
+                    343306,
+                    343308,
+                    343304,
+                    343293,
                     272467
                 ],
                 "user_names": [
+                    "Sarah Smith",
+                    "None undefined",
+                    "IAmAlsoGood",
+                    "John Steven Roger",
                     "Francis Boid"
                 ]
             },
@@ -151,33 +223,63 @@
                 "id": "4180",
                 "text": "I would prefer another person who does not have the same pronouns as I do.",
                 "correct": false,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 3,
+                "user_ids": [
+                    343300,
+                    343307,
+                    343299
+                ],
+                "user_names": [
+                    "Definitely Human",
+                    "What'sTheName",
+                    "Bobby Johnson"
+                ]
             },
             {
                 "id": "8457",
                 "text": "No Preference",
                 "correct": false,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 4,
+                "user_ids": [
+                    343301,
+                    343309,
+                    343297,
+                    343298
+                ],
+                "user_names": [
+                    "Very Good Child",
+                    "GuessMyName",
+                    "I-Have A. Name",
+                    "Good Child"
+                ]
+            },
+            {
+                "id": "none",
+                "text": "No Answer",
+                "correct": false,
+                "responses": 1,
+                "user_ids": [
+                    343302
+                ],
+                "user_names": [
+                    "Bare Minimum"
+                ]
             }
         ],
-        "answered_student_count": 1,
-        "top_student_count": 0,
-        "middle_student_count": 1,
+        "answered_student_count": 12,
+        "top_student_count": 12,
+        "middle_student_count": 0,
         "bottom_student_count": 0,
-        "correct_student_count": 1,
-        "incorrect_student_count": 0,
-        "correct_student_ratio": 1.0,
-        "incorrect_student_ratio": 0.0,
-        "correct_top_student_count": 0,
-        "correct_middle_student_count": 1,
+        "correct_student_count": 5,
+        "incorrect_student_count": 7,
+        "correct_student_ratio": 0.4166666666666667,
+        "incorrect_student_ratio": 0.5833333333333334,
+        "correct_top_student_count": 5,
+        "correct_middle_student_count": 0,
         "correct_bottom_student_count": 0,
-        "variance": 0,
-        "stdev": 0.0,
-        "difficulty_index": 1.0,
+        "variance": 0.2430555555555556,
+        "stdev": 0.4930066485916347,
+        "difficulty_index": 0.4166666666666667,
         "alpha": null,
         "point_biserials": [
             {
@@ -205,25 +307,45 @@
         "question_type": "multiple_choice_question",
         "question_text": "Do you prefer to meet synchronously or asynchronously?",
         "position": 4,
-        "responses": 1,
+        "responses": 12,
         "answers": [
             {
                 "id": "3539",
                 "text": "Synchronously",
                 "correct": true,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 7,
+                "user_ids": [
+                    343306,
+                    343308,
+                    343309,
+                    343304,
+                    343300,
+                    343307,
+                    343299
+                ],
+                "user_names": [
+                    "Sarah Smith",
+                    "None undefined",
+                    "GuessMyName",
+                    "IAmAlsoGood",
+                    "Definitely Human",
+                    "What'sTheName",
+                    "Bobby Johnson"
+                ]
             },
             {
                 "id": "7531",
                 "text": "No Preference",
                 "correct": false,
-                "responses": 1,
+                "responses": 3,
                 "user_ids": [
+                    343293,
+                    343298,
                     272467
                 ],
                 "user_names": [
+                    "John Steven Roger",
+                    "Good Child",
                     "Francis Boid"
                 ]
             },
@@ -231,25 +353,43 @@
                 "id": "6372",
                 "text": "Asynchronously",
                 "correct": false,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 2,
+                "user_ids": [
+                    343301,
+                    343297
+                ],
+                "user_names": [
+                    "Very Good Child",
+                    "I-Have A. Name"
+                ]
+            },
+            {
+                "id": "none",
+                "text": "No Answer",
+                "correct": false,
+                "responses": 1,
+                "user_ids": [
+                    343302
+                ],
+                "user_names": [
+                    "Bare Minimum"
+                ]
             }
         ],
-        "answered_student_count": 1,
-        "top_student_count": 0,
-        "middle_student_count": 1,
+        "answered_student_count": 12,
+        "top_student_count": 12,
+        "middle_student_count": 0,
         "bottom_student_count": 0,
-        "correct_student_count": 0,
-        "incorrect_student_count": 1,
-        "correct_student_ratio": 0.0,
-        "incorrect_student_ratio": 1.0,
-        "correct_top_student_count": 0,
+        "correct_student_count": 6,
+        "incorrect_student_count": 6,
+        "correct_student_ratio": 0.5,
+        "incorrect_student_ratio": 0.5,
+        "correct_top_student_count": 6,
         "correct_middle_student_count": 0,
         "correct_bottom_student_count": 0,
-        "variance": 0,
-        "stdev": 0.0,
-        "difficulty_index": 0.0,
+        "variance": 0.25,
+        "stdev": 0.5,
+        "difficulty_index": 0.5,
         "alpha": null,
         "point_biserials": [
             {
@@ -277,11 +417,11 @@
         "question_type": "multiple_dropdowns_question",
         "question_text": "\n<p>For each section of time- if you can be available for at least 20 minutes in the time frame, select the day/TimeSlot. If not select no.</p>\n<p>(I know it seems weird, we are using the Canvas API and naming each time slots' \"yes\" value to itself assists in programming)</p>\n<p><strong>ALL TIMES ARE IN PST</strong>. If you are not in Davis, you may need to convert.</p>\n<p>Also you may need to scroll quite a bit that way --&gt; because there are 7 days</p>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 100%; height: 203px;\" border=\"1\">\n<tbody>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\"></td>\n<td style=\"width: 12.5%; height: 29px;\">Sunday</td>\n<td style=\"width: 12.5%; height: 29px;\">Monday</td>\n<td style=\"width: 12.5%; height: 29px;\">Tuesday</td>\n<td style=\"width: 12.5%; height: 29px;\">Wednesday</td>\n<td style=\"width: 12.5%; height: 29px;\">Thursday</td>\n<td style=\"width: 12.5%; height: 29px;\">Friday</td>\n<td style=\"width: 12.5%; height: 29px;\">Saturday</td>\n</tr>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\">midnight - 4 am</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sun1]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Mon1]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Tue1]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Wed1]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Thu1]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Fri1]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sat1]</td>\n</tr>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\">4 am - 8 am</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sun2]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Mon2]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Tue2]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Wed2]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Thu2]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Fri2]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sat2]</td>\n</tr>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\">8 am - noon</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sun3]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Mon3]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Tue3]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Wed3]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Thu3]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Fri3]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sat3]</td>\n</tr>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\">noon - 4 pm</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sun4]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Mon4]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Tue4]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Wed4]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Thu4]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Fri4]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sat4]</td>\n</tr>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\">4 pm - 8 pm</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sun5]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Mon5]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Tue5]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Wed5]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Thu5]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Fri5]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sat5]</td>\n</tr>\n<tr style=\"height: 29px;\">\n<td style=\"width: 12.5%; height: 29px;\">8 pm - midnight</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sun6]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Mon6]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Tue6]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Wed6]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Thu6]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Fri6]</td>\n<td style=\"width: 12.5%; height: 29px;\">[Sat6]</td>\n</tr>\n</tbody>\n</table>\n",
         "position": 5,
-        "responses": 1,
+        "responses": 12,
         "answered": 0,
         "correct": 0,
-        "partially_correct": 1,
-        "incorrect": 0,
+        "partially_correct": 11,
+        "incorrect": 2,
         "answer_sets": [
             {
                 "id": "4b66803fa2f6a6d47468be23c1c6af0f",
@@ -291,11 +431,13 @@
                         "id": "6135",
                         "text": "Sun1",
                         "correct": true,
-                        "responses": 1,
+                        "responses": 2,
                         "user_ids": [
+                            343300,
                             272467
                         ],
                         "user_names": [
+                            "Definitely Human",
                             "Francis Boid"
                         ]
                     },
@@ -303,9 +445,43 @@
                         "id": "7668",
                         "text": "No",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 6,
+                        "user_ids": [
+                            343306,
+                            343309,
+                            343304,
+                            343307,
+                            343297,
+                            343293
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "What'sTheName",
+                            "I-Have A. Name",
+                            "John Steven Roger"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 5,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343299,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Bobby Johnson",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -317,11 +493,19 @@
                         "id": "5062",
                         "text": "Mon1",
                         "correct": true,
-                        "responses": 1,
+                        "responses": 5,
                         "user_ids": [
+                            343306,
+                            343309,
+                            343307,
+                            343293,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "GuessMyName",
+                            "What'sTheName",
+                            "John Steven Roger",
                             "Francis Boid"
                         ]
                     },
@@ -329,9 +513,37 @@
                         "id": "2791",
                         "text": "No",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343304
+                        ],
+                        "user_names": [
+                            "IAmAlsoGood"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 7,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -343,11 +555,17 @@
                         "id": "5318",
                         "text": "Tue1",
                         "correct": true,
-                        "responses": 1,
+                        "responses": 4,
                         "user_ids": [
+                            343306,
+                            343307,
+                            343298,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "What'sTheName",
+                            "Good Child",
                             "Francis Boid"
                         ]
                     },
@@ -355,9 +573,39 @@
                         "id": "3687",
                         "text": "No",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 2,
+                        "user_ids": [
+                            343309,
+                            343304
+                        ],
+                        "user_names": [
+                            "GuessMyName",
+                            "IAmAlsoGood"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 7,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343293,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -384,6 +632,40 @@
                         "responses": 0,
                         "user_ids": [],
                         "user_names": []
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 12,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -410,6 +692,40 @@
                         "responses": 0,
                         "user_ids": [],
                         "user_names": []
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 12,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -436,6 +752,40 @@
                         "responses": 0,
                         "user_ids": [],
                         "user_names": []
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 12,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -462,6 +812,40 @@
                         "responses": 0,
                         "user_ids": [],
                         "user_names": []
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 12,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -485,9 +869,45 @@
                         "id": "1829",
                         "text": "No",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 4,
+                        "user_ids": [
+                            343306,
+                            343309,
+                            343304,
+                            343307
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "What'sTheName"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 8,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -499,11 +919,13 @@
                         "id": "4581",
                         "text": "Sun3",
                         "correct": true,
-                        "responses": 1,
+                        "responses": 2,
                         "user_ids": [
+                            343308,
                             272467
                         ],
                         "user_names": [
+                            "None undefined",
                             "Francis Boid"
                         ]
                     },
@@ -511,9 +933,43 @@
                         "id": "6812",
                         "text": "No",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 5,
+                        "user_ids": [
+                            343306,
+                            343309,
+                            343304,
+                            343307,
+                            343293
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "What'sTheName",
+                            "John Steven Roger"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 6,
+                        "user_ids": [
+                            343301,
+                            343300,
+                            343299,
+                            343297,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -525,11 +981,13 @@
                         "id": "6097",
                         "text": "Sun4",
                         "correct": true,
-                        "responses": 1,
+                        "responses": 2,
                         "user_ids": [
+                            343301,
                             272467
                         ],
                         "user_names": [
+                            "Very Good Child",
                             "Francis Boid"
                         ]
                     },
@@ -537,9 +995,43 @@
                         "id": "5329",
                         "text": "No",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 4,
+                        "user_ids": [
+                            343306,
+                            343309,
+                            343304,
+                            343307
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "What'sTheName"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 7,
+                        "user_ids": [
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -563,9 +1055,45 @@
                         "id": "8430",
                         "text": "No",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 5,
+                        "user_ids": [
+                            343306,
+                            343309,
+                            343304,
+                            343307,
+                            343293
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "What'sTheName",
+                            "John Steven Roger"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 7,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -577,11 +1105,13 @@
                         "id": "5265",
                         "text": "Sun6",
                         "correct": true,
-                        "responses": 1,
+                        "responses": 2,
                         "user_ids": [
+                            343306,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
                             "Francis Boid"
                         ]
                     },
@@ -589,9 +1119,43 @@
                         "id": "8413",
                         "text": "No",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 3,
+                        "user_ids": [
+                            343309,
+                            343304,
+                            343307
+                        ],
+                        "user_names": [
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "What'sTheName"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 8,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -603,20 +1167,56 @@
                         "id": "107",
                         "text": "Mon2",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 2,
+                        "user_ids": [
+                            343309,
+                            343307
+                        ],
+                        "user_names": [
+                            "GuessMyName",
+                            "What'sTheName"
+                        ]
                     },
                     {
                         "id": "3588",
                         "text": "No",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 4,
                         "user_ids": [
+                            343306,
+                            343304,
+                            343293,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "IAmAlsoGood",
+                            "John Steven Roger",
                             "Francis Boid"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 7,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "Good Child",
+                            "Bare Minimum"
                         ]
                     }
                 ]
@@ -629,27 +1229,55 @@
                         "id": "8216",
                         "text": "Mon3",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 5,
+                        "user_ids": [
+                            343306,
+                            343309,
+                            343300,
+                            343307,
+                            343297
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "GuessMyName",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "I-Have A. Name"
+                        ]
                     },
                     {
                         "id": "8108",
                         "text": "No",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343304
+                        ],
+                        "user_names": [
+                            "IAmAlsoGood"
+                        ]
                     },
                     {
                         "id": "none",
                         "text": "No Answer",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 7,
                         "user_ids": [
+                            343301,
+                            343308,
+                            343299,
+                            343293,
+                            343298,
+                            343302,
                             272467
                         ],
                         "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Bobby Johnson",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum",
                             "Francis Boid"
                         ]
                     }
@@ -663,20 +1291,56 @@
                         "id": "4563",
                         "text": "Mon4",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 4,
+                        "user_ids": [
+                            343308,
+                            343309,
+                            343307,
+                            343299
+                        ],
+                        "user_names": [
+                            "None undefined",
+                            "GuessMyName",
+                            "What'sTheName",
+                            "Bobby Johnson"
+                        ]
                     },
                     {
                         "id": "4050",
                         "text": "No",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 4,
                         "user_ids": [
+                            343306,
+                            343304,
+                            343298,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "IAmAlsoGood",
+                            "Good Child",
                             "Francis Boid"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 5,
+                        "user_ids": [
+                            343301,
+                            343300,
+                            343297,
+                            343293,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "Definitely Human",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Bare Minimum"
                         ]
                     }
                 ]
@@ -689,20 +1353,56 @@
                         "id": "8714",
                         "text": "Mon5",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 4,
+                        "user_ids": [
+                            343306,
+                            343309,
+                            343307,
+                            343293
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "GuessMyName",
+                            "What'sTheName",
+                            "John Steven Roger"
+                        ]
                     },
                     {
                         "id": "9452",
                         "text": "No",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 2,
                         "user_ids": [
+                            343304,
                             272467
                         ],
                         "user_names": [
+                            "IAmAlsoGood",
                             "Francis Boid"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 7,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "Good Child",
+                            "Bare Minimum"
                         ]
                     }
                 ]
@@ -715,20 +1415,56 @@
                         "id": "5323",
                         "text": "Mon6",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 4,
+                        "user_ids": [
+                            343306,
+                            343309,
+                            343307,
+                            343293
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "GuessMyName",
+                            "What'sTheName",
+                            "John Steven Roger"
+                        ]
                     },
                     {
                         "id": "5321",
                         "text": "No",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 2,
                         "user_ids": [
+                            343304,
                             272467
                         ],
                         "user_names": [
+                            "IAmAlsoGood",
                             "Francis Boid"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 7,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "Good Child",
+                            "Bare Minimum"
                         ]
                     }
                 ]
@@ -741,11 +1477,13 @@
                         "id": "6227",
                         "text": "Tue2",
                         "correct": true,
-                        "responses": 1,
+                        "responses": 2,
                         "user_ids": [
+                            343307,
                             272467
                         ],
                         "user_names": [
+                            "What'sTheName",
                             "Francis Boid"
                         ]
                     },
@@ -753,9 +1491,43 @@
                         "id": "6221",
                         "text": "No",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 3,
+                        "user_ids": [
+                            343306,
+                            343309,
+                            343304
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "GuessMyName",
+                            "IAmAlsoGood"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 8,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -767,20 +1539,56 @@
                         "id": "7963",
                         "text": "Tue3",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343306
+                        ],
+                        "user_names": [
+                            "Sarah Smith"
+                        ]
                     },
                     {
                         "id": "4835",
                         "text": "No",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 4,
                         "user_ids": [
+                            343309,
+                            343304,
+                            343307,
                             272467
                         ],
                         "user_names": [
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "What'sTheName",
                             "Francis Boid"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 8,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
                         ]
                     }
                 ]
@@ -805,9 +1613,45 @@
                         "id": "1452",
                         "text": "No",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 4,
+                        "user_ids": [
+                            343306,
+                            343309,
+                            343304,
+                            343307
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "What'sTheName"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 8,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -819,11 +1663,15 @@
                         "id": "8060",
                         "text": "Tue5",
                         "correct": true,
-                        "responses": 1,
+                        "responses": 3,
                         "user_ids": [
+                            343306,
+                            343307,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "What'sTheName",
                             "Francis Boid"
                         ]
                     },
@@ -831,9 +1679,41 @@
                         "id": "9817",
                         "text": "No",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 2,
+                        "user_ids": [
+                            343309,
+                            343304
+                        ],
+                        "user_names": [
+                            "GuessMyName",
+                            "IAmAlsoGood"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 8,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -853,12 +1733,46 @@
                         "id": "8381",
                         "text": "No",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 5,
                         "user_ids": [
+                            343306,
+                            343309,
+                            343304,
+                            343307,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "What'sTheName",
                             "Francis Boid"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 8,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
                         ]
                     }
                 ]
@@ -871,9 +1785,13 @@
                         "id": "8795",
                         "text": "Wed2",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343293
+                        ],
+                        "user_names": [
+                            "John Steven Roger"
+                        ]
                     },
                     {
                         "id": "4464",
@@ -887,11 +1805,33 @@
                         "id": "none",
                         "text": "No Answer",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 12,
                         "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343298,
+                            343302,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "Good Child",
+                            "Bare Minimum",
                             "Francis Boid"
                         ]
                     }
@@ -905,9 +1845,13 @@
                         "id": "9539",
                         "text": "Wed3",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343300
+                        ],
+                        "user_names": [
+                            "Definitely Human"
+                        ]
                     },
                     {
                         "id": "4564",
@@ -921,11 +1865,33 @@
                         "id": "none",
                         "text": "No Answer",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 12,
                         "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum",
                             "Francis Boid"
                         ]
                     }
@@ -955,11 +1921,35 @@
                         "id": "none",
                         "text": "No Answer",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 13,
                         "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum",
                             "Francis Boid"
                         ]
                     }
@@ -989,11 +1979,35 @@
                         "id": "none",
                         "text": "No Answer",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 13,
                         "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum",
                             "Francis Boid"
                         ]
                     }
@@ -1022,6 +2036,40 @@
                         "user_names": [
                             "Francis Boid"
                         ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 12,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -1033,9 +2081,13 @@
                         "id": "6598",
                         "text": "Thu2",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343300
+                        ],
+                        "user_names": [
+                            "Definitely Human"
+                        ]
                     },
                     {
                         "id": "1401",
@@ -1049,11 +2101,33 @@
                         "id": "none",
                         "text": "No Answer",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 12,
                         "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum",
                             "Francis Boid"
                         ]
                     }
@@ -1083,11 +2157,35 @@
                         "id": "none",
                         "text": "No Answer",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 13,
                         "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum",
                             "Francis Boid"
                         ]
                     }
@@ -1117,11 +2215,35 @@
                         "id": "none",
                         "text": "No Answer",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 13,
                         "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum",
                             "Francis Boid"
                         ]
                     }
@@ -1151,11 +2273,35 @@
                         "id": "none",
                         "text": "No Answer",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 13,
                         "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum",
                             "Francis Boid"
                         ]
                     }
@@ -1169,9 +2315,13 @@
                         "id": "4861",
                         "text": "Thu6",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343293
+                        ],
+                        "user_names": [
+                            "John Steven Roger"
+                        ]
                     },
                     {
                         "id": "8859",
@@ -1183,6 +2333,38 @@
                         ],
                         "user_names": [
                             "Francis Boid"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 11,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "Good Child",
+                            "Bare Minimum"
                         ]
                     }
                 ]
@@ -1211,11 +2393,35 @@
                         "id": "none",
                         "text": "No Answer",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 13,
                         "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum",
                             "Francis Boid"
                         ]
                     }
@@ -1245,11 +2451,35 @@
                         "id": "none",
                         "text": "No Answer",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 13,
                         "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum",
                             "Francis Boid"
                         ]
                     }
@@ -1279,11 +2509,35 @@
                         "id": "none",
                         "text": "No Answer",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 13,
                         "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum",
                             "Francis Boid"
                         ]
                     }
@@ -1313,11 +2567,35 @@
                         "id": "none",
                         "text": "No Answer",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 13,
                         "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum",
                             "Francis Boid"
                         ]
                     }
@@ -1346,6 +2624,40 @@
                         "user_names": [
                             "Francis Boid"
                         ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 12,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -1357,11 +2669,13 @@
                         "id": "6179",
                         "text": "Sat2",
                         "correct": true,
-                        "responses": 1,
+                        "responses": 2,
                         "user_ids": [
+                            343300,
                             272467
                         ],
                         "user_names": [
+                            "Definitely Human",
                             "Francis Boid"
                         ]
                     },
@@ -1372,6 +2686,38 @@
                         "responses": 0,
                         "user_ids": [],
                         "user_names": []
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 11,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -1398,6 +2744,40 @@
                         "responses": 0,
                         "user_ids": [],
                         "user_names": []
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 12,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -1424,6 +2804,40 @@
                         "responses": 0,
                         "user_ids": [],
                         "user_names": []
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 12,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -1450,6 +2864,40 @@
                         "responses": 0,
                         "user_ids": [],
                         "user_names": []
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 12,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -1476,6 +2924,40 @@
                         "responses": 0,
                         "user_ids": [],
                         "user_names": []
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 12,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343297,
+                            343293,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             }
@@ -1486,19 +2968,33 @@
         "question_type": "multiple_answers_question",
         "question_text": "\n<p>Are you willing to meet in the following ways:</p>\n<p><strong>Please note</strong>, that if your group does not all agree on a meeting place you will default to Canvas Groups.</p>\n<p>&nbsp;</p>\n",
         "position": 6,
-        "responses": 1,
-        "correct": 0,
+        "responses": 12,
+        "correct": 4,
         "partially_correct": 0,
         "answers": [
             {
                 "id": "7225",
                 "text": "Discord",
                 "correct": true,
-                "responses": 1,
+                "responses": 8,
                 "user_ids": [
+                    343306,
+                    343308,
+                    343304,
+                    343300,
+                    343307,
+                    343297,
+                    343293,
                     272467
                 ],
                 "user_names": [
+                    "Sarah Smith",
+                    "None undefined",
+                    "IAmAlsoGood",
+                    "Definitely Human",
+                    "What'sTheName",
+                    "I-Have A. Name",
+                    "John Steven Roger",
                     "Francis Boid"
                 ]
             },
@@ -1506,11 +3002,17 @@
                 "id": "8387",
                 "text": "Text/Phone Number",
                 "correct": false,
-                "responses": 1,
+                "responses": 4,
                 "user_ids": [
+                    343297,
+                    343293,
+                    343298,
                     272467
                 ],
                 "user_names": [
+                    "I-Have A. Name",
+                    "John Steven Roger",
+                    "Good Child",
                     "Francis Boid"
                 ]
             },
@@ -1518,20 +3020,48 @@
                 "id": "2947",
                 "text": "Email",
                 "correct": false,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 3,
+                "user_ids": [
+                    343304,
+                    343297,
+                    343293
+                ],
+                "user_names": [
+                    "IAmAlsoGood",
+                    "I-Have A. Name",
+                    "John Steven Roger"
+                ]
             },
             {
                 "id": "8596",
                 "text": "Canvas Groups",
                 "correct": false,
-                "responses": 1,
+                "responses": 5,
                 "user_ids": [
+                    343301,
+                    343309,
+                    343299,
+                    343297,
                     272467
                 ],
                 "user_names": [
+                    "Very Good Child",
+                    "GuessMyName",
+                    "Bobby Johnson",
+                    "I-Have A. Name",
                     "Francis Boid"
+                ]
+            },
+            {
+                "id": "none",
+                "text": "No Answer",
+                "correct": false,
+                "responses": 1,
+                "user_ids": [
+                    343302
+                ],
+                "user_names": [
+                    "Bare Minimum"
                 ]
             }
         ]
@@ -1541,11 +3071,11 @@
         "question_type": "fill_in_multiple_blanks_question",
         "question_text": "\n<p>Please double check your contact information for errors.</p>\n<p>Your contact information will be shared with your group only if the entire group is willing to meet that way.</p>\n<p>I.e. only if each person in the group is willing to meet on Discord will they receive your Discord handle.&nbsp; They will, regardless, be given the school email connected to your canvas account.</p>\n<p>&nbsp;</p>\n<p>Discord Handle: [Discord]</p>\n<p>Phone Number: [Phone]</p>\n<p>Email: [Email]</p>\n<p>&nbsp;</p>\n",
         "position": 7,
-        "responses": 1,
-        "answered": 1,
+        "responses": 9,
+        "answered": 3,
         "correct": 0,
         "partially_correct": 0,
-        "incorrect": 1,
+        "incorrect": 13,
         "answer_sets": [
             {
                 "id": "8f5cc6430613f1c12f36965050bb7197",
@@ -1563,12 +3093,46 @@
                         "id": "other",
                         "text": "Other",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 9,
                         "user_ids": [
+                            343306,
+                            343308,
+                            343304,
+                            343300,
+                            343307,
+                            343297,
+                            343293,
+                            343298,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
+                            "None undefined",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "I-Have A. Name",
+                            "John Steven Roger",
+                            "Good Child",
                             "Francis Boid"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 4,
+                        "user_ids": [
+                            343301,
+                            343309,
+                            343299,
+                            343302
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "GuessMyName",
+                            "Bobby Johnson",
+                            "Bare Minimum"
                         ]
                     }
                 ]
@@ -1586,14 +3150,48 @@
                         "user_names": []
                     },
                     {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 10,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343300,
+                            343307,
+                            343299,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
+                    },
+                    {
                         "id": "other",
                         "text": "Other",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 3,
                         "user_ids": [
+                            343297,
+                            343293,
                             272467
                         ],
                         "user_names": [
+                            "I-Have A. Name",
+                            "John Steven Roger",
                             "Francis Boid"
                         ]
                     }
@@ -1612,14 +3210,48 @@
                         "user_names": []
                     },
                     {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 9,
+                        "user_ids": [
+                            343306,
+                            343301,
+                            343308,
+                            343309,
+                            343300,
+                            343307,
+                            343299,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "Bobby Johnson",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
+                    },
+                    {
                         "id": "other",
                         "text": "Other",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 4,
                         "user_ids": [
+                            343304,
+                            343297,
+                            343293,
                             272467
                         ],
                         "user_names": [
+                            "IAmAlsoGood",
+                            "I-Have A. Name",
+                            "John Steven Roger",
                             "Francis Boid"
                         ]
                     }
@@ -1632,43 +3264,79 @@
         "question_type": "multiple_choice_question",
         "question_text": "\n<p>How do you like to interact with your groups?</p>\n<p>&nbsp;</p>\n<p>Do you like to lead by introducing yourself first or arranging a time to meet?</p>\n<p>Do you like to follow by waiting for someone else to introduce themselves first?</p>\n<p>&nbsp;</p>\n<p>This information will <strong>NOT</strong> be shared with other students.</p>\n",
         "position": 8,
-        "responses": 1,
+        "responses": 12,
         "answers": [
             {
                 "id": "1432",
                 "text": "I like to lead.",
                 "correct": true,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 9,
+                "user_ids": [
+                    343306,
+                    343301,
+                    343308,
+                    343309,
+                    343300,
+                    343307,
+                    343297,
+                    343293,
+                    343298
+                ],
+                "user_names": [
+                    "Sarah Smith",
+                    "Very Good Child",
+                    "None undefined",
+                    "GuessMyName",
+                    "Definitely Human",
+                    "What'sTheName",
+                    "I-Have A. Name",
+                    "John Steven Roger",
+                    "Good Child"
+                ]
             },
             {
                 "id": "8216",
                 "text": "I like to follow.",
                 "correct": false,
-                "responses": 1,
+                "responses": 3,
                 "user_ids": [
+                    343304,
+                    343299,
                     272467
                 ],
                 "user_names": [
+                    "IAmAlsoGood",
+                    "Bobby Johnson",
                     "Francis Boid"
+                ]
+            },
+            {
+                "id": "none",
+                "text": "No Answer",
+                "correct": false,
+                "responses": 1,
+                "user_ids": [
+                    343302
+                ],
+                "user_names": [
+                    "Bare Minimum"
                 ]
             }
         ],
-        "answered_student_count": 1,
-        "top_student_count": 0,
-        "middle_student_count": 1,
+        "answered_student_count": 12,
+        "top_student_count": 12,
+        "middle_student_count": 0,
         "bottom_student_count": 0,
-        "correct_student_count": 0,
-        "incorrect_student_count": 1,
-        "correct_student_ratio": 0.0,
-        "incorrect_student_ratio": 1.0,
-        "correct_top_student_count": 0,
+        "correct_student_count": 9,
+        "incorrect_student_count": 3,
+        "correct_student_ratio": 0.75,
+        "incorrect_student_ratio": 0.25,
+        "correct_top_student_count": 9,
         "correct_middle_student_count": 0,
         "correct_bottom_student_count": 0,
-        "variance": 0,
-        "stdev": 0.0,
-        "difficulty_index": 0.0,
+        "variance": 0.1875,
+        "stdev": 0.4330127018922193,
+        "difficulty_index": 0.75,
         "alpha": null,
         "point_biserials": [
             {
@@ -1690,51 +3358,89 @@
         "question_type": "multiple_choice_question",
         "question_text": "If you are an international student, would you like to be placed in a group with other internationals students?",
         "position": 9,
-        "responses": 1,
+        "responses": 12,
         "answers": [
             {
                 "id": "4004",
                 "text": "I would like to be placed with another international student.",
                 "correct": true,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 4,
+                "user_ids": [
+                    343308,
+                    343304,
+                    343300,
+                    343298
+                ],
+                "user_names": [
+                    "None undefined",
+                    "IAmAlsoGood",
+                    "Definitely Human",
+                    "Good Child"
+                ]
             },
             {
                 "id": "7320",
                 "text": "No preference",
                 "correct": false,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 3,
+                "user_ids": [
+                    343306,
+                    343307,
+                    343293
+                ],
+                "user_names": [
+                    "Sarah Smith",
+                    "What'sTheName",
+                    "John Steven Roger"
+                ]
             },
             {
                 "id": "5769",
                 "text": "I am not an international student.",
                 "correct": false,
-                "responses": 1,
+                "responses": 5,
                 "user_ids": [
+                    343301,
+                    343309,
+                    343299,
+                    343297,
                     272467
                 ],
                 "user_names": [
+                    "Very Good Child",
+                    "GuessMyName",
+                    "Bobby Johnson",
+                    "I-Have A. Name",
                     "Francis Boid"
+                ]
+            },
+            {
+                "id": "none",
+                "text": "No Answer",
+                "correct": false,
+                "responses": 1,
+                "user_ids": [
+                    343302
+                ],
+                "user_names": [
+                    "Bare Minimum"
                 ]
             }
         ],
-        "answered_student_count": 1,
-        "top_student_count": 0,
-        "middle_student_count": 1,
+        "answered_student_count": 12,
+        "top_student_count": 12,
+        "middle_student_count": 0,
         "bottom_student_count": 0,
-        "correct_student_count": 0,
-        "incorrect_student_count": 1,
-        "correct_student_ratio": 0.0,
-        "incorrect_student_ratio": 1.0,
-        "correct_top_student_count": 0,
+        "correct_student_count": 4,
+        "incorrect_student_count": 8,
+        "correct_student_ratio": 0.3333333333333333,
+        "incorrect_student_ratio": 0.6666666666666666,
+        "correct_top_student_count": 4,
         "correct_middle_student_count": 0,
         "correct_bottom_student_count": 0,
-        "variance": 0,
-        "stdev": 0.0,
-        "difficulty_index": 0.0,
+        "variance": 0.2222222222222222,
+        "stdev": 0.4714045207910317,
+        "difficulty_index": 0.3333333333333333,
         "alpha": null,
         "point_biserials": [
             {
@@ -1762,11 +3468,11 @@
         "question_type": "multiple_dropdowns_question",
         "question_text": "\n<p>What language would you prefer to meet in? [Language]</p>\n<p>Note, we will match the best we can but multiple people with the same language other than English may not be possible in all groups.</p>\n<p>&nbsp;</p>\n",
         "position": 10,
-        "responses": 1,
-        "answered": 1,
-        "correct": 0,
+        "responses": 11,
+        "answered": 11,
+        "correct": 4,
         "partially_correct": 0,
-        "incorrect": 1,
+        "incorrect": 9,
         "answer_sets": [
             {
                 "id": "4994a8ffeba4ac3140beb89e8d41f174",
@@ -1776,9 +3482,19 @@
                         "id": "229",
                         "text": "English",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 4,
+                        "user_ids": [
+                            343301,
+                            343308,
+                            343297,
+                            343293
+                        ],
+                        "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "I-Have A. Name",
+                            "John Steven Roger"
+                        ]
                     },
                     {
                         "id": "4055",
@@ -1800,9 +3516,13 @@
                         "id": "9821",
                         "text": "Spanish",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343307
+                        ],
+                        "user_names": [
+                            "What'sTheName"
+                        ]
                     },
                     {
                         "id": "2270",
@@ -1816,9 +3536,15 @@
                         "id": "982",
                         "text": "Hindi",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 2,
+                        "user_ids": [
+                            343304,
+                            343300
+                        ],
+                        "user_names": [
+                            "IAmAlsoGood",
+                            "Definitely Human"
+                        ]
                     },
                     {
                         "id": "9240",
@@ -1848,9 +3574,13 @@
                         "id": "7200",
                         "text": "Japanese",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343309
+                        ],
+                        "user_names": [
+                            "GuessMyName"
+                        ]
                     },
                     {
                         "id": "9320",
@@ -1872,9 +3602,13 @@
                         "id": "8521",
                         "text": "Turkish",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343298
+                        ],
+                        "user_names": [
+                            "Good Child"
+                        ]
                     },
                     {
                         "id": "918",
@@ -1912,12 +3646,28 @@
                         "id": "2446",
                         "text": "Not included",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 2,
                         "user_ids": [
+                            343306,
                             272467
                         ],
                         "user_names": [
+                            "Sarah Smith",
                             "Francis Boid"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 2,
+                        "user_ids": [
+                            343299,
+                            343302
+                        ],
+                        "user_names": [
+                            "Bobby Johnson",
+                            "Bare Minimum"
                         ]
                     }
                 ]
@@ -1929,24 +3679,48 @@
         "question_type": "essay_question",
         "question_text": "Not all languages could fit in the drop down, so if your language was not available, feel free to specify below.",
         "position": 11,
-        "responses": 1,
+        "responses": 4,
         "graded": 0,
         "full_credit": 0,
         "point_distribution": [
             {
                 "score": 0.0,
-                "count": 1
+                "count": 13
             }
         ],
         "answers": [
             {
                 "user_ids": [
+                    343306,
+                    343301,
+                    343308,
+                    343309,
+                    343304,
+                    343300,
+                    343307,
+                    343299,
+                    343297,
+                    343293,
+                    343298,
+                    343302,
                     272467
                 ],
                 "user_names": [
+                    "Sarah Smith",
+                    "Very Good Child",
+                    "None undefined",
+                    "GuessMyName",
+                    "IAmAlsoGood",
+                    "Definitely Human",
+                    "What'sTheName",
+                    "Bobby Johnson",
+                    "I-Have A. Name",
+                    "John Steven Roger",
+                    "Good Child",
+                    "Bare Minimum",
                     "Francis Boid"
                 ],
-                "responses": 1,
+                "responses": 13,
                 "id": "ungraded",
                 "score": 0.0,
                 "full_credit": false
@@ -1958,23 +3732,43 @@
         "question_type": "multiple_choice_question",
         "question_text": "\n<p>What would you like to do with your group?&nbsp;</p>\n<p>This information may be shared with other students.</p>\n",
         "position": 12,
-        "responses": 1,
+        "responses": 12,
         "answers": [
             {
                 "id": "7861",
                 "text": "Play a game",
                 "correct": true,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 5,
+                "user_ids": [
+                    343308,
+                    343300,
+                    343299,
+                    343297,
+                    343293
+                ],
+                "user_names": [
+                    "None undefined",
+                    "Definitely Human",
+                    "Bobby Johnson",
+                    "I-Have A. Name",
+                    "John Steven Roger"
+                ]
             },
             {
                 "id": "8371",
                 "text": "Talk about the class",
                 "correct": false,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 3,
+                "user_ids": [
+                    343306,
+                    343304,
+                    343307
+                ],
+                "user_names": [
+                    "Sarah Smith",
+                    "IAmAlsoGood",
+                    "What'sTheName"
+                ]
             },
             {
                 "id": "1155",
@@ -1988,29 +3782,47 @@
                 "id": "6667",
                 "text": "Watch a show/movie",
                 "correct": false,
-                "responses": 1,
+                "responses": 4,
                 "user_ids": [
+                    343301,
+                    343309,
+                    343298,
                     272467
                 ],
                 "user_names": [
+                    "Very Good Child",
+                    "GuessMyName",
+                    "Good Child",
                     "Francis Boid"
+                ]
+            },
+            {
+                "id": "none",
+                "text": "No Answer",
+                "correct": false,
+                "responses": 1,
+                "user_ids": [
+                    343302
+                ],
+                "user_names": [
+                    "Bare Minimum"
                 ]
             }
         ],
-        "answered_student_count": 1,
-        "top_student_count": 0,
-        "middle_student_count": 1,
+        "answered_student_count": 12,
+        "top_student_count": 12,
+        "middle_student_count": 0,
         "bottom_student_count": 0,
-        "correct_student_count": 0,
-        "incorrect_student_count": 1,
-        "correct_student_ratio": 0.0,
-        "incorrect_student_ratio": 1.0,
-        "correct_top_student_count": 0,
+        "correct_student_count": 5,
+        "incorrect_student_count": 7,
+        "correct_student_ratio": 0.4166666666666667,
+        "incorrect_student_ratio": 0.5833333333333334,
+        "correct_top_student_count": 5,
         "correct_middle_student_count": 0,
         "correct_bottom_student_count": 0,
-        "variance": 0,
-        "stdev": 0.0,
-        "difficulty_index": 0.0,
+        "variance": 0.2430555555555556,
+        "stdev": 0.4930066485916347,
+        "difficulty_index": 0.4166666666666667,
         "alpha": null,
         "point_biserials": [
             {
@@ -2044,24 +3856,48 @@
         "question_type": "essay_question",
         "question_text": "\n<p>What are some specific ideas that you would like to do in your group?</p>\n<p>Ex: play among us, watch Avatar, compare music tastes.</p>\n<p>These responses will be anonymously shared with your group mates.&nbsp; &nbsp;(You will see all 5 responses, but not who wrote them down).</p>\n",
         "position": 13,
-        "responses": 1,
+        "responses": 6,
         "graded": 0,
         "full_credit": 0,
         "point_distribution": [
             {
                 "score": 0.0,
-                "count": 1
+                "count": 13
             }
         ],
         "answers": [
             {
                 "user_ids": [
+                    343306,
+                    343301,
+                    343308,
+                    343309,
+                    343304,
+                    343300,
+                    343307,
+                    343299,
+                    343297,
+                    343293,
+                    343298,
+                    343302,
                     272467
                 ],
                 "user_names": [
+                    "Sarah Smith",
+                    "Very Good Child",
+                    "None undefined",
+                    "GuessMyName",
+                    "IAmAlsoGood",
+                    "Definitely Human",
+                    "What'sTheName",
+                    "Bobby Johnson",
+                    "I-Have A. Name",
+                    "John Steven Roger",
+                    "Good Child",
+                    "Bare Minimum",
                     "Francis Boid"
                 ],
-                "responses": 1,
+                "responses": 13,
                 "id": "ungraded",
                 "score": 0.0,
                 "full_credit": false
@@ -2073,11 +3909,11 @@
         "question_type": "multiple_dropdowns_question",
         "question_text": "\n<p>Out of all the choices made above, in which order do they matter the most to you?</p>\n<p>Note: We will do our best to match people how they wish to be matched, but it will not be possible to make perfect groups all the time.</p>\n<p>(Please use every option once and only once)</p>\n<p>Top Choice: [top]</p>\n<p>Second Choice: [second]</p>\n<p>Third Choice: [third]</p>\n<p>Fourth Choice: [fourth]</p>\n<p>Fifth Choice: [fifth]</p>\n",
         "position": 14,
-        "responses": 1,
-        "answered": 1,
+        "responses": 12,
+        "answered": 10,
         "correct": 0,
-        "partially_correct": 1,
-        "incorrect": 0,
+        "partially_correct": 9,
+        "incorrect": 4,
         "answer_sets": [
             {
                 "id": "b28354b543375bfa94dabaeda722927f",
@@ -2087,11 +3923,19 @@
                         "id": "7711",
                         "text": "Matching Time to Meet",
                         "correct": true,
-                        "responses": 1,
+                        "responses": 5,
                         "user_ids": [
+                            343301,
+                            343308,
+                            343304,
+                            343293,
                             272467
                         ],
                         "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "IAmAlsoGood",
+                            "John Steven Roger",
                             "Francis Boid"
                         ]
                     },
@@ -2099,33 +3943,67 @@
                         "id": "2243",
                         "text": "Gender",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 2,
+                        "user_ids": [
+                            343309,
+                            343297
+                        ],
+                        "user_names": [
+                            "GuessMyName",
+                            "I-Have A. Name"
+                        ]
                     },
                     {
                         "id": "6333",
                         "text": "International",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343300
+                        ],
+                        "user_names": [
+                            "Definitely Human"
+                        ]
                     },
                     {
                         "id": "7985",
                         "text": "Language",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 2,
+                        "user_ids": [
+                            343307,
+                            343299
+                        ],
+                        "user_names": [
+                            "What'sTheName",
+                            "Bobby Johnson"
+                        ]
                     },
                     {
                         "id": "8514",
                         "text": "What They Want to Do",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343306
+                        ],
+                        "user_names": [
+                            "Sarah Smith"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 2,
+                        "user_ids": [
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -2137,19 +4015,35 @@
                         "id": "1396",
                         "text": "Matching Time to Meet",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343300
+                        ],
+                        "user_names": [
+                            "Definitely Human"
+                        ]
                     },
                     {
                         "id": "9971",
                         "text": "Gender",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 7,
                         "user_ids": [
+                            343301,
+                            343308,
+                            343309,
+                            343304,
+                            343307,
+                            343293,
                             272467
                         ],
                         "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "GuessMyName",
+                            "IAmAlsoGood",
+                            "What'sTheName",
+                            "John Steven Roger",
                             "Francis Boid"
                         ]
                     },
@@ -2157,9 +4051,13 @@
                         "id": "7448",
                         "text": "International",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343306
+                        ],
+                        "user_names": [
+                            "Sarah Smith"
+                        ]
                     },
                     {
                         "id": "4691",
@@ -2173,9 +4071,29 @@
                         "id": "504",
                         "text": "What They Want to Do",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343299
+                        ],
+                        "user_names": [
+                            "Bobby Johnson"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 3,
+                        "user_ids": [
+                            343297,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "I-Have A. Name",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -2195,19 +4113,39 @@
                         "id": "5722",
                         "text": "Gender",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 4,
+                        "user_ids": [
+                            343309,
+                            343300,
+                            343299,
+                            343298
+                        ],
+                        "user_names": [
+                            "GuessMyName",
+                            "Definitely Human",
+                            "Bobby Johnson",
+                            "Good Child"
+                        ]
                     },
                     {
                         "id": "8405",
                         "text": "International",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 6,
                         "user_ids": [
+                            343301,
+                            343308,
+                            343304,
+                            343307,
+                            343293,
                             272467
                         ],
                         "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "IAmAlsoGood",
+                            "What'sTheName",
+                            "John Steven Roger",
                             "Francis Boid"
                         ]
                     },
@@ -2215,9 +4153,13 @@
                         "id": "8243",
                         "text": "Language",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343306
+                        ],
+                        "user_names": [
+                            "Sarah Smith"
+                        ]
                     },
                     {
                         "id": "709",
@@ -2226,6 +4168,20 @@
                         "responses": 0,
                         "user_ids": [],
                         "user_names": []
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 2,
+                        "user_ids": [
+                            343297,
+                            343302
+                        ],
+                        "user_names": [
+                            "I-Have A. Name",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -2237,35 +4193,57 @@
                         "id": "1845",
                         "text": "Matching Time to Meet",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 2,
+                        "user_ids": [
+                            343306,
+                            343307
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "What'sTheName"
+                        ]
                     },
                     {
                         "id": "4823",
                         "text": "Gender",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343309
+                        ],
+                        "user_names": [
+                            "GuessMyName"
+                        ]
                     },
                     {
                         "id": "6064",
                         "text": "International",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343299
+                        ],
+                        "user_names": [
+                            "Bobby Johnson"
+                        ]
                     },
                     {
                         "id": "8911",
                         "text": "Language",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 5,
                         "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343293,
                             272467
                         ],
                         "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "John Steven Roger",
                             "Francis Boid"
                         ]
                     },
@@ -2273,9 +4251,29 @@
                         "id": "5056",
                         "text": "What They Want to Do",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343304
+                        ],
+                        "user_names": [
+                            "IAmAlsoGood"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 3,
+                        "user_ids": [
+                            343297,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "I-Have A. Name",
+                            "Good Child",
+                            "Bare Minimum"
+                        ]
                     }
                 ]
             },
@@ -2287,17 +4285,27 @@
                         "id": "8533",
                         "text": "Matching Time to Meet",
                         "correct": true,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343299
+                        ],
+                        "user_names": [
+                            "Bobby Johnson"
+                        ]
                     },
                     {
                         "id": "9474",
                         "text": "Gender",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 2,
+                        "user_ids": [
+                            343306,
+                            343309
+                        ],
+                        "user_names": [
+                            "Sarah Smith",
+                            "GuessMyName"
+                        ]
                     },
                     {
                         "id": "9470",
@@ -2311,20 +4319,50 @@
                         "id": "6856",
                         "text": "Language",
                         "correct": false,
-                        "responses": 0,
-                        "user_ids": [],
-                        "user_names": []
+                        "responses": 1,
+                        "user_ids": [
+                            343304
+                        ],
+                        "user_names": [
+                            "IAmAlsoGood"
+                        ]
                     },
                     {
                         "id": "1291",
                         "text": "What They Want to Do",
                         "correct": false,
-                        "responses": 1,
+                        "responses": 6,
                         "user_ids": [
+                            343301,
+                            343308,
+                            343300,
+                            343307,
+                            343293,
                             272467
                         ],
                         "user_names": [
+                            "Very Good Child",
+                            "None undefined",
+                            "Definitely Human",
+                            "What'sTheName",
+                            "John Steven Roger",
                             "Francis Boid"
+                        ]
+                    },
+                    {
+                        "id": "none",
+                        "text": "No Answer",
+                        "correct": false,
+                        "responses": 3,
+                        "user_ids": [
+                            343297,
+                            343298,
+                            343302
+                        ],
+                        "user_names": [
+                            "I-Have A. Name",
+                            "Good Child",
+                            "Bare Minimum"
                         ]
                     }
                 ]
@@ -2336,25 +4374,47 @@
         "question_type": "multiple_choice_question",
         "question_text": "\n<p>How do you feel you are doing in this class?</p>\n<p>&nbsp;</p>\n<p>This information will <strong>not</strong> be shared.</p>\n",
         "position": 15,
-        "responses": 1,
+        "responses": 12,
         "answers": [
             {
                 "id": "3809",
                 "text": "I'm confident.",
                 "correct": true,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 7,
+                "user_ids": [
+                    343306,
+                    343308,
+                    343309,
+                    343300,
+                    343307,
+                    343297,
+                    343293
+                ],
+                "user_names": [
+                    "Sarah Smith",
+                    "None undefined",
+                    "GuessMyName",
+                    "Definitely Human",
+                    "What'sTheName",
+                    "I-Have A. Name",
+                    "John Steven Roger"
+                ]
             },
             {
                 "id": "5974",
                 "text": "I have some questions.",
                 "correct": false,
-                "responses": 1,
+                "responses": 4,
                 "user_ids": [
+                    343301,
+                    343304,
+                    343298,
                     272467
                 ],
                 "user_names": [
+                    "Very Good Child",
+                    "IAmAlsoGood",
+                    "Good Child",
                     "Francis Boid"
                 ]
             },
@@ -2362,25 +4422,41 @@
                 "id": "4468",
                 "text": "I could really use some help.",
                 "correct": false,
-                "responses": 0,
-                "user_ids": [],
-                "user_names": []
+                "responses": 1,
+                "user_ids": [
+                    343299
+                ],
+                "user_names": [
+                    "Bobby Johnson"
+                ]
+            },
+            {
+                "id": "none",
+                "text": "No Answer",
+                "correct": false,
+                "responses": 1,
+                "user_ids": [
+                    343302
+                ],
+                "user_names": [
+                    "Bare Minimum"
+                ]
             }
         ],
-        "answered_student_count": 1,
-        "top_student_count": 0,
-        "middle_student_count": 1,
+        "answered_student_count": 12,
+        "top_student_count": 12,
+        "middle_student_count": 0,
         "bottom_student_count": 0,
-        "correct_student_count": 0,
-        "incorrect_student_count": 1,
-        "correct_student_ratio": 0.0,
-        "incorrect_student_ratio": 1.0,
-        "correct_top_student_count": 0,
+        "correct_student_count": 6,
+        "incorrect_student_count": 6,
+        "correct_student_ratio": 0.5,
+        "incorrect_student_ratio": 0.5,
+        "correct_top_student_count": 6,
         "correct_middle_student_count": 0,
         "correct_bottom_student_count": 0,
-        "variance": 0,
-        "stdev": 0.0,
-        "difficulty_index": 0.0,
+        "variance": 0.25,
+        "stdev": 0.5,
+        "difficulty_index": 0.5,
         "alpha": null,
         "point_biserials": [
             {
