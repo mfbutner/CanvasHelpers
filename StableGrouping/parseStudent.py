@@ -269,15 +269,22 @@ def parse_submissions(students_submitted, course, quiz, config):
     }
     for answer_set in question_index["prefer_communication_method"]["answers"]:
         answer_text = answer_set["text"]
+        if answer_text not in communication_method_dict:
+            continue
         contact_index = communication_method_dict[answer_text]
         for user_id in answer_set["user_ids"]:
             students_submitted[user_id].contactPreference[contact_index] = True
 
     # prefer_communication_info
+    communication_info_keys = {
+        "answer_for_Discord": 0,
+        "answer_for_Phone": 1,
+        "answer_for_Email": 2
+    }
     for user_id, answer in question_index["prefer_communication_info"].items():
-        students_submitted[user_id].contactInformation[0] = answer["answer_for_Discord"]
-        students_submitted[user_id].contactInformation[1] = answer["answer_for_Phone"]
-        students_submitted[user_id].contactInformation[2] = answer["answer_for_Email"]
+        for info_key, info_index in communication_info_keys.items():
+            if info_key in answer:
+                students_submitted[user_id].contactInformation[info_index] = answer[info_key]
 
     # activity_specify
     for user_id, answer in question_index["activity_specify"].items():
