@@ -30,9 +30,11 @@ class confident(Enum):
 
 
 def parse_students(canvas_students):
-    # TODO: The equivalent of this in the old code ignored students without emails. Check if this is needed
     all_students = {}
     for student in canvas_students:
+        if not hasattr(student, "email"):
+            continue
+
         student_instance = Student()
         student_instance.idNum = student.id
         student_instance.name = student.name
