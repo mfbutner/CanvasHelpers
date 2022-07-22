@@ -48,7 +48,7 @@ matchedBefore = invalidGroupDict(canvas, config["course"]["id"])
 groups = makeGroups(students_submitted, students_not_submitted, matchedBefore)
 
 # Now that groups are matched, send emails and form groups
-sendConvo(canvas, config["course"]["id"], groups, config["group_number"])
+sendConvo(canvas, config["course"]["id"], groups, str(config["group_number"]))
 
 # Analyze the groups: how many students with a preference got it?
 gradeGroups(groups, matchedBefore)
