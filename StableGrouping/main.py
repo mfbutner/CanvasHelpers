@@ -1,5 +1,5 @@
 from canvasapi import Canvas
-from makeGroups import makeGroups
+from makeGroups import make_groups
 from checkValidGroup import get_invalid_groups
 from analyzeCode import gradeGroups
 from sendCanvasConvo import sendConvo
@@ -41,14 +41,12 @@ parse_submissions(students_submitted, course, quiz, config)
 # Dictionary of people who have already been matched in the past
 matched_before = get_invalid_groups(course, all_students)
 
-print("Work In Progress (Quitting early)")
-quit(1)
-
 # Create the groups:
-groups = makeGroups(students_submitted, students_not_submitted, matched_before)
+groups = make_groups(students_submitted, students_not_submitted, matched_before)
 
 # Now that groups are matched, send emails and form groups
-sendConvo(canvas, config["course"]["id"], groups, str(config["group_number"]))
+if "ENVIRONMENT" in env and env["ENVIRONMENT"] == "PRODUCTION":
+    sendConvo(canvas, config["course"]["id"], groups, str(config["group_number"]))
 
 # Analyze the groups: how many students with a preference got it?
 gradeGroups(groups, matched_before)

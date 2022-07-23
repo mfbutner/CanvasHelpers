@@ -1,21 +1,20 @@
 from studentClass import Student
 
-#Return levels of matching preference- From 2 (best) to 0 (worst)
+# Return levels of matching preference- From 2 (best) to 0 (worst)
 def matchPartner(student1: Student, student2: Student):
-    if student1.partner == student2.name and student1.partnerEmail == student2.schoolEmail:
-        return 2
-    elif student1.partner == student2.name:
+    if student1.partner == student2.name:
+        if student1.partnerEmail == student2.schoolEmail:
+            return 2
         return 1
-    else:
-        return 0
-    
+    return 0
+
 #Return true if the people wanted eachother
 def matchSymPartner(student1: Student, student2: Student):
-    return matchPartner(student1, student2) > 0 and matchPartner(student2, student1) >0 
+    return matchPartner(student1, student2) > 0 and matchPartner(student2, student1) > 0
 
 #return True if the two second student matches the first student's preferences
 def matchInternational(student1: Student, student2: Student):
-    
+
     #If the first student has no preference or is not an international student, then the second student does not matter
     if student1.international == 1 or student1.international == 0:
         return True
@@ -56,23 +55,23 @@ def matchTime(student1: Student, student2: Student):
         #The second student does not want to be synch, they are incompatible
         elif student2.preferAsy == 2:
             return False
-        
+
     #The first student has no preference
     elif student1.preferAsy == 1:
         #If the second student doesn't care or prefersAsy
         if student2.preferAsy == 1 or student2.preferAsy == 2:
-            #Then they can choose to be asynch together 
+            #Then they can choose to be asynch together
             return True
         #If the second student is synch
         elif student2.preferAsy == 0:
             #The second student wants to synch, so they only match if they match in time
             return matchMeetingTimeSpecific(student1, student2)
-            
+
     #The first student would prefer to be asynch
     elif student1.preferAsy == 2:
         #If the second student doesn't care or prefersAsy
         if student2.preferAsy == 1 or student2.preferAsy == 2:
-            #Then they can choose to be asynch together 
+            #Then they can choose to be asynch together
             return True
         #If the second student is synch, they are incompatible
         elif student2.preferAsy == 0:
@@ -130,7 +129,7 @@ def matchWithinGroup(student: Student, group: list, matchType:str):
                     return True
             else:
                 print("Issue: attempt to list through with an incompatible preference type")
-                
+
     #It failed for everyone, so we return False
     return False
 

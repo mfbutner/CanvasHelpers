@@ -161,9 +161,9 @@ def makeQuintuplets(quads: list, aloneStudents: dict, singles: dict, matched_bef
             print("Error: size mismatch in makeQuintuplets")
 
 
-    listUsedIndexesAlone = list()
-    listUsedIndexesQuads = list()
-    groupsToMake = list()
+    listUsedIndexesAlone = []
+    listUsedIndexesQuads = []
+    groupsToMake = []
     for index1 in range(len(extraStudentsAlone)):
         for index2 in range(len(extraStudentsQuads)):
             if index1 not in listUsedIndexesAlone and index2 not in listUsedIndexesQuads:
@@ -174,8 +174,8 @@ def makeQuintuplets(quads: list, aloneStudents: dict, singles: dict, matched_bef
                     listUsedIndexesQuads.append(index2)
                     groupsToMake.append([index1, index2])
 
-    usedAlone = list()
-    usedQuads = list()
+    usedAlone = []
+    usedQuads = []
     for groupToMake in groupsToMake:
         tempList = [extraStudentsAlone[groupToMake[0]]]
         tempList.extend(extraStudentsQuads[groupToMake[1]])
@@ -397,8 +397,8 @@ def makePairs(students: dict, matchDict: dict):
         i = i + 1
 
     for index in range(5):
-        listUsedIndexes = list()
-        pairsToMake = list()
+        listUsedIndexes = []
+        pairsToMake = []
         for index1 in range(len(extraStudents)):
             for index2 in range(len(extraStudents)):
                 if index1 != index2 and (index1 not in listUsedIndexes) and (index2 not in listUsedIndexes):
@@ -407,7 +407,7 @@ def makePairs(students: dict, matchDict: dict):
                         listUsedIndexes.append(index2)
                         pairsToMake.append([index1, index2])
 
-        usedStudents = list()
+        usedStudents = []
         for pairToMake in pairsToMake:
             pairs.append([extraStudents[pairToMake[0]], extraStudents[pairToMake[1]]])
             usedStudents.extend([extraStudents[pairToMake[0]], extraStudents[pairToMake[1]]])
@@ -465,8 +465,8 @@ def makeQuads(students: dict, matchDict: dict, pairs: list):
         i = i + 1
 
     for index in range(5):
-        listUsedIndexes = list()
-        pairsToMake = list()
+        listUsedIndexes = []
+        pairsToMake = []
         for index1 in range(len(extraStudents)):
             for index2 in range(len(extraStudents)):
                 if index1 != index2 and (index1 not in listUsedIndexes) and (index2 not in listUsedIndexes):
@@ -475,7 +475,7 @@ def makeQuads(students: dict, matchDict: dict, pairs: list):
                         listUsedIndexes.append(index2)
                         pairsToMake.append([index1, index2])
 
-        usedStudents = list()
+        usedStudents = []
         for pairToMake in pairsToMake:
             quads.append([extraStudents[pairToMake[0]][0], extraStudents[pairToMake[0]][1], extraStudents[pairToMake[1]][0], extraStudents[pairToMake[1]][1]])
             usedStudents.extend([extraStudents[pairToMake[0]], extraStudents[pairToMake[1]]])
@@ -511,7 +511,7 @@ def cleanQuads(quads: list, singles: dict, numGroups: int, matched_before: dict)
     if len(quads) == numGroups:
         return
 
-    noTakeList = list()
+    noTakeList = []
     # In the case that there are too many quads, break up the least happy ones
     while(len(quads) > numGroups):
         index = findMinIndex(quads, matched_before, noTakeList)
@@ -530,22 +530,20 @@ def cleanQuads(quads: list, singles: dict, numGroups: int, matched_before: dict)
 
 
 # Make a list of the possible students
-def makeGroups(singles: dict, extra_students: dict, matched_before: dict):
+def make_groups(singles: dict, extra_students: dict, matched_before: dict):
     # Calculate the number of needed groups
-    lenClass = len(singles) + len(extra_students)
-    numGroups = lenClass // 5
+    len_class = len(singles) + len(extra_students)
+    num_groups = len_class // 5
 
-    i = 0 # temp
-
-    # move students from extras to free singles until I have 4/5 the class and it's divisible by 4
-    while(len(singles) < numGroups*4 and len(extra_students) > 0):
-        student = extra_students.popitem()
-        singles[student[0]] = student[1]
+    # move students from extras to free singles until I have 4/5 the class AND it's divisible by 4
+    while len(singles) < num_groups * 4 and len(extra_students) > 0:
+        id_num, student = extra_students.popitem()
+        singles[id_num] = student
 
     # People need to move between the two lists in order to make the students divisible by 4
-    while(len(singles)%4 != 0):
+    while len(singles) % 4 != 0:
         # If there are not enough students to move out of extra students, you gotta move some people who took the survey in
-        if len(extra_students) < len(singles)%4:
+        if len(extra_students) < len(singles) % 4:
             student = singles.popitem()
             extra_students[student[0]] = student[1]
         else:
@@ -553,32 +551,31 @@ def makeGroups(singles: dict, extra_students: dict, matched_before: dict):
             student = extra_students.popitem()
             singles[student[0]] = student[1]
 
-    index = 0
-    singlesOther = dict()
-    singles1 = dict()
-    singles2 = dict()
-
-    pairs = list()
-    placeIn1Flag = False
-    idPlacedInPairs = list()
-    # Separate out anyone who wanted eachother
+    singles1 = {}
+    singles2 = {}
+    pairs = []
+    place_in1_flag = False
+    id_placed_in_pairs = []
+    # Separate out anyone who wanted each other
     for student1Key in singles:
         flag = False
         for student2Key in singles:
-            if student1Key != student2Key:
-                if matchSymPartner(singles[student1Key], singles[student2Key]):
-                    if student1Key not in idPlacedInPairs and student2Key not in idPlacedInPairs:
-                        pairs.append([singles[student1Key], singles[student2Key]])
-                        idPlacedInPairs.extend([student1Key, student2Key])
+            if student1Key == student2Key:
+                continue
 
-                    flag = True
+            if matchSymPartner(singles[student1Key], singles[student2Key]):
+                if student1Key not in id_placed_in_pairs and student2Key not in id_placed_in_pairs:
+                    pairs.append([singles[student1Key], singles[student2Key]])
+                    id_placed_in_pairs.extend([student1Key, student2Key])
 
-        if not flag and placeIn1Flag:
+                flag = True
+
+        if not flag and place_in1_flag:
             singles2[student1Key] = singles[student1Key]
-            placeIn1Flag = False
+            place_in1_flag = False
         elif not flag:
             singles1[student1Key] = singles[student1Key]
-            placeIn1Flag = True
+            place_in1_flag = True
 
     for pair in pairs:
         print(pair[0].name, pair[1].name)
@@ -601,22 +598,22 @@ def makeGroups(singles: dict, extra_students: dict, matched_before: dict):
     quads = makeQuads(singles, matched_before, pairs)
 
     # The quads needed to be broken down if there are too many
-    cleanQuads(quads, extra_students, numGroups, matched_before)
+    cleanQuads(quads, extra_students, num_groups, matched_before)
 
-    leftoverStudents = list()
-    # I need a list of aloneStudents that is equal to the size of numGroups
-    while(len(extra_students) != numGroups):
-        if len(extra_students) > numGroups:
-            leftoverStudents.append(((extra_students.popitem())[1]))
-        elif len(extra_students) < numGroups:
+    leftover_students = []
+    # I need a list of aloneStudents that is equal to the size of num_groups
+    while len(extra_students) != num_groups:
+        if len(extra_students) > num_groups:
+            leftover_students.append(((extra_students.popitem())[1]))
+        elif len(extra_students) < num_groups:
             print("This should not happen, more quads need to be broken in clean quads")
 
     # With the proper number of quads and singles, make sets of 5
     quintuplets = makeQuintuplets(quads, extra_students, singles, matched_before)
 
-    if len(leftoverStudents) > 0:
-        groups = addExtras(quintuplets, leftoverStudents, matched_before)
-    elif len(leftoverStudents) == 0:
+    if len(leftover_students) > 0:
+        groups = addExtras(quintuplets, leftover_students, matched_before)
+    elif len(leftover_students) == 0:
         return quintuplets
 
     return quintuplets
