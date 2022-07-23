@@ -3,33 +3,23 @@ invalidGroupDict returns a dictionary. This function only needs to be run once.
 isValidGroup takes in that dictionary (and a list of student objects) and returns the count of how many times students have overlapped with each other
 """
 
-# import system variables
-# in order to send the messages, need canvas api key
-# i put the api key in environment variables
-from canvasapi import Canvas
 
-
-def invalidGroupDict(canvas: Canvas, course_number: int):
+def get_invalid_groups(course, all_students):
     """
     return a dictionary where the keys are STRING student id numbers, and the values are INT group numbers
     """
-    course = canvas.get_course(course_number)
 
     # get a list of group categories
-    group_cat_list = course.get_group_categories()
+    group_categories = course.get_group_categories()
 
-    studentid_groupid = {}
+    studentid_groupid = {str(student.idNum): [] for student in all_students.values()}
 
-    all_students = course.get_users()
-    for student in all_students:
-        studentid_groupid[str(student.id)] = []
-
-    for group_cat in group_cat_list:
-        group_list = group_cat.get_groups()
+    for category in group_categories:
+        group_list = category.get_groups()
         for group in group_list:
             users_list = group.get_users()
-            for j in users_list:
-                studentid_groupid[str(j.id)].append(group.id)
+            for user in users_list:
+                studentid_groupid[str(user.id)].append(group.id)
 
     return studentid_groupid
 

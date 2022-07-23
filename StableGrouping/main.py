@@ -1,6 +1,6 @@
 from canvasapi import Canvas
 from makeGroups import makeGroups
-from checkValidGroup import invalidGroupDict
+from checkValidGroup import get_invalid_groups
 from analyzeCode import gradeGroups
 from sendCanvasConvo import sendConvo
 from parseStudent import parse_students, parse_submissions, filter_students_submitted, parsePartnerQuiz
@@ -38,17 +38,17 @@ students_not_submitted = {s_id: student for (s_id, student) in all_students.item
 # Modifies Student instances in students_submitted by updating their properties with their quiz responses
 parse_submissions(students_submitted, course, quiz, config)
 
+# Dictionary of people who have already been matched in the past
+matched_before = get_invalid_groups(course, all_students)
+
 print("Work In Progress (Quitting early)")
 quit(1)
 
-# Find the people who were matchedBefore, place it into a dict
-matchedBefore = invalidGroupDict(canvas, config["course"]["id"])
-
 # Create the groups:
-groups = makeGroups(students_submitted, students_not_submitted, matchedBefore)
+groups = makeGroups(students_submitted, students_not_submitted, matched_before)
 
 # Now that groups are matched, send emails and form groups
 sendConvo(canvas, config["course"]["id"], groups, str(config["group_number"]))
 
 # Analyze the groups: how many students with a preference got it?
-gradeGroups(groups, matchedBefore)
+gradeGroups(groups, matched_before)
