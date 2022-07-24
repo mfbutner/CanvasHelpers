@@ -217,7 +217,7 @@ def make_student_id_map(course: canvasapi.course.Course) -> dict:
 def make_partner_id_map(student_id_map: dict, answers: dict) -> dict:
     # returns a dict where keys are student canvas ID and value is partner's canvas ID
     partner_id_map = defaultdict(str)
-    rematching_list = []
+    rematching_list = list(student_id_map.values())
     for answer in answers:
         try:
             # get the partner_id
@@ -226,12 +226,9 @@ def make_partner_id_map(student_id_map: dict, answers: dict) -> dict:
             else:
                 partner_id = student_id_map[answer["text"]]
 
-            # check if multiple students picked the same partner
-            if len(answer["user_ids"]) > 1:
-                for user_id in answer["user_ids"]:
-                    rematching_list.append(user_id)
-            elif len(answer["user_ids"]) == 1:
+            if len(answer["user_ids"]) == 1:
                 partner_id_map[answer["user_ids"][0]] = partner_id
+                rematching_list.remove(answer["user_ids"][0])
         except KeyError:  # skip responses that don't correspond to students
             continue
 
@@ -250,6 +247,7 @@ def make_partner_id_map(student_id_map: dict, answers: dict) -> dict:
 def parse_self_evals(quiz_grade: dict, questions: list, student_id_map: dict) -> None:
     # maps students self evaluations to themselves
     qual_mappings = {
+        "No Answer": 1,
         "Strongly disagree": 1,
         "Disagree": 2,
         "Agree": 3,
@@ -279,6 +277,7 @@ def parse_partner_evals(
     quiz_grade: dict, questions: list, partner_id_map: dict
 ) -> None:
     # maps parterns's partner evaluation to their partner
+    # we do not map "No Answer" to 1. instead, the partner will get duplicate scores
     qual_mappings = {
         "Strongly disagree": 1,
         "Disagree": 2,
@@ -303,6 +302,7 @@ def parse_contribution_evals(
 ) -> None:
     # maps students contribution evalution to themselves and their partner
     contrib_mappings = {
+        "No Answer": 0,
         "0% vs 100% ==> Your partner did (almost) everything while you didn't do (almost) anything": 0,
         "25% vs 75% ==> Your partner contributed substantially more than you": 0.25,
         "50% / 50% ==> You and your partner contributed (almost) equally": 0.5,
@@ -323,7 +323,7 @@ def parse_contribution_evals(
             continue
     # give missing_submissions student a 0 in contribution
     for student_id in missing_submissions:
-        quiz_grade[student_id]["Project contribution"].append(0)
+        quiz_grade[student_id][subject].append(0)
     # partner loop
     for answer in question["answers"]:
         try:
