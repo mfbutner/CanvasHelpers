@@ -4,6 +4,8 @@ from studentClass import Student
 import pandas as pd
 import json
 
+NO_ANSWER = "No Answer"
+
 
 class PreferGender(Enum):
     same_pronouns = 2
@@ -23,7 +25,7 @@ class PreferInternat(Enum):
     dont_care_internat = 1
 
 
-class confident(Enum):
+class Confident(Enum):
     is_confident = 2
     not_confident = 0
     default_confidence = 1
@@ -53,7 +55,7 @@ def parse_students(canvas_students):
 def reindex_essay_questions(course, quiz, question_index):
     quiz_assignment = course.get_assignment(quiz.assignment_id)
     quiz_submissions = quiz_assignment.get_submissions(include="submission_history")
-    quiz_filtered_submissions = [submission for submission in quiz_submissions if submission.submitted_at != None]
+    quiz_filtered_submissions = [submission for submission in quiz_submissions if submission.submitted_at is not None]
 
     for question_key, question in question_index.items():
         question_type = question["question_type"]
@@ -116,7 +118,8 @@ def index_questions(course, quiz, config):
     print("===== Question Indexing Complete =====")
     print("===== See Missed Questions Above =====")
 
-    # Change the format of free response (essay_question) questions by replacing their key: values with responses instead of useless data
+    # Change the format of free response (essay_question) questions by replacing their key: values
+    # with responses instead of useless data
     # Modifies question_index directly
     reindex_essay_questions(course, quiz, question_index)
 
@@ -145,9 +148,13 @@ def remove_any_tags(source_str):
 
 def parse_submissions(students_submitted, course, quiz, config):
     question_index = index_questions(course, quiz, config)
+    default_student = Student()
 
     for answer in question_index["pronouns_select"]["answers"]:
         answer_text = answer["text"]
+        if answer_text == NO_ANSWER:
+            continue
+
         for user_id in answer["user_ids"]:
             students_submitted[user_id].pronouns = answer_text
 
@@ -158,6 +165,9 @@ def parse_submissions(students_submitted, course, quiz, config):
 
     for answer in question_index["prefer_same_gender"]["answers"]:
         answer_text = answer["text"]
+        if answer_text == NO_ANSWER:
+            continue
+
         for user_id in answer["user_ids"]:
             if answer_text == "I would prefer another person who as the same pronouns as I do.":
                 students_submitted[user_id].preferSame = PreferGender.same_pronouns.value
@@ -171,6 +181,9 @@ def parse_submissions(students_submitted, course, quiz, config):
     # 2 - Asynchronous
     for answer in question_index["prefer_synchronous"]["answers"]:
         answer_text = answer["text"]
+        if answer_text == NO_ANSWER:
+            continue
+
         for user_id in answer["user_ids"]:
             if answer_text == "Synchronously":
                 students_submitted[user_id].preferAsy = PreferAsync.like_sync.value
@@ -181,6 +194,9 @@ def parse_submissions(students_submitted, course, quiz, config):
 
     for answer in question_index["prefer_to_lead"]["answers"]:
         answer_text = answer["text"]
+        if answer_text == NO_ANSWER:
+            continue
+
         for user_id in answer["user_ids"]:
             students_submitted[user_id].preferLeader = (answer_text == "I like to lead.")
 
@@ -189,6 +205,9 @@ def parse_submissions(students_submitted, course, quiz, config):
     # 2 - Is international and would like to match with international
     for answer in question_index["prefer_other_international"]["answers"]:
         answer_text = answer["text"]
+        if answer_text == NO_ANSWER:
+            continue
+
         for user_id in answer["user_ids"]:
             if answer_text == "I am not an international student.":
                 students_submitted[user_id].international = PreferInternat.not_internat.value
@@ -202,6 +221,9 @@ def parse_submissions(students_submitted, course, quiz, config):
     # Sets option1 (option2 ignored)
     for answer in question_index["activity_select"]["answers"]:
         answer_text = answer["text"]
+        if answer_text == NO_ANSWER:
+            continue
+
         for user_id in answer["user_ids"]:
             students_submitted[user_id].option1 = answer_text
 
@@ -210,13 +232,16 @@ def parse_submissions(students_submitted, course, quiz, config):
     # 2 - Confident
     for answer in question_index["confidence"]["answers"]:
         answer_text = answer["text"]
+        if answer_text == NO_ANSWER:
+            continue
+
         for user_id in answer["user_ids"]:
             if answer_text == "I'm confident.":
-                students_submitted[user_id].confidence = confident.is_confident.value
+                students_submitted[user_id].confidence = Confident.is_confident.value
             elif answer_text == "I could really use some help.":
-                students_submitted[user_id].confidence = confident.not_confident.value
+                students_submitted[user_id].confidence = Confident.not_confident.value
             else:
-                students_submitted[user_id].confidence = confident.default_confidence.value
+                students_submitted[user_id].confidence = Confident.default_confidence.value
 
     # time_free
     daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -240,25 +265,38 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer["text"]
         if answer_text in priority_list:
             index = priority_list.index(answer["text"])
-            for tmp in answer["answers"]:
-                for user_id in tmp["user_ids"]:
-                    students_submitted[user_id].priorityList[index] = tmp["text"]
+            for priority in answer["answers"]:
+                priority_text = priority["text"]
+                if priority_text == NO_ANSWER:
+                    continue
+
+                for user_id in priority["user_ids"]:
+                    students_submitted[user_id].priorityList[index] = priority_text
 
     # language_select
     for answer in question_index["language_select"]["answer_sets"][0]["answers"]:
         answer_text = answer["text"]
+        if answer_text == NO_ANSWER:
+            continue
+
         for user_id in answer["user_ids"]:
             students_submitted[user_id].language = answer_text
 
     # pronouns_other
     for user_id, answer in question_index["pronouns_other"].items():
-        if students_submitted[user_id].pronouns == "Not Included":
-            students_submitted[user_id].pronouns = remove_any_tags(answer["text"])
+        student = students_submitted[user_id]
+        if student.pronouns == "Not Included" or student.pronouns == default_student.pronouns:
+            pronouns = remove_any_tags(answer["text"])
+            if len(pronouns):
+                student.pronouns = pronouns
 
     # language_other
     for user_id, answer in question_index["language_other"].items():
-        if students_submitted[user_id].language == "Not included":
-            students_submitted[user_id].language = remove_any_tags(answer["text"])
+        student = students_submitted[user_id]
+        if student.language == "Not included" or student.language == default_student.language:
+            language = remove_any_tags(answer["text"])
+            if len(language):
+                student.language = language
 
     # prefer_communication_method
     communication_method_dict = {
@@ -271,6 +309,7 @@ def parse_submissions(students_submitted, course, quiz, config):
         answer_text = answer_set["text"]
         if answer_text not in communication_method_dict:
             continue
+
         contact_index = communication_method_dict[answer_text]
         for user_id in answer_set["user_ids"]:
             students_submitted[user_id].contactPreference[contact_index] = True
@@ -288,7 +327,9 @@ def parse_submissions(students_submitted, course, quiz, config):
 
     # activity_specify
     for user_id, answer in question_index["activity_specify"].items():
-        students_submitted[user_id].freeResponse = remove_any_tags(answer["text"])
+        answer_text = remove_any_tags(answer["text"])
+        if len(answer_text):
+            students_submitted[user_id].freeResponse = answer_text
 
     # Returns nothing. Modifies students_submitted by filling their respective fields
     return
