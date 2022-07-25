@@ -12,40 +12,40 @@ from checkValidGroup import isValidGroup
 def gradeGroups(groups: list, matchBefore: dict):
 
     #Count the number of students who did or did not take the survey
-    defaultStudents = 0  
-    studentsTakeSurvey = 0 
+    defaultStudents = 0
+    studentsTakeSurvey = 0
 
     #Count the number of students who succesfully got a gender match out of the ones who wanted it
-    studentsGenderMatch = 0  
-    studentsWantGenderMatch = 0 
+    studentsGenderMatch = 0
+    studentsWantGenderMatch = 0
 
     #Count the number of students who wanted asynch/synch and got a match in their group
-    studentsWantTime = 0 
-    studentsGotTime = 0 
+    studentsWantTime = 0
+    studentsGotTime = 0
 
     #Count the number of groups and the valid groups
-    numGroups = 0 
-    numValidGroups = 0 
+    numGroups = 0
+    numValidGroups = 0
 
     #Count the number of groups with a leader personality
-    groupsGotLeader = 0  
+    groupsGotLeader = 0
 
     #Count the number of students who wanted another international student and got it
-    studentsWantInternational = 0 
-    studentsGotInternational = 0 
+    studentsWantInternational = 0
+    studentsGotInternational = 0
 
     #Count all the students who got their preferred language
-    studentsGotLanguage = 0 
+    studentsGotLanguage = 0
 
     #Count all the students who got their preferred activity
-    studentsGotOption = 0 
+    studentsGotOption = 0
 
     #Count which priority the students got first
     #If both second choice and first are met on one student, only firstChoice increases
     studentGotChoice = [0, 0, 0, 0, 0, 0]
-    
+
     #Count the number of groups where there are people of multiple confidence levels
-    numGroupsMixConfidence = 0  
+    numGroupsMixConfidence = 0
 
     #Iterate through each group
     for group in groups:
@@ -62,7 +62,7 @@ def gradeGroups(groups: list, matchBefore: dict):
 
         #a flag that becomes true if anyone in the group is a leader
         flagLeader = False
-        
+
         #The others are by person
         for person in group:
             #Flags to control what the person does and does not get
@@ -71,7 +71,7 @@ def gradeGroups(groups: list, matchBefore: dict):
             flagInternational = False
             flagLanguage = False
             flagOption = False
-            
+
             #Default students should not affect stats
             if person.pronouns == "default/defaults":
                 defaultStudents = defaultStudents + 1
@@ -80,7 +80,7 @@ def gradeGroups(groups: list, matchBefore: dict):
                 studentsTakeSurvey = studentsTakeSurvey + 1
 
             #if anyone in the group is a leader, the whole group gets a leader
-            if person.preferLeader == True:
+            if person.prefer_leader == True:
                 flagLeader = True
 
             #check this person based on the rest of the group
@@ -105,17 +105,17 @@ def gradeGroups(groups: list, matchBefore: dict):
                         flagLanguage = True
 
                     #Option
-                    if person.option1 == person2.option1:
+                    if person.activity_choice == person2.activity_choice:
                         flagOption = True
 
             #Only count the person if the person wanted to match on gender
-            if person.preferSame != 1:
+            if person.prefer_same != 1:
                 studentsWantGenderMatch = studentsWantGenderMatch + 1
                 if flagGender:
                     studentsGenderMatch = studentsGenderMatch + 1
-            
+
             #Only count the person if the person wanted to match on time
-            if person.preferAsy != 1:
+            if person.prefer_async != 1:
                 studentsWantTime = studentsWantTime + 1
                 if flagTime:
                     studentsGotTime = studentsGotTime + 1
@@ -137,42 +137,42 @@ def gradeGroups(groups: list, matchBefore: dict):
             #Find the highest priority that the student managed to get
             for i in range(5):
                 #If at any point, they default, ignore the rest of their opinions
-                if person.priorityList[i] == "default":
+                if person.priority_list[i] == "default":
                     break
-                elif person.priorityList[i] == "Gender":
+                elif person.priority_list[i] == "Gender":
                     if flagGender:
                         studentGotChoice[i] = studentGotChoice[i]+1
                         break
-                elif person.priorityList[i] == "International":
+                elif person.priority_list[i] == "International":
                     if flagInternational:
                         studentGotChoice[i] = studentGotChoice[i]+1
                         break
-                elif person.priorityList[i] == "Language":
+                elif person.priority_list[i] == "Language":
                     if flagLanguage:
                         studentGotChoice[i] = studentGotChoice[i]+1
                         break
-                elif person.priorityList[i] == "What They Want to Do":
+                elif person.priority_list[i] == "What They Want to Do":
                     if flagOption:
                         studentGotChoice[i] = studentGotChoice[i]+1
                         break
-                elif person.priorityList[i] == "Matching Time to Meet":
+                elif person.priority_list[i] == "Matching Time to Meet":
                     if flagTime:
                         studentGotChoice[i] = studentGotChoice[i]+1
                         break
-        
+
         #If any student flagged as a leader, the group has a leader
         if flagLeader:
             groupsGotLeader = groupsGotLeader + 1
 
-        
-            
-    
+
+
+
     print(studentsTakeSurvey, " of students took the survey while ", defaultStudents,  " did not take it.")
-    print("Group who got leader: "+ str((100 * (groupsGotLeader/numGroups))) + "%")   
-    print("Group who got confidence: "+ str((100 * (numGroupsMixConfidence/numGroups))) + "%") 
+    print("Group who got leader: "+ str((100 * (groupsGotLeader/numGroups))) + "%")
+    print("Group who got confidence: "+ str((100 * (numGroupsMixConfidence/numGroups))) + "%")
     print("Students who got gender match: "+ str((100 * (studentsGenderMatch/studentsWantGenderMatch))) + "%")
     print("Students who got time: "+ str((100 * (studentsGotTime/studentsWantTime))) + "%")
-    print("Students who got international: "+ str((100 * (studentsGotInternational/studentsWantInternational))) + "%")     
+    print("Students who got international: "+ str((100 * (studentsGotInternational/studentsWantInternational))) + "%")
     print("Students who got language: " + str((100*(studentsGotLanguage/studentsTakeSurvey))) + "%")
     print("Students who got activity: "+ str((100*(studentsGotOption/studentsTakeSurvey)))+"%")
     print()

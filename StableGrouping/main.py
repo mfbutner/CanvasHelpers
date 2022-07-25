@@ -25,7 +25,7 @@ course = canvas.get_course(config["course"]["id"])
 
 # Get a list of all students still enrolled in the course
 students = course.get_users(enrollment_type="student")
-# Parse students into Student class instances. Sets basic info: idNum, name, name (first and last), and email
+# Parse students into Student class instances. Sets basic info: id_num, name, name (first and last), and email
 all_students = parse_students(students)
 
 # Get selected Canvas quiz to match partners with

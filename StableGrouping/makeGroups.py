@@ -519,7 +519,7 @@ def cleanQuads(quads: list, singles: dict, numGroups: int, matched_before: dict)
         if not quadHasPartner(removeQuad):
             quads.remove(removeQuad)
             for person in removeQuad:
-                singles[int(person.idNum)] = person
+                singles[int(person.id_num)] = person
         else:
             noTakeList.append(index)
 

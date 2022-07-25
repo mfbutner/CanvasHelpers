@@ -23,24 +23,22 @@ def getBody(student_list: list):
     for student in student_list:
         #contact info if NOT canvas group
         if contact_method == "discord":
-            contact_method_id = student.contactInformation[0]
+            contact_method_id = student.contact_information[0]
         elif contact_method == "phone number":
-            contact_method_id = student.contactInformation[1]
+            contact_method_id = student.contact_information[1]
         elif contact_method == "email":
-            contact_method_id = student.contactInformation[2]
+            contact_method_id = student.contact_information[2]
         else:
             contact_method_id = ""
         # sync or async
-        sync = student.preferAsy
+        sync = student.prefer_async
         sync_text = ("Prefers to meet synchronously " if sync==0 else "Has no preference meeting synchronously or asynchronously" if sync==1 else "Prefers to meet asynchronously")
         # put in everyone's preferred meeting times (specified for each person)
-        
+
         # put in preferred activities (specified for each person)
         preferred_activity_text = ""
-        if "default" not in student.option1:
-            preferred_activity_text = f"{student.option1}"
-        if "default" not in student.option2:
-            preferred_activity_text += f"{student.option2}"
+        if "default" not in student.activity_choice:
+            preferred_activity_text = f"{student.activity_choice}"
 
         # put it all into the body
         body += f"{student.name}: \n"
@@ -72,12 +70,12 @@ def preferredLang(student_list: list):
 def preferredContactMethod(student_list: list):
     """
     checks to see if everyone has the same preferred contact method
-    return the preferred contact method (canvas group if no matches) 
+    return the preferred contact method (canvas group if no matches)
     """
     contact_arr = [0, 0, 0, 0]
     num_students = len(student_list)
     for student in student_list:
-        contact_arr += np.array(student.contactPreference)
+        contact_arr += np.array(student.contact_preference)
 
     if contact_arr[0] == num_students:
         return "discord"
@@ -97,15 +95,15 @@ def generalInformationText(student_list: list, contact_method: str):
     free_response_text = ""
 
     for student in range(len(student_list)):
-        if student_list[student].freeResponse != "":        
-            free_response_text += f"{student_list[student].freeResponse}, "
+        if student_list[student].free_response != "":
+            free_response_text += f"{student_list[student].free_response}, "
         if student == len(student_list)-1:
             free_response_text = free_response_text[:-2]
             names_text += f"and {student_list[student].name}"
         else:
             names_text += f"{student_list[student].name}, "
 
-    meeting_times_list = meetingTimesList(student_list)
+    meeting_times_list = meeting_timesList(student_list)
     meetingTable(meeting_times_list)
 
     lang = preferredLang(student_list)
@@ -119,7 +117,7 @@ def generalInformationText(student_list: list, contact_method: str):
     general_info_text +=f"Primary Language for Communication: {lang}\n"
     return general_info_text
 
-def meetingTimesList(student_list: list):
+def meeting_timesList(student_list: list):
     """
     return a list of lists of when people are free
     each row of the list will be the list of TIMES people are free that DAY
@@ -134,11 +132,11 @@ def meetingTimesList(student_list: list):
         for day in range(0,7):
             for student_num in range(0, len(student_list)):
                 student = student_list[student_num]
-                if student.meetingTimes[day][time] == 1:
+                if student.meeting_times[day][time] == 1:
                     student_times[day] += student.name
                     if student_num != len(student_list) - 1:
                         student_times[day] += "\n"
-                    
+
         student_times.insert(0, time_names[time])
         meeting_time_list[time] = student_times
     return meeting_time_list
@@ -155,7 +153,7 @@ def meetingTable(times: list):
     with open('table.txt', 'w') as w:
         w.write(str(table))
     return
-   
+
 
 def getEmails(student_list: list):
     """

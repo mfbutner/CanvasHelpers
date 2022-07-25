@@ -3,7 +3,7 @@ from studentClass import Student
 # Return levels of matching preference- From 2 (best) to 0 (worst)
 def matchPartner(student1: Student, student2: Student):
     if student1.partner == student2.name:
-        if student1.partnerEmail == student2.schoolEmail:
+        if student1.partner_email == student2.schoolEmail:
             return 2
         return 1
     return 0
@@ -31,7 +31,7 @@ def matchInternational(student1: Student, student2: Student):
 
 #If the two students prefer the same activity, return true
 def matchActivity(student1: Student, student2: Student):
-    return student1.option1 == student2.option1
+    return student1.activity_choice == student2.activity_choice
 
 
 #If the two students overlap in time slots at all, return true
@@ -39,7 +39,7 @@ def matchMeetingTimeSpecific(student1: Student, student2: Student):
     for i in range(7):
         for j in range(6):
             #If at any point, both students are right at the same time, return True
-            if student1.meetingTimes[i][j] and student2.meetingTimes[i][j]:
+            if student1.meeting_times[i][j] and student2.meeting_times[i][j]:
                 return True
     #If each time slot fails, the students don't overlap at all
     return False
@@ -47,39 +47,39 @@ def matchMeetingTimeSpecific(student1: Student, student2: Student):
 #If the first student's preferences are fulfilled by the second return true, else return false
 def matchTime(student1: Student, student2: Student):
     #The first student would prefer to be sync
-    if student1.preferAsy == 0:
+    if student1.prefer_async == 0:
         #The second student also prefers to be sync, or does not care
-        if student2.preferAsy == 0 or student2.preferAsy == 1:
+        if student2.prefer_async == 0 or student2.prefer_async == 1:
             #If they overlap in time, then they are compatible
             return matchMeetingTimeSpecific(student1, student2)
         #The second student does not want to be synch, they are incompatible
-        elif student2.preferAsy == 2:
+        elif student2.prefer_async == 2:
             return False
 
     #The first student has no preference
-    elif student1.preferAsy == 1:
+    elif student1.prefer_async == 1:
         #If the second student doesn't care or prefersAsy
-        if student2.preferAsy == 1 or student2.preferAsy == 2:
+        if student2.prefer_async == 1 or student2.prefer_async == 2:
             #Then they can choose to be asynch together
             return True
         #If the second student is synch
-        elif student2.preferAsy == 0:
+        elif student2.prefer_async == 0:
             #The second student wants to synch, so they only match if they match in time
             return matchMeetingTimeSpecific(student1, student2)
 
     #The first student would prefer to be asynch
-    elif student1.preferAsy == 2:
+    elif student1.prefer_async == 2:
         #If the second student doesn't care or prefersAsy
-        if student2.preferAsy == 1 or student2.preferAsy == 2:
+        if student2.prefer_async == 1 or student2.prefer_async == 2:
             #Then they can choose to be asynch together
             return True
         #If the second student is synch, they are incompatible
-        elif student2.preferAsy == 0:
+        elif student2.prefer_async == 0:
             return False
 
 #Return true if the two have the same values as leader
 def matchLead(student1: Student, student2: Student):
-    return student1.preferLeader == student2.preferLeader
+    return student1.prefer_leader == student2.prefer_leader
 
 #Return true if they speak the same language
 def matchLanguage(student1: Student, student2: Student):
@@ -88,18 +88,18 @@ def matchLanguage(student1: Student, student2: Student):
 #Return true if the second student matches the first student's preferences
 def matchGender(student1: Student, student2: Student):
     #The first student prefers same gender:
-    if student1.preferSame == 2:
+    if student1.prefer_same == 2:
         if student1.pronouns == student2.pronouns:
             return True
         else:
             return False
 
     #The first student does not have a preference
-    elif student1.preferSame == 1:
+    elif student1.prefer_same == 1:
         return True
 
     #The first student prefers a different gender
-    elif student1.preferSame == 0:
+    elif student1.prefer_same == 0:
         if student1.pronouns != student2.pronouns:
             return True
         else:

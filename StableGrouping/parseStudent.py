@@ -38,7 +38,7 @@ def parse_students(canvas_students):
             continue
 
         student_instance = Student()
-        student_instance.idNum = student.id
+        student_instance.id_num = student.id
         student_instance.name = student.name
         name = student.sortable_name.split(",")
         if len(name) == 1:
@@ -132,10 +132,10 @@ def filter_students_submitted(all_students, quiz_submissions):
         for student in all_students.values():
             # Side effect: If the student is not found in all_students, the submission is ignored
             # The student either may be no longer enrolled or something has gone wrong
-            if student.idNum != submission.user_id:
+            if student.id_num != submission.user_id:
                 continue
 
-            students_submitted[student.idNum] = student
+            students_submitted[student.id_num] = student
             break
     return students_submitted
 
@@ -170,11 +170,11 @@ def parse_submissions(students_submitted, course, quiz, config):
 
         for user_id in answer["user_ids"]:
             if answer_text == "I would prefer another person who as the same pronouns as I do.":
-                students_submitted[user_id].preferSame = PreferGender.same_pronouns.value
+                students_submitted[user_id].prefer_same = PreferGender.same_pronouns.value
             elif answer_text == "I would prefer another person who does not have the same pronouns as I do.":
-                students_submitted[user_id].preferSame = PreferGender.diff_pronouns.value
+                students_submitted[user_id].prefer_same = PreferGender.diff_pronouns.value
             else:
-                students_submitted[user_id].preferSame = PreferGender.dont_care_pronouns.value
+                students_submitted[user_id].prefer_same = PreferGender.dont_care_pronouns.value
 
     # 0 - No preference (Default)
     # 1 - Synchronous
@@ -186,11 +186,11 @@ def parse_submissions(students_submitted, course, quiz, config):
 
         for user_id in answer["user_ids"]:
             if answer_text == "Synchronously":
-                students_submitted[user_id].preferAsy = PreferAsync.like_sync.value
+                students_submitted[user_id].prefer_async = PreferAsync.like_sync.value
             elif answer_text == "Asynchronously":
-                students_submitted[user_id].preferAsy = PreferAsync.like_async.value
+                students_submitted[user_id].prefer_async = PreferAsync.like_async.value
             else:
-                students_submitted[user_id].preferAsy = PreferAsync.dont_care_async.value
+                students_submitted[user_id].prefer_async = PreferAsync.dont_care_async.value
 
     for answer in question_index["prefer_to_lead"]["answers"]:
         answer_text = answer["text"]
@@ -198,7 +198,7 @@ def parse_submissions(students_submitted, course, quiz, config):
             continue
 
         for user_id in answer["user_ids"]:
-            students_submitted[user_id].preferLeader = (answer_text == "I like to lead.")
+            students_submitted[user_id].prefer_leader = (answer_text == "I like to lead.")
 
     # 0 - Not international (Default)
     # 1 - No preference
@@ -218,14 +218,13 @@ def parse_submissions(students_submitted, course, quiz, config):
 
     # Q7 on the Canvas quiz question
     # Default: "default"
-    # Sets option1 (option2 ignored)
     for answer in question_index["activity_select"]["answers"]:
         answer_text = answer["text"]
         if answer_text == NO_ANSWER:
             continue
 
         for user_id in answer["user_ids"]:
-            students_submitted[user_id].option1 = answer_text
+            students_submitted[user_id].activity_choice = answer_text
 
     # 0 - Could use some help
     # 1 - Have some questions (Default)
@@ -244,12 +243,12 @@ def parse_submissions(students_submitted, course, quiz, config):
                 students_submitted[user_id].confidence = Confident.default_confidence.value
 
     # time_free
-    daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    days_of_week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     for answer in question_index["time_free"]["answer_sets"]:
         answer_text = answer["text"]
         day_text = answer_text[0:3]
-        if day_text in daysOfWeek:
-            first_index = daysOfWeek.index(day_text)
+        if day_text in days_of_week:
+            first_index = days_of_week.index(day_text)
             second_index = int(answer_text[3]) - 1
             for response in answer["answers"]:
                 available = response["correct"]
@@ -257,7 +256,7 @@ def parse_submissions(students_submitted, course, quiz, config):
                     continue
 
                 for user_id in response["user_ids"]:
-                    students_submitted[user_id].meetingTimes[first_index][second_index] = available
+                    students_submitted[user_id].meeting_times[first_index][second_index] = available
 
     # priorities
     priority_list = ["top", "second", "third", "fourth", "fifth"]
@@ -271,7 +270,7 @@ def parse_submissions(students_submitted, course, quiz, config):
                     continue
 
                 for user_id in priority["user_ids"]:
-                    students_submitted[user_id].priorityList[index] = priority_text
+                    students_submitted[user_id].priority_list[index] = priority_text
 
     # language_select
     for answer in question_index["language_select"]["answer_sets"][0]["answers"]:
@@ -312,7 +311,7 @@ def parse_submissions(students_submitted, course, quiz, config):
 
         contact_index = communication_method_dict[answer_text]
         for user_id in answer_set["user_ids"]:
-            students_submitted[user_id].contactPreference[contact_index] = True
+            students_submitted[user_id].contact_preference[contact_index] = True
 
     # prefer_communication_info
     communication_info_keys = {
@@ -323,13 +322,13 @@ def parse_submissions(students_submitted, course, quiz, config):
     for user_id, answer in question_index["prefer_communication_info"].items():
         for info_key, info_index in communication_info_keys.items():
             if info_key in answer:
-                students_submitted[user_id].contactInformation[info_index] = answer[info_key]
+                students_submitted[user_id].contact_information[info_index] = answer[info_key]
 
     # activity_specify
     for user_id, answer in question_index["activity_specify"].items():
         answer_text = remove_any_tags(answer["text"])
         if len(answer_text):
-            students_submitted[user_id].freeResponse = answer_text
+            students_submitted[user_id].free_response = answer_text
 
     # Returns nothing. Modifies students_submitted by filling their respective fields
     return
@@ -372,6 +371,6 @@ def parsePartnerQuiz(quizData: pd, CLASS_ID: int, dictSt: dict, missingSt: dict)
         if type(temp) is str and (len(temp)):
 
             if id in dictSt:
-                dictSt[id].partnerEmail = temp
+                dictSt[id].partner_email = temp
             else:
-                missingSt[id].partnerEmail = temp
+                missingSt[id].partner_email = temp

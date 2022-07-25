@@ -12,7 +12,7 @@ def get_invalid_groups(course, all_students):
     # get a list of group categories
     group_categories = course.get_group_categories()
 
-    studentid_groupid = {str(student.idNum): [] for student in all_students.values()}
+    studentid_groupid = {str(student.id_num): [] for student in all_students.values()}
 
     for category in group_categories:
         group_list = category.get_groups()
@@ -32,10 +32,10 @@ def isValidGroup(invalid_group_dict: dict, student_list: list):
     """
     count = 0
     for student in student_list:
-        student_id = str(student.idNum)
+        student_id = str(student.id_num)
         prevMembers = invalid_group_dict[student_id]
         for other_student in student_list:
-            other_student_id = str(other_student.idNum)
+            other_student_id = str(other_student.id_num)
             if student_id != other_student_id:
                 other_prevMembers = invalid_group_dict[other_student_id]
                 sameGroup = set(prevMembers) & set(other_prevMembers)

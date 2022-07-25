@@ -27,7 +27,7 @@ def getStudentIds(student_list: list):
     """
     student_ids = []
     for student in student_list:
-        student_ids.append(str(student.idNum))
+        student_ids.append(str(student.id_num))
     return student_ids
 
 def getStudentLastNames(student_list: list):
@@ -55,7 +55,7 @@ def uploadTable(canvas):
     folder = curr_user.get_folder(folder_id)
 
     did_upload = folder.upload('table.txt')
-    
+
     return did_upload[1]['id']
 
 
@@ -64,7 +64,7 @@ def sendConvo(canvas: Canvas, course_number: int, group_list: list, study_group_
     for every group in the group_list, send a conversation for each student per group
     """
     course = canvas.get_course(course_number)
-    
+
     course_name = course.name
     category_name = "Study Groups " + study_group_number
     #make the study group category

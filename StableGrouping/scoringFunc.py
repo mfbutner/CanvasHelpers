@@ -38,22 +38,22 @@ def scoreOneByOne(student1: Student, student2: Student, matchDict: dict):
 
     for i in range(4):
         # If the priority list hits default, score no further
-        if student1.priorityList[i] == "default":
+        if student1.priority_list[i] == "default":
             break
         # If the student priority is matched, add its weight to the score
-        elif student1.priorityList[i] == "International":
+        elif student1.priority_list[i] == "International":
             if matchInternational(student1, student2):
                 score = score + scoreWeights[i]
-        elif student1.priorityList[i] == "Language":
+        elif student1.priority_list[i] == "Language":
             if matchLanguage(student1, student2):
                 score = score + scoreWeights[i]
-        elif student1.priorityList[i] == "Matching Time to Meet":
+        elif student1.priority_list[i] == "Matching Time to Meet":
             if matchTime(student1, student2):
                 score = score + scoreWeights[i]
-        elif student1.priorityList[i] == "What They Want to Do":
+        elif student1.priority_list[i] == "What They Want to Do":
             if matchActivity(student1, student2):
                 score = score + scoreWeights[i]
-        elif student1.priorityList[i] == "Gender":
+        elif student1.priority_list[i] == "Gender":
             if matchGender(student1, student2):
                 score = score + scoreWeights[i]
         else:
@@ -101,7 +101,7 @@ def scoreTwoByTwo(studentPair1: list, studentPair2: list, matchBefore):
     #Reward a group with at least one leader
     flagLeader = False
     for i in range(3):
-        if studentList[i].preferLeader:
+        if studentList[i].prefer_leader:
             flagLeader = True
             break
 
