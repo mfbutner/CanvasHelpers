@@ -8,74 +8,47 @@ import statistics
 class PartnerEvalQuizIndividualStats:
     def __init__(self, id: int, quiz_grades: list):
         self.id = id
-        self.__org_avgs = []
-        self.__com_avgs = []
-        self.__coop_avgs = []
-        self.__attitude_avgs = []
-        self.__idea_avgs = []
-        self.__code_avgs = []
-        self.__contrib_avgs = []
-        self.__deviation_1s = []
-        self.__deviation_2s = []
+        self.scores = defaultdict(list)
 
         for quiz_grade in quiz_grades:
             self.__parse_quiz_grade(quiz_grade)
 
-        self.__project_engagement_avg = self.__get_project_engagement_avg()
-        self.__project_engagement_deviation = statistics.fmean(self.__deviation_1s)
-        self.__project_contrib_avg = statistics.fmean(self.__contrib_avgs)
-        self.__project_contrib_deviation = statistics.fmean(self.__deviation_2s)
+        self.scores["engagement_score"].append(self.__get_engagement_score())
+        self.scores["contribution_score"].append(self.__get_contribution_score())
 
     def get_final_grade(self):
-        project_engagement_score = self.__get_project_engagement_score()
-        project_contrib_score = self.__get_project_contrib_score()
-        """
-        if project_engagement_score != 25.00:
-            print(self.__org_avgs, statistics.fmean(self.__org_avgs))
-            print(self.__com_avgs, statistics.fmean(self.__com_avgs))
-            print(self.__coop_avgs, statistics.fmean(self.__coop_avgs))
-            print(self.__attitude_avgs, statistics.fmean(self.__attitude_avgs))
-            print(self.__idea_avgs, statistics.fmean(self.__idea_avgs))
-            print(self.__code_avgs, statistics.fmean(self.__code_avgs))
-            print(self.__deviation_1s, statistics.fmean(self.__deviation_1s))
-            print(self.__contrib_avgs, statistics.fmean(self.__contrib_avgs))
-            print(self.__deviation_2s, statistics.fmean(self.__deviation_2s))
-        """
-        final_score = 0.4 * project_engagement_score + 0.6 * project_contrib_score
-        """
-        if project_engagement_score != 25.0:
-            print(
-                "id:",
-                self.id,
-                "proj:",
-                project_engagement_score,
-                "contrib:",
-                project_contrib_score,
-            )
-        """
+        final_score = (
+            0.4 * self.scores["engagement_score"][0]
+            + 0.6 * self.scores["contribution_score"][0]
+        )
+        print(self.scores)
         return final_score
 
     def __parse_quiz_grade(self, quiz_grade: dict) -> None:
-        self.__org_avgs.append(
+        self.scores["organization_avgs"].append(
             statistics.fmean(quiz_grade[self.id]["Organization/planning"])
         )
-        self.__com_avgs.append(statistics.fmean(quiz_grade[self.id]["Communication"]))
-        self.__coop_avgs.append(
+        self.scores["communication_avgs"].append(
+            statistics.fmean(quiz_grade[self.id]["Communication"])
+        )
+        self.scores["teamwork_avgs"].append(
             statistics.fmean(quiz_grade[self.id]["Teamwork/cooperation"])
         )
-        self.__attitude_avgs.append(statistics.fmean(quiz_grade[self.id]["Attitude"]))
-        self.__idea_avgs.append(
+        self.scores["attitude_avgs"].append(
+            statistics.fmean(quiz_grade[self.id]["Attitude"])
+        )
+        self.scores["ideas_avgs"].append(
             statistics.fmean(quiz_grade[self.id]["Contribution of ideas"])
         )
-        self.__code_avgs.append(
+        self.scores["code_avgs"].append(
             statistics.fmean(quiz_grade[self.id]["Contribution of code"])
         )
-        self.__contrib_avgs.append(
+        self.scores["contribution_avgs"].append(
             statistics.fmean(quiz_grade[self.id]["Project contribution"])
         )
         deviation_1_vals = self.__get_deviation_1_vals(quiz_grade)
-        self.__deviation_1s.append(statistics.fmean(deviation_1_vals))
-        self.__deviation_2s.append(self.__get_deviation_2_val(quiz_grade))
+        self.scores["deviation_1_scores"].append(statistics.fmean(deviation_1_vals))
+        self.scores["deviation_2_scores"].append(self.__get_deviation_2_val(quiz_grade))
 
     def __get_deviation_1_vals(self, quiz_grade: dict) -> list:
         deviation_1_vals = []
@@ -107,53 +80,33 @@ class PartnerEvalQuizIndividualStats:
         else:
             return 0
 
-    def __get_project_engagement_avg(self) -> float:
+    def __get_engagement_score(self) -> float:
         quality_avgs = []
-        for quality in (
-            self.__org_avgs,
-            self.__com_avgs,
-            self.__coop_avgs,
-            self.__attitude_avgs,
-            self.__idea_avgs,
-            self.__code_avgs,
-        ):
-            quality_avgs.append(statistics.fmean(quality))
-        return statistics.fmean(quality_avgs)
-
-    def __get_project_engagement_score(self) -> float:
-        if self.__project_engagement_deviation > 0:
-            project_engagement_score = (
-                (self.__project_engagement_avg - self.__project_contrib_deviation)
-                / 4
-                * 100
-            )
+        for quality, values in self.scores.items():
+            if quality not in [
+                "organization_avgs",
+                "communication_avgs",
+                "teamwork_avgs",
+                "attitude_avgs",
+                "ideas_avgs",
+                "code_avgs",
+            ]:
+                continue
+            quality_avgs.append(statistics.fmean(values))
+        engagement_avg = statistics.fmean(quality_avgs)
+        engagment_deviation = statistics.fmean(self.scores["deviation_1_scores"])
+        if engagment_deviation > 0:
+            return (engagement_avg - engagment_deviation) / 4 * 100
         else:
-            project_engagement_score = (
-                (
-                    self.__project_engagement_avg
-                    - (self.__project_engagement_deviation / 2)
-                )
-                / 4
-                * 100
-            )
-        return project_engagement_score
+            return (engagement_avg - (engagment_deviation / 2)) / 4 * 100
 
-    def __get_project_contrib_score(self) -> float:
-        if self.__project_contrib_deviation > 0:
-            project_contrib_score = (
-                (self.__project_contrib_avg - self.__project_contrib_deviation)
-                / 50
-                * 100
-                * 100
-            )
+    def __get_contribution_score(self) -> float:
+        contribution_avg = statistics.fmean(self.scores["contribution_avgs"])
+        contribution_deviation = statistics.fmean(self.scores["deviation_2_scores"])
+        if contribution_deviation > 0:
+            return (contribution_avg - contribution_deviation) / 50 * 100 * 100
         else:
-            project_contrib_score = (
-                (self.__project_contrib_avg - (self.__project_contrib_deviation / 2))
-                / 50
-                * 100
-                * 100
-            )
-        return project_contrib_score
+            return (contribution_avg - (contribution_deviation / 2)) / 50 * 100 * 100
 
 
 def find_partner_eval_ag(
