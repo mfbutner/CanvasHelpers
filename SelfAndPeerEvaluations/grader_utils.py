@@ -274,9 +274,12 @@ def parse_contribution_evals(
                 quiz_grade[user_id][subject].append(contrib_mappings[answer["text"]])
         except KeyError:  # skip responses that have no students
             continue
-    # give missing_submissions student a 0 in contribution
+    # give missing_submissions student a 0 in contribution (unless they are solo)
     for student_id in missing_submissions:
-        quiz_grade[student_id][subject].append(0)
+        if partner_id_map[student_id] == "None":
+            quiz_grade[student_id][subject].append(1)
+        else:
+            quiz_grade[student_id][subject].append(0)
     # partner loop
     for answer in question["answers"]:
         try:
