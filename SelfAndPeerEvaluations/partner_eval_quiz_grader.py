@@ -1,6 +1,5 @@
 import canvasapi
 from collections import defaultdict
-import datetime
 import json
 import os
 from grader_utils import *
@@ -38,7 +37,7 @@ class PartnerEvalQuizGrader:
             possible_assignments.append(
                 (assignment_info["id"], assignment_info["name"])
             )
-            print(str(index) + ".", possible_assignments[index][1])
+            print(str(index) + ".", possible_assignments[-1][1])
 
         while True:
             print(
@@ -74,7 +73,6 @@ class PartnerEvalQuizGrader:
             )
 
         quiz_errors = defaultdict(list)
-        quiz_errors["quiz_id"].append(assignment.quiz_id)
 
         solo_submissions = list()
 
@@ -113,6 +111,7 @@ class PartnerEvalQuizGrader:
         ) as outfile:
             json.dump(quiz_grade, outfile)
 
+        # FIXME: rewrite this solo submission parser into loop above
         # write out solo submissions
         outfile = open(
             f"./quiz_results/solo_submissions/{assignment.name}_solo_submissions.txt",
@@ -129,18 +128,24 @@ class PartnerEvalQuizGrader:
     def upload_final_grades_to_canvas(
         self, assignment_name="Overall Evaluation Grade"
     ) -> None:
+        files = []
         print("We'll be basing final grade off of these files:")
+        print("These files will be processed in proper sorted order.")
         for filename in os.listdir("./quiz_results/quiz_reports"):
             print("   ", filename)
+            files.append(os.path.join("./quiz_results/quiz_reports/", filename))
         individual_students_stats = [
-            PartnerEvalQuizIndividualStats(name, id)
+            PartnerEvalQuizIndividualStats(name, id, sorted(files))
             for name, id in self.student_id_map.items()
         ]
+        print("ok i made the csvs")
+        exit()
         final_grades = {}
         csv_files = {}
         for student in individual_students_stats:
             final_grades[int(student.id)] = student.final_score
             csv_files[int(student.id)] = student.csv_file_path
+        """
         assignment = self.course.create_assignment(
             assignment={
                 "name": assignment_name,
@@ -167,15 +172,14 @@ class PartnerEvalQuizGrader:
         print("done grades")
         for student in individual_students_stats:
             submission = assignment.get_submission(int(student.id))
-            """
             submission.upload_comment(
                 "./quiz_results/individual_student_reports/test.csv"
             )
-            """
             submission.upload_comment(
                 f"./quiz_results/individual_student_reports/{student.name}.csv"
             )
             # submission.upload_comment(student.csv_file_path)
+        """
 
         # debugging purposes
         for k, v in final_grades.items():
