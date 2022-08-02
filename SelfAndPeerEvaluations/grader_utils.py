@@ -1,35 +1,36 @@
 import canvasapi
 from collections import defaultdict
 import csv
+from collections import deque
 import datetime
 import json
-import os
 import statistics
 import random
 
 
 class PartnerEvalQuizIndividualStats:
-    def __init__(self, name: str, id: int):
+    def __init__(self, name: str, id: int, files: list):
         self.name = "".join(filter(str.isalnum, name))
         self.id = str(id)
         self.scores = defaultdict(list)
 
-        self.header = []
+        self.detailed_scores = []
+        detailed_scores_header = []
         self.qualitative_subjects = None
         self.quantitative_overall_subjects = None
 
         self.csv_file_path = (
-            f"./quiz_results/individual_student_reports/{self.name}.txt"
+            f"./quiz_results/individual_student_reports/{self.name}.csv"
         )
         f = open(self.csv_file_path, "w")
         self.writer = csv.writer(f)
 
-        for filename in os.listdir("./quiz_results/quiz_reports"):
-            with open(os.path.join("./quiz_results/quiz_reports/", filename), "r") as f:
+        for file in files:
+            with open(file, "r") as f:
                 json_file = json.load(f)
-                if len(self.header) == 0:  # only make the header once
-                    self.__make_header(json_file)
-                    self.writer.writerow(self.header)
+                if len(detailed_scores_header) == 0:  # only make the header once
+                    detailed_scores_header = self.__make_header(json_file)
+                    self.detailed_scores.append(detailed_scores_header)
                 if self.qualitative_subjects is None:  # only get once
                     self.qualitative_subjects = json_file["info"][
                         "qualitative_subjects"
@@ -40,150 +41,175 @@ class PartnerEvalQuizIndividualStats:
                     ]
                 self.__parse_quiz_grade(json_file)
 
-        self.writer.writerow(["" for _ in range(len(self.header))])  # empty row
         self.__get_averages()
-        self.writer.writerow(["" for _ in range(len(self.header))])  # empty row
-        self.__write_qualitative_score()
-        self.writer.writerow(["" for _ in range(len(self.header))])  # empty row
-        self.__write_contribution_score()
-        self.writer.writerow(["" for _ in range(len(self.header))])  # empty row
-        self.__write_final_score()
+        # transpose detailed scores
+        self.detailed_scores = [
+            [row[i] for row in self.detailed_scores]
+            for i in range(len(self.detailed_scores[0]))
+        ]
+        self.csv_file_info = deque(self.detailed_scores)
+        self.csv_file_info.appendleft([""])  # empty row
+        self.csv_file_info.appendleft(
+            ["INDIVIDUAL ASSIGNMENT GRADES\nAND CALCULATIONS"]
+        )
+        self.csv_file_info.extendleft([""] for _ in range(4))  # empty rows
+        self.csv_file_info.extendleft(self.__write_contribution_score())
+        self.csv_file_info.extendleft(self.__write_qualitative_score())
+        self.csv_file_info.appendleft([""])  # empty row
+        self.csv_file_info.appendleft(self.__write_final_score())
+        self.csv_file_info.appendleft([""])
+        self.csv_file_info.appendleft(["FINAL SCORE CALCULATIONS"])
+        self.writer.writerows(self.csv_file_info)
         f.close()
 
-    def __write_final_score(self) -> None:
+    def __write_final_score(self) -> list:
         self.final_score = 0.4 * self.qualitative_score + 0.6 * self.contribution_score
-        self.writer.writerow(["Final Score", self.final_score])
+        return [
+            "Final Score\n(40% Qualitative + 60% Project Contribution)",
+            round(self.final_score, 2),
+        ]
 
-    def __write_qualitative_score(self) -> None:
+    def __write_qualitative_score(self) -> list:
+        overall_qualitative_str = f"Overall Qualitative Averages\n{self.__stringify_subjects(self.qualitative_subjects)}"
         header = [
             "",
-            "Average (Average of Qualitative Cateogry Averages in row above)",
-            "Difference",
-            "Score (if (diff > 0); then score=(avg - diff)/4*100; else score=(avg + diff/2)/4*100)",
-            "Final Grade Weight",
+            "Score\n(if (diff > 0); then score=(avg - diff)/4*100;\nelse score=(avg - diff/2)/4*100)",
+            f"Average of {overall_qualitative_str}",
+            "Difference\n(Overall Average of\nAverage Qualitative Difference)",
         ]
         self.__calculate_qualitative_score()
         row = [
             "Qualitative",
+            self.qualitative_score,
             self.average_qualitative,
             self.average_qualitative_difference,
-            self.qualitative_score,
-            "40%",
         ]
-        self.writer.writerow(header)
-        self.writer.writerow(row)
+        return [row, header]
 
     def __calculate_qualitative_score(self) -> None:
         if self.average_qualitative_difference > 0:
-            self.qualitative_score = (
-                (self.average_qualitative - self.average_qualitative_difference)
-                / 4
-                * 100
+            self.qualitative_score = round(
+                (
+                    (self.average_qualitative - self.average_qualitative_difference)
+                    / 4
+                    * 100
+                ),
+                2,
             )
         else:
-            self.qualitative_score = (
-                (self.average_qualitative - (self.average_qualitative_difference / 2))
-                / 4
-                * 100
+            self.qualitative_score = round(
+                (
+                    (
+                        self.average_qualitative
+                        - (self.average_qualitative_difference / 2)
+                    )
+                    / 4
+                    * 100
+                ),
+                2,
             )
 
-    def __write_contribution_score(self) -> None:
+    def __write_contribution_score(self) -> list:
         header = [
             "",
-            "Average Project Contribution (in row above)",
+            "Score\n(if (diff > 0); then score=(avg - diff)/50*100*100;\nelse score=(avg - diff/2)/50*100*100)",
+            "Average Project Contribution",
             "Project Contribution Difference",
-            "Score (if (diff > 0); then score=(avg - diff)/50*100*100; else score=(avg + diff/2)/50*100*100)",
-            "Final Grade Weight",
         ]
         self.__calculate_contribution_score()
         row = [
             "Project Contribution",
+            self.contribution_score,
             self.average_project_contribution,
             self.average_project_contribution_difference,
-            self.contribution_score,
-            "60%",
         ]
-        self.writer.writerow(header)
-        self.writer.writerow(row)
+        return [row, header]
 
     def __calculate_contribution_score(self) -> None:
         if self.average_project_contribution_difference > 0:
-            self.contribution_score = (
+            self.contribution_score = round(
                 (
-                    self.average_project_contribution
-                    - self.average_project_contribution_difference
-                )
-                / 50
-                * 100
-                * 100
+                    (
+                        self.average_project_contribution
+                        - self.average_project_contribution_difference
+                    )
+                    / 50
+                    * 100
+                    * 100
+                ),
+                2,
             )
         else:
-            self.contribution_score = (
+            self.contribution_score = round(
                 (
-                    self.average_project_contribution
-                    - (self.average_project_contribution_difference / 2)
-                )
-                / 50
-                * 100
-                * 100
+                    (
+                        self.average_project_contribution
+                        - (self.average_project_contribution_difference / 2)
+                    )
+                    / 50
+                    * 100
+                    * 100
+                ),
+                2,
             )
 
     def __get_averages(self) -> None:
-        averages_header = [""]
-        averages_values = ["Values"]
+        averages_values = ["Overall Average"]
         qualitative_averages = []
 
         for qualitative_subject in self.qualitative_subjects:
-            averages_header.append(f"Average of Average {qualitative_subject}")
-            averages_values.append(statistics.fmean(self.scores[qualitative_subject]))
-            qualitative_averages.append(averages_values[-1])
-        self.average_qualitative = statistics.fmean(qualitative_averages)
+            averages_values.append(
+                f"Self: Not used in Final Grade Calculation\nPartner: Not used in Final Grade Calculation\nAverage: {round(statistics.fmean(self.scores[qualitative_subject]), 2)}\nDiff: Not used in Final Grade Calculation"
+            )
+            qualitative_averages.append(
+                round(statistics.fmean(self.scores[qualitative_subject]), 2)
+            )
+        self.average_qualitative = round(statistics.fmean(qualitative_averages), 2)
 
-        averages_header.append("Average of Average Qualitative Difference")
-        averages_values.append(statistics.fmean(self.scores["Qualitative Difference"]))
-        self.average_qualitative_difference = float(averages_values[-1])
+        averages_values.append(
+            round(statistics.fmean(self.scores["Qualitative Difference"]), 2)
+        )
+        self.average_qualitative_difference = round(float(averages_values[-1]), 2)
 
         # NOTE: there's only contribution for now
         for quantitative_overall_subject in self.quantitative_overall_subjects:
-            averages_header.append(f"Average of Average {quantitative_overall_subject}")
-            averages_header.append(
-                f"Average of {quantitative_overall_subject} Difference"
-            )
             averages_values.append(
-                statistics.fmean(self.scores[quantitative_overall_subject])
+                f"Self: Not used in Final Grade Calculation\nPartner: Not used in Final Grade Calculation\nAverage: {round(statistics.fmean(self.scores[quantitative_overall_subject]),2)}\nDiff: {round(statistics.fmean(self.scores['Project Contribution Difference']), 2)}"
             )
-            self.average_project_contribution = float(averages_values[-1])
-            averages_values.append(
-                statistics.fmean(self.scores["Project Contribution Difference"])
+            self.average_project_contribution = round(
+                statistics.fmean(self.scores[quantitative_overall_subject]), 2
             )
-            self.average_project_contribution_difference = float(averages_values[-1])
+            self.average_project_contribution_difference = round(
+                statistics.fmean(self.scores["Project Contribution Difference"]), 2
+            )
 
-        self.writer.writerow(averages_header)
-        self.writer.writerow(averages_values)
+        self.detailed_scores.append(averages_values)
 
     def __parse_quiz_grade(self, json_file: dict):
         row = []
         row.append(json_file["info"]["quiz_name"])
         if self.id not in json_file:
             for qualitative_subject in json_file["info"]["qualitative_subjects"]:
-                row.extend([1, 1, 1, 0])
+                row.append("Self: 1\nPartner: 1\nAverage: 1\nDiff (self - partner): 0")
                 self.scores[qualitative_subject].append(1)
-            row.append(0)  # average qualitative difference
+            row.append("0")  # average qualitative difference
             self.scores["Qualitative Difference"].append(0)
             for quantitative_overall_subject in json_file["info"][
                 "quantitative_overall_subjects"
             ]:
-                row.extend([0, 0, 0, 0])
+                row.append("Self: 0\nPartner: 0\nAverage: 0\nDiff (self - partner): 0")
                 self.scores[quantitative_overall_subject].append(0)
-            self.scores["Project Contribution Difference"].append(
-                0
-            )  # since contribution is the only one here
-            self.writer.writerow(row)
+                self.scores["Project Contribution Difference"].append(
+                    0
+                )  # since contribution is the only one here
+            self.detailed_scores.append(row)
             return
         if json_file[self.id]["valid_solo_submission"][0]:
             for qualitative_subject in json_file["info"]["qualitative_subjects"]:
                 self_score = json_file[self.id][qualitative_subject][0]
-                row.extend([self_score, "N/A", self_score, 0])
+                row.append(
+                    f"Self: {self_score}\nPartner: N/A\nAverage: {self_score}\nDiff (self - partner): 0"
+                )
                 self.scores[qualitative_subject].append(self_score)
             row.append(0)  # average qualitative difference
             self.scores["Qualitative Difference"].append(0)
@@ -191,26 +217,32 @@ class PartnerEvalQuizIndividualStats:
                 "quantitative_overall_subjects"
             ]:
                 self_score = json_file[self.id][quantitative_overall_subject][0]
-                row.extend([self_score, "N/A", self_score, 0])
+                row.append(
+                    f"Self: {self_score}\nPartner: N/A\nAverage: {self_score}\nDiff (self - partner): 0"
+                )
                 self.scores[quantitative_overall_subject].append(self_score)
-            self.scores["Project Contribution Difference"].append(
-                0
-            )  # since contribution is the only one here
+                self.scores["Project Contribution Difference"].append(
+                    0
+                )  # since contribution is the only one here
         else:
             qualitative_differences = []
             for qualitative_subject in json_file["info"]["qualitative_subjects"]:
                 self_score = json_file[self.id][qualitative_subject][0]
                 partner_score = json_file[self.id][qualitative_subject][1]
-                average = statistics.fmean(json_file[self.id][qualitative_subject])
+                average = round(
+                    statistics.fmean(json_file[self.id][qualitative_subject]), 2
+                )
                 qualitative_difference = self_score - partner_score
                 qualitative_differences.append(qualitative_difference)
-                row.extend([self_score, partner_score, average, qualitative_difference])
+                row.append(
+                    f"Self: {self_score}\nPartner: {partner_score}\nAverage: {average}\nDiff (self - partner): {qualitative_difference}"
+                )
                 self.scores[qualitative_subject].append(average)
             row.append(
-                statistics.fmean(qualitative_differences)
+                round(statistics.fmean(qualitative_differences), 2)
             )  # average qualitative difference
             self.scores["Qualitative Difference"].append(
-                statistics.fmean(qualitative_differences)
+                round(statistics.fmean(qualitative_differences), 2)
             )
             quantitative_overall_differences = []
             for quantitative_overall_subject in json_file["info"][
@@ -218,82 +250,52 @@ class PartnerEvalQuizIndividualStats:
             ]:
                 self_score = json_file[self.id][quantitative_overall_subject][0]
                 partner_score = json_file[self.id][quantitative_overall_subject][1]
-                average = statistics.fmean(
-                    json_file[self.id][quantitative_overall_subject]
+                average = round(
+                    statistics.fmean(json_file[self.id][quantitative_overall_subject]),
+                    2,
                 )
                 quantitative_overall_difference = self_score - partner_score
                 quantitative_overall_differences.append(quantitative_overall_difference)
-                row.extend(
-                    [
-                        self_score,
-                        partner_score,
-                        average,
-                        quantitative_overall_difference,
-                    ]
+                row.append(
+                    f"Self: {self_score}\nPartner: {partner_score}\nAverage: {average}\nDiff (self - partner): {quantitative_overall_difference}"
                 )
                 self.scores[quantitative_overall_subject].append(average)
-            self.scores["Project Contribution Difference"].append(
-                statistics.fmean(quantitative_overall_differences)
-            )  # since contribution is the only one here
-        self.writer.writerow(row)
+                self.scores["Project Contribution Difference"].append(
+                    round(statistics.fmean(quantitative_overall_differences), 2)
+                )  # since contribution is the only one here
+        self.detailed_scores.append(row)
 
-    def __make_header(self, json_file: dict):
-        self.header.append("Assignment Name")
+    def __stringify_subjects(self, subjects: list) -> str:
+        result = "("
+        cur_line = ""
+        for subject in subjects:
+            if subject == subjects[-1]:
+                if len(cur_line + subject) >= 45:
+                    result += cur_line + "\n" + subject + ")"
+                else:
+                    result += cur_line + subject + ")"
+            else:
+                if len(cur_line + subject) >= 45:
+                    result += cur_line + "\n"
+                    cur_line = subject + ", "
+                else:
+                    cur_line += subject + ", "
+        return result
+
+    def __make_header(self, json_file: dict) -> list:
+        header = ["Categories"]
         for qualitative_subject in json_file["info"]["qualitative_subjects"]:
-            self.header.append(f"Self {qualitative_subject}")
-            self.header.append(f"Partner {qualitative_subject}")
-            self.header.append(f"Average {qualitative_subject}")
-            self.header.append(f"{qualitative_subject} Difference (self - partner)")
-        qualitative_subjects = ", ".join(
-            str(_) for _ in json_file["info"]["qualitative_subjects"]
-        )
-        self.header.append(f"Average Qualitative Difference ({qualitative_subjects})")
+            header.append(qualitative_subject)
+        # TODO: make average_qualitative_difference_str its own function
+        average_qualitative_difference_str = f"Average Qualitative Difference\n{self.__stringify_subjects(json_file['info']['qualitative_subjects'])}"
+        header.append(average_qualitative_difference_str)
         # since there's only one quantitative_overall_subject (contribution)
         # we won't have an "Average Quantitative Overall Difference" column
         for quantitative_overall_subject in json_file["info"][
             "quantitative_overall_subjects"
         ]:
-            self.header.append(f"Self {quantitative_overall_subject}")
-            self.header.append(f"Partner {quantitative_overall_subject}")
-            self.header.append(f"Average {quantitative_overall_subject}")
-            self.header.append(
-                f"{quantitative_overall_subject} Difference (self - partner)"
-            )
-
-    def get_final_grade(self):
-        final_score = (
-            0.4 * self.scores["engagement_score"][0]
-            + 0.6 * self.scores["contribution_score"][0]
-        )
-        return final_score
-
-    def __get_engagement_score(self) -> float:
-        quality_avgs = []
-        for quality, values in self.scores.items():
-            if quality not in [
-                "organization_avgs",
-                "communication_avgs",
-                "teamwork_avgs",
-                "attitude_avgs",
-                "ideas_avgs",
-                "code_avgs",
-            ]:
-                continue
-            quality_avgs.append(statistics.fmean(values))
-        engagement_avg = statistics.fmean(quality_avgs)
-        engagment_deviation = statistics.fmean(self.scores["deviation_1_scores"])
-        if engagment_deviation > 0:
-            return (engagement_avg - engagment_deviation) / 4 * 100
-        else:
-            return (engagement_avg - (engagment_deviation / 2)) / 4 * 100
-
-    def __get_contribution_score(self) -> float:
-        contribution_avg = statistics.fmean(self.scores["contribution_avgs"])
-        contribution_deviation = statistics.fmean(self.scores["deviation_2_scores"])
-        if contribution_deviation > 0:
-            return (contribution_avg - contribution_deviation) / 50 * 100 * 100
-        else:
-            return (contribution_avg - (contribution_deviation / 2)) / 50 * 100 * 100
+            header.append(quantitative_overall_subject)
+        return header
 
 
 def find_partner_eval_ag(
@@ -371,8 +373,8 @@ def make_partner_id_map(
         if question_info["question_name"] == "Partner Identification":
             question_stats = _
 
-    potential_pairings = defaultdict(str)
-    final_pairings = defaultdict(str)
+    potential_pairings = {}
+    final_pairings = {}
     for answer in question_stats["answers"]:
         try:
             # get the partner_id
@@ -395,6 +397,7 @@ def make_partner_id_map(
     for student_id in quiz_grade["info"]["submissions"]:
         partner_id = potential_pairings[student_id]
         if partner_id == "Solo Submission":
+            final_pairings[student_id] = "Solo Submission"
             continue
         if potential_pairings[partner_id] != student_id:
             quiz_errors[student_id].append(f"Cannot verify partnership")
@@ -581,27 +584,41 @@ def update_quiz_assignment_grade(
     quiz_grade: dict,
     quiz_errors: dict,
 ) -> None:
-    quiz = course.get_quiz(assignment.quiz_id)
+    # TODO: move the validator assignment into it's own function
+    # TODO: move the assignment override into it's own function
+    # TODO: make a validator assignment assignment group?
+    validator_assignment = course.create_assignment(
+        assignment={
+            "name": f"{assignment.name} Validator",
+            "description": f"Whether you submitted {assignment.name} correctly. If you received a 0, please go back and resubmitt {assignment.name} with the commented corrections.",
+            "assignment_group_id": assignment.assignment_group_id,
+            "submission_types": ["none"],
+            "points_possible": 1,
+            "due_at": datetime.datetime.now().isoformat(),
+            "lock_at": datetime.datetime.now().isoformat(),
+            "unlock_at": datetime.datetime.now().isoformat(),
+            "published": True,
+        }
+    )
     grade_data = defaultdict(dict)
-    quiz_extensions = []
     for student_id in quiz_grade["info"]["submissions"]:
         if student_id in quiz_errors:
             grade_data[student_id]["posted_grade"] = 0
-            grade_data[student_id]["text_comment"] = "\n".join(
+            grade_data[student_id]["text_comment"] = ",\n".join(
                 [str(error) for error in quiz_errors[student_id]]
             )
-            quiz_extensions.append(
-                {
-                    "user_id": student_id,
-                    "extra_attempts": 10,
-                    "manually_unlocked": True,
-                    "end_at": datetime.datetime.now() + datetime.timedelta(days=2),
-                }
-            )
         else:
-            grade_data[student_id]["posted_grade"] = assignment.points_possible
-    assignment.submissions_bulk_update(grade_data=grade_data)
-
-    if len(quiz_extensions) == 0:
+            grade_data[student_id]["posted_grade"] = 1
+    validator_assignment.submissions_bulk_update(grade_data=grade_data)
+    if len(quiz_errors.keys()) == 0:  # all students submitted perfectly
         return
-    quiz.set_extensions(quiz_extensions)
+    else:
+        assignment.create_override(
+            assignment_override={
+                "student_ids": list(quiz_errors.keys()),
+                "title": f"{assignment.name} make up override",
+                "unlock_at": datetime.datetime.now(),
+                "due_at": datetime.datetime.now() + datetime.timedelta(days=2),
+                "lock_at": datetime.datetime.now() + datetime.timedelta(days=2),
+            }
+        )
