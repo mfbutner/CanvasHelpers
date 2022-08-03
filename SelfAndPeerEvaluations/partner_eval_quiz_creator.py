@@ -124,12 +124,14 @@ class PartnerEvalQuizCreator:
         for quiz_question in quiz_questions:
             quiz.create_question(question=quiz_question)
 
+
         """
         canvas_assignment = course.get_assignment(quiz.assignment_id)
         canvas_assignment.edit(
             assignment={"omit_from_final_grade": True, "published": True}
         )
         """
+
 
         print("Finished upload!")
 
@@ -162,6 +164,7 @@ if __name__ == "__main__":
 
     canvas = canvasapi.Canvas(url, key)
     course = canvas.get_course(1599)  # sandbox course ID
+
 
     with open("./self_and_partner_evaluation_questions.json") as f:
         json_questions = json.load(f)
