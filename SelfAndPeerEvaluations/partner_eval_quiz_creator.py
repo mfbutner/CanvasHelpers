@@ -1,9 +1,8 @@
 import canvasapi
-from collections import OrderedDict
 import datetime
 import json
 from typing import Optional
-import random  # only here for generating rand sandbox SID
+from utils import make_student_id_map
 
 
 class PartnerEvalQuizCreator:
@@ -17,6 +16,11 @@ class PartnerEvalQuizCreator:
         lock_date: Optional[datetime.datetime] = None,
         assignment_group_id: int = 0,
     ):
+        """
+        public functions
+        ---
+        upload_to_canvas(): uploads a evaluation quiz to canvas
+        """
         self.course = course
         self.json_questions = json_questions
         self.assignment_name = assignment_name
@@ -28,6 +32,22 @@ class PartnerEvalQuizCreator:
         self.unlock_date = unlock_date
         self.due_date = due_date
         self.lock_date = lock_date
+
+    def upload_to_canvas(self) -> None:
+        print("Uploading quiz assignment to canvas")
+        quiz_info = self.__create_quiz_info()
+        quiz_questions = self.__create_quiz_questions()
+
+        quiz = self.course.create_quiz(quiz_info)
+        for quiz_question in quiz_questions:
+            quiz.create_question(question=quiz_question)
+
+        canvas_assignment = course.get_assignment(quiz.assignment_id)
+        canvas_assignment.edit(
+            assignment={"omit_from_final_grade": True, "published": True}
+        )
+
+        print("Finished upload!")
 
     def __create_quiz_info(self) -> dict:
         return {
@@ -45,6 +65,12 @@ class PartnerEvalQuizCreator:
         }
 
     def __create_quiz_questions(self) -> list[dict]:
+        """
+        Iterates through all the questions in the JSON file's question list
+        Most of the questions in the JSON file are properly formated formated
+        for canvasapi, but some have missing fields (answer section, pts possible)
+        :return: list of questions ready to send to canvasapi's create_question()
+        """
         quiz_questions = []
         multiple_choice_answers = dict(
             enumerate(
@@ -73,65 +99,21 @@ class PartnerEvalQuizCreator:
         return quiz_questions
 
     def __create_identify_partner_answers(self) -> dict:
-        # FIXME: messy and hacky way to handle dupes
-        # FIXME: does not account for duplicate students that DON'T have a SID
-        # FIXME: does not account for duplicate students with same sortable name AND same last 4 digit SID
-        raw_students = {}
-        raw_students = OrderedDict()
-        dup_list = set()
-        for raw_student in course.get_users(
-            sort="username", enrollment_type=["student"]
-        ):
-            if (
-                raw_student.sis_user_id is None
-            ):  # FIXME: delete for real class; not all sandbox student have SID
-                raw_student.sis_user_id = random.randint(0, 100)
-
-            if raw_student.sortable_name in dup_list:
-                SID = str(raw_student.sis_user_id)
-                raw_students[
-                    raw_student.sortable_name + " (XXXXX" + SID[-4:] + ")"
-                ] = raw_student.sis_user_id
-            elif raw_student.sortable_name in raw_students.keys():
-                dup_list.add(raw_student.sortable_name)
-
-                orignal_SID = str(raw_students[raw_student.sortable_name])
-                raw_students[
-                    raw_student.sortable_name + " (XXXXX" + orignal_SID[-4:] + ")"
-                ] = orignal_SID
-                raw_students.pop(raw_student.sortable_name)
-
-                dup_SID = str(raw_student.sis_user_id)
-                raw_students[
-                    raw_student.sortable_name + " (XXXXX" + dup_SID[-4:] + ")"
-                ] = raw_student.sis_user_id
-            else:
-                raw_students[raw_student.sortable_name] = raw_student.sis_user_id
-
-        students = raw_students.keys()
+        """
+        Creates the multiple choice answers for "Who is your partner?" question
+        If a student has the same sortable_name as another student, then we
+        try to see if the student's name is unique with the last 4 digits of their SID appended (no SID -> XXXXXXXXX appended).
+        If a student still isn't unique with their last 4 SID digits append, then we try their last 5 SID digits.
+        It is extremely unlikely (at least 1 in 9^5 chance) that there exists students with
+        the same sortable_name AND same last 5 digits.
+        :return: dict of answers properly formated for canvasapi
+        """
+        students = make_student_id_map(self.course).keys()
         answers = [{"answer_text": student, "answer_weight": 1} for student in students]
         answers.append(
             {"answer_text": "I did not submit with a partner.", "answer_weight": 1}
         )
         return dict(enumerate(answers))
-
-    def upload_to_canvas(self) -> None:
-        print("Uploading quiz assignment to canvas")
-        quiz_info = self.__create_quiz_info()
-        quiz_questions = self.__create_quiz_questions()
-
-        quiz = self.course.create_quiz(quiz_info)
-        for quiz_question in quiz_questions:
-            quiz.create_question(question=quiz_question)
-
-        """
-        canvas_assignment = course.get_assignment(quiz.assignment_id)
-        canvas_assignment.edit(
-            assignment={"omit_from_final_grade": True, "published": True}
-        )
-        """
-
-        print("Finished upload!")
 
     def __find_partner_eval_ag_id(self, course: canvasapi.course.Course) -> int:
         partner_eval_ag = None
@@ -168,7 +150,7 @@ if __name__ == "__main__":
 
     # first_due = datetime.datetime(2022, 7, 20, 23, 59)
     # first_open = datetime.datetime(2022, 7, 20, 19, 00)
-    assignment_names = ["json quiz 6"]
+    assignment_names = ["json quiz x"]
     for _ in assignment_names:
         # due = first_due + datetime.timedelta(weeks_into_the_quarter * 7)
         # close = due + datetime.timedelta(days=1)

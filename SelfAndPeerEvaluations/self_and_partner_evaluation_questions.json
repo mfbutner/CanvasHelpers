@@ -223,7 +223,7 @@
         "points_possible": 1,
         "grader_info": {
           "include_in_grade": true,
-          "category": "quantitative_overall"
+          "category": "project_contribution"
         }
       }
   ]

@@ -1,0 +1,143 @@
+FINAL SCORE CALCULATIONS
+""
+"Final Score
+(40% Qualitative + 60% Project Contribution)",10.0
+""
+,"Score
+(if (diff > 0); then score=(avg - diff)/4*100;
+else score=(avg - diff/2)/4*100)","Average of Overall Qualitative Averages
+(Organization, Communication, Teamwork, 
+Attitude, Contribution of Ideas, 
+Contribution of Code)","Difference
+(Overall Average of
+Average Qualitative Difference)"
+Qualitative,25.0,1.0,0.0
+,"Score
+(if (diff > 0); then score=(avg - diff)/50*100*100;
+else score=(avg - diff/2)/50*100*100)",Average Project Contribution,Project Contribution Difference
+Project Contribution,0.0,0.0,0.0
+""
+""
+""
+""
+"INDIVIDUAL ASSIGNMENT GRADES
+AND CALCULATIONS"
+diff = self - partner
+Categories,quiz 1,quiz 2,quiz 3,quiz 4,"Overall Average
+* -> Not used in Final Grade Calculation"
+Organization,"Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self*: 1.0
+Partner*: 1.0
+Average: 1.0
+Diff*: 0.0"
+Communication,"Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self*: 1.0
+Partner*: 1.0
+Average: 1.0
+Diff*: 0.0"
+Teamwork,"Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self*: 1.0
+Partner*: 1.0
+Average: 1.0
+Diff*: 0.0"
+Attitude,"Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self*: 1.0
+Partner*: 1.0
+Average: 1.0
+Diff*: 0.0"
+Contribution of Ideas,"Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self*: 1.0
+Partner*: 1.0
+Average: 1.0
+Diff*: 0.0"
+Contribution of Code,"Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self: 1
+Partner: 1
+Average: 1
+Diff (self - partner): 0","Self*: 1.0
+Partner*: 1.0
+Average: 1.0
+Diff*: 0.0"
+"Average Qualitative Difference
+(Organization, Communication, Teamwork, 
+Attitude, Contribution of Ideas, 
+Contribution of Code)",0,0,0,0,0.0
+Project Contribution,"Self: 0
+Partner: 0
+Average: 0
+Diff (self - partner): 0","Self: 0
+Partner: 0
+Average: 0
+Diff (self - partner): 0","Self: 0
+Partner: 0
+Average: 0
+Diff (self - partner): 0","Self: 0
+Partner: 0
+Average: 0
+Diff (self - partner): 0","Self*: 0.0
+Partner*: 0.0
+Average: 0.0
+Diff: 0.0"
