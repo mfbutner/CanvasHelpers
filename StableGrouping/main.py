@@ -1,5 +1,5 @@
 from canvasapi import Canvas
-from makeGroups import make_groups
+from StableGrouping.matching.makeGroups import make_groups
 from checkValidGroup import get_invalid_groups
 from StableGrouping.finalizing.analyzeCode import grade_groups
 from sendCanvasConvo import sendConvo
