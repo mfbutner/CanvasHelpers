@@ -56,10 +56,6 @@ def parse_submissions(students_submitted, course, quiz, config):
         for user_id in answer["user_ids"]:
             students_submitted[user_id].pronouns = answer_text
 
-    # 0 - Not same pronouns
-    # 1 - No preference (Default)
-    # 2 - Prefer the same pronouns
-    # Using if statements for now
     for answer in question_index["prefer_same_gender"]["answers"]:
         answer_text = answer["text"]
         if answer_text == NO_ANSWER:
@@ -73,9 +69,7 @@ def parse_submissions(students_submitted, course, quiz, config):
             else:
                 students_submitted[user_id].prefer_same = PreferGender.dont_care_pronouns.value
 
-    # 0 - No preference (Default)
-    # 1 - Synchronous
-    # 2 - Asynchronous
+    # No preference (Default)
     for answer in question_index["prefer_synchronous"]["answers"]:
         answer_text = answer["text"]
         if answer_text == NO_ANSWER:
@@ -97,9 +91,7 @@ def parse_submissions(students_submitted, course, quiz, config):
         for user_id in answer["user_ids"]:
             students_submitted[user_id].prefer_leader = (answer_text == "I like to lead.")
 
-    # 0 - Not international (Default)
-    # 1 - No preference
-    # 2 - Is international and would like to match with international
+    # Not international (Default)
     for answer in question_index["prefer_other_international"]["answers"]:
         answer_text = answer["text"]
         if answer_text == NO_ANSWER:
@@ -121,9 +113,7 @@ def parse_submissions(students_submitted, course, quiz, config):
         for user_id in answer["user_ids"]:
             students_submitted[user_id].activity_choice = answer_text
 
-    # 0 - Could use some help
-    # 1 - Have some questions (Default)
-    # 2 - Confident
+    # Have some questions (Default)
     for answer in question_index["confidence"]["answers"]:
         answer_text = answer["text"]
         if answer_text == NO_ANSWER:
