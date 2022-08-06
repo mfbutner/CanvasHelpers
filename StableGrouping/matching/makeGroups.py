@@ -1,4 +1,4 @@
-from ..preferenceLists import preferenceSymmetricalSort, preferenceAsymmetricalSort
+from StableGrouping.matching.preferenceLists import preference_symmetrical_sort, preference_asymmetrical_sort
 from matching.games import StableMarriage, StableRoommates
 from ..scoringFunc import scoreGroupByOne, scoreTwoByTwo
 from StableGrouping.matching.checkValidGroup import is_valid_group
@@ -144,10 +144,10 @@ def make_quintuplets(quads: list, alone_students: dict, singles: dict, matched_b
     i = 0
 
     while (not finished) and i < 5:
-        preference_list_ones = preferenceAsymmetricalSort(extra_students_alone, extra_students_quads, "GroupByOne",
-                                                          matched_before)
-        preference_list_quads = preferenceAsymmetricalSort(extra_students_quads, extra_students_alone, "OneByGroup",
-                                                           matched_before)
+        preference_list_ones = preference_asymmetrical_sort(extra_students_alone, extra_students_quads, "GroupByOne",
+                                                            matched_before)
+        preference_list_quads = preference_asymmetrical_sort(extra_students_quads, extra_students_alone, "OneByGroup",
+                                                             matched_before)
 
         game = StableMarriage.create_from_dictionaries(preference_list_ones, preference_list_quads)
         ans = game.solve()
@@ -377,7 +377,7 @@ def make_pairs(students: dict, match_dict: dict):
     i = 0
     # You don't want to loop too many times, but run five times at most to find good matches that have not matched before
     while not finished and i < 10:
-        preferenceList = preferenceSymmetricalSort(extraStudents, "OneByOne", match_dict)
+        preferenceList = preference_symmetrical_sort(extraStudents, "OneByOne", match_dict)
         game = StableRoommates.create_from_dictionary(preferenceList)
         ans = game.solve()
 
@@ -446,7 +446,7 @@ def make_quads(students: dict, match_dict: dict, pairs: list):
 
     # You don't want to loop too many times, but run five times at most to find good matches that have not matched before
     while not finished and i < 10:
-        preferenceList = preferenceSymmetricalSort(extraStudents, "TwoByTwo", match_dict)
+        preferenceList = preference_symmetrical_sort(extraStudents, "TwoByTwo", match_dict)
         game = StableRoommates.create_from_dictionary(preferenceList)
         ans = game.solve()
 
