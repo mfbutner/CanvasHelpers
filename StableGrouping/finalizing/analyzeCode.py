@@ -44,15 +44,15 @@ def grade_groups(groups: list, match_before: dict):
     # Iterate through each group
     for group in groups:
         # Increment the number of overall Groups
-        num_groups = num_groups + 1
+        num_groups += 1
 
         # increment valid group if the groups are valid
         if is_valid_group(match_before, group) == 0:
-            num_valid_groups = num_valid_groups + 1
+            num_valid_groups += 1
 
         # increment confidenceLevels if group has a mixture of high to low confidence
         if score_at_least_one_confidence_level(group) > 0:
-            num_groups_mix_confidence = num_groups_mix_confidence + 1
+            num_groups_mix_confidence += 1
 
         # a flag that becomes true if anyone in the group is a leader
         flag_leader = False
@@ -68,10 +68,10 @@ def grade_groups(groups: list, match_before: dict):
 
             # Default students should not affect stats
             if not person.pronouns:
-                default_students = default_students + 1
+                default_students += 1
                 continue
             else:
-                students_take_survey = students_take_survey + 1
+                students_take_survey += 1
 
             # if anyone in the group is a leader, the whole group gets a leader
             if person.prefer_leader:
@@ -104,29 +104,29 @@ def grade_groups(groups: list, match_before: dict):
 
             # Only count the person if the person wanted to match on gender
             if person.prefer_same != 1:
-                students_want_gender_match = students_want_gender_match + 1
+                students_want_gender_match += 1
                 if flag_gender:
-                    students_gender_match = students_gender_match + 1
+                    students_gender_match += 1
 
             # Only count the person if the person wanted to match on time
             if person.prefer_async != 1:
-                students_want_time = students_want_time + 1
+                students_want_time += 1
                 if flag_time:
-                    students_got_time = students_got_time + 1
+                    students_got_time += 1
 
             # Only count the person if the person wanted to match on international
             if person.international == 2:
-                students_want_international = students_want_international + 1
+                students_want_international += 1
                 if flag_international:
-                    students_got_international = students_got_international + 1
+                    students_got_international += 1
 
             # The student matched at least one other person on language
             if flag_language:
-                students_got_language = students_got_language + 1
+                students_got_language += 1
 
             # The student matched at least one other person on activity
             if flag_option:
-                students_got_option = students_got_option + 1
+                students_got_option += 1
 
             # Find the highest priority that the student managed to get
             for i in range(5):
@@ -135,23 +135,23 @@ def grade_groups(groups: list, match_before: dict):
                     break
                 elif person.priority_list[i] == "Gender":
                     if flag_gender:
-                        student_got_choice[i] = student_got_choice[i] + 1
+                        student_got_choice[i] += 1
                         break
                 elif person.priority_list[i] == "International":
                     if flag_international:
-                        student_got_choice[i] = student_got_choice[i] + 1
+                        student_got_choice[i] += 1
                         break
                 elif person.priority_list[i] == "Language":
                     if flag_language:
-                        student_got_choice[i] = student_got_choice[i] + 1
+                        student_got_choice[i] += 1
                         break
                 elif person.priority_list[i] == "What They Want to Do":
                     if flag_option:
-                        student_got_choice[i] = student_got_choice[i] + 1
+                        student_got_choice[i] += 1
                         break
                 elif person.priority_list[i] == "Matching Time to Meet":
                     if flag_time:
-                        student_got_choice[i] = student_got_choice[i] + 1
+                        student_got_choice[i] += 1
                         break
 
         # If any student flagged as a leader, the group has a leader

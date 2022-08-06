@@ -459,7 +459,7 @@ def make_quads(students: dict, match_dict: dict, pairs: list):
         # Update your controls
         if len(extraStudents) == 0:
             finished = True
-        i = i + 1
+        i += 1
 
     for index in range(5):
         listUsedIndexes = []
