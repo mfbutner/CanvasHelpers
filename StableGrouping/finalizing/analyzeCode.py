@@ -1,4 +1,4 @@
-from ..matchingFunc import matchGender, matchSkill, matchLanguage, matchTime, matchActivity, matchInternational
+from StableGrouping.matching.matchingFunc import match_gender, match_time, match_international
 from ..scoringFunc import scoreAtLeastOneConfidenceLevel
 from ..checkValidGroup import isValidGroup
 
@@ -83,15 +83,15 @@ def grade_groups(groups: list, match_before: dict):
                 if person != person2:
 
                     # Gender
-                    if matchGender(person, person2):
+                    if match_gender(person, person2):
                         flag_gender = True
 
                     # Time
-                    if matchTime(person, person2):
+                    if match_time(person, person2):
                         flag_time = True
 
                     # International
-                    if matchInternational(person, person2):
+                    if match_international(person, person2):
                         flag_international = True
 
                     # Language

@@ -1,4 +1,4 @@
-from StableGrouping.parsing.constants import PreferInternational, Confident, PreferGender, PreferAsync
+from StableGrouping.shared.constants import PreferInternational, Confident, PreferGender, PreferAsync
 
 
 class Student:

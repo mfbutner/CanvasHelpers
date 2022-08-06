@@ -1,10 +1,10 @@
-from StableGrouping.parsing.studentClass import Student
-from matchingFunc import matchInternational
-from matchingFunc import matchLanguage
-from matchingFunc import matchTime
-from matchingFunc import matchActivity
-from matchingFunc import matchGender
-from matchingFunc import matchPartner
+from StableGrouping.shared.studentClass import Student
+from StableGrouping.matching.matchingFunc import match_international
+from StableGrouping.matching.matchingFunc import match_language
+from StableGrouping.matching.matchingFunc import match_time
+from StableGrouping.matching.matchingFunc import match_activity
+from StableGrouping.matching.matchingFunc import match_gender
+from StableGrouping.matching.matchingFunc import match_partner
 from checkValidGroup import isValidGroup
 
 
@@ -34,7 +34,7 @@ def scoreOneByOne(student1: Student, student2: Student, matchDict: dict):
     scoreWeights = [50, 30, 15, 5, 0]
     score = 0
 
-    if matchPartner(student1, student2) > 0 and matchPartner(student2, student1) > 0:
+    if match_partner(student1, student2) > 0 and match_partner(student2, student1) > 0:
         score += 40000
 
     for i in range(4):
@@ -43,19 +43,19 @@ def scoreOneByOne(student1: Student, student2: Student, matchDict: dict):
             break
         # If the student priority is matched, add its weight to the score
         elif student1.priority_list[i] == "International":
-            if matchInternational(student1, student2):
+            if match_international(student1, student2):
                 score = score + scoreWeights[i]
         elif student1.priority_list[i] == "Language":
-            if matchLanguage(student1, student2):
+            if match_language(student1, student2):
                 score = score + scoreWeights[i]
         elif student1.priority_list[i] == "Matching Time to Meet":
-            if matchTime(student1, student2):
+            if match_time(student1, student2):
                 score = score + scoreWeights[i]
         elif student1.priority_list[i] == "What They Want to Do":
-            if matchActivity(student1, student2):
+            if match_activity(student1, student2):
                 score = score + scoreWeights[i]
         elif student1.priority_list[i] == "Gender":
-            if matchGender(student1, student2):
+            if match_gender(student1, student2):
                 score = score + scoreWeights[i]
         else:
             print("Error: This index of the priority list does not meet any acceptable criteria", student1.name, i)
@@ -76,7 +76,7 @@ def scoreTwoByTwo(studentPair1: list, studentPair2: list, matchBefore):
     # If anybody has asked for anybody else, score high
     for student1 in studentPair1:
         for student2 in studentPair2:
-            if matchPartner(student1, student2) or matchPartner(student2, student1):
+            if match_partner(student1, student2) or match_partner(student2, student1):
                 score += 40000
 
     # Measure each student in the second pair by the first two's preferences
@@ -121,7 +121,7 @@ def scoreGroupByOne(student: Student, group: list, matchedBefore: dict):
 
     # If anyone likes anyone else, score high
     for student1 in group:
-        if matchPartner(student1, student) or matchPartner(student, student1):
+        if match_partner(student1, student) or match_partner(student, student1):
             score += 40000
 
     # check the individual score by each student
@@ -162,7 +162,7 @@ def scoreOneByGroup(student: Student, group: list, matchedBefore: dict):
     score = 0
 
     for student1 in group:
-        if matchPartner(student1, student) > 0 or matchPartner(student, student1) > 0:
+        if match_partner(student1, student) > 0 or match_partner(student, student1) > 0:
             score += 40000
 
     for student1 in group:

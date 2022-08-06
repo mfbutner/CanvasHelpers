@@ -1,5 +1,5 @@
-from StableGrouping.parsing.studentClass import Student
-from StableGrouping.parsing.constants import NO_ANSWER, PreferGender, PreferAsync, PreferInternational, Confident
+from StableGrouping.shared.studentClass import Student
+from StableGrouping.shared.constants import NO_ANSWER, PreferGender, PreferAsync, PreferInternational, Confident
 from StableGrouping.parsing.indexQuestions import index_questions
 
 

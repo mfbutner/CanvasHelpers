@@ -2,14 +2,14 @@ from preferenceLists import preferenceSymmetricalSort, preferenceAsymmetricalSor
 from matching.games import StableMarriage, StableRoommates
 from scoringFunc import scoreGroupByOne, scoreTwoByTwo
 from checkValidGroup import isValidGroup
-from matchingFunc import matchPartner, matchSymPartner
+from StableGrouping.matching.matchingFunc import match_partner, match_sym_partner
 
 
 def quadHasPartner(quad: list):
     flag = False
     for student1 in quad:
         for student2 in quad:
-            if matchPartner(student1, student2) or matchPartner(student2, student1):
+            if match_partner(student1, student2) or match_partner(student2, student1):
                 flag = True
     return flag
 
@@ -261,7 +261,7 @@ def moveStudentsTwo(ans: dict, quads: list, students: dict, pairs: list):
     # Keep a list of all the used keys so we don't add a pair twice
     usedKeys = []
 
-    # Make student-student if matchType is OneByOne
+    # Make student-student if match_type is OneByOne
     for key in ans:
         if key != None and ans[key]!= None:
             thisStudentKey = int(str(key))
@@ -346,7 +346,7 @@ def moveStudentsOne(ans: dict, pairs: list, students: dict):
 
     usedKeys = []
 
-    # Make student-student if matchType is OneByOne
+    # Make student-student if match_type is OneByOne
 
     for key in ans:
         if key != None and ans[key]!= None:
@@ -563,7 +563,7 @@ def make_groups(singles: dict, extra_students: dict, matched_before: dict):
             if student1Key == student2Key:
                 continue
 
-            if matchSymPartner(singles[student1Key], singles[student2Key]):
+            if match_sym_partner(singles[student1Key], singles[student2Key]):
                 if student1Key not in id_placed_in_pairs and student2Key not in id_placed_in_pairs:
                     pairs.append([singles[student1Key], singles[student2Key]])
                     id_placed_in_pairs.extend([student1Key, student2Key])
