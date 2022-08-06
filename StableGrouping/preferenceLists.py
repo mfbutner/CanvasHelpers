@@ -1,4 +1,3 @@
-from studentClass import Student
 from scoringFunc import scoreOneByOne
 from scoringFunc import scoreTwoByTwo
 from scoringFunc import scoreGroupByOne

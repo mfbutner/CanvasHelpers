@@ -1,4 +1,4 @@
-from studentClass import Student
+from StableGrouping.parsing.studentClass import Student
 
 # Return levels of matching preference- From 2 (best) to 0 (worst)
 def matchPartner(student1: Student, student2: Student):

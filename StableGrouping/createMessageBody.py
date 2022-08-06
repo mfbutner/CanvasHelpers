@@ -37,7 +37,7 @@ def getBody(student_list: list):
 
         # put in preferred activities (specified for each person)
         preferred_activity_text = ""
-        if "default" not in student.activity_choice:
+        if student.activity_choice:
             preferred_activity_text = f"{student.activity_choice}"
 
         # put it all into the body

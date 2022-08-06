@@ -14,8 +14,6 @@
 # Import the canvas class
 from canvasapi import Canvas
 
-from studentClass import Student
-
 # need getBody to create the body of the message
 from createMessageBody import getBody
 

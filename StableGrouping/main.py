@@ -3,7 +3,7 @@ from makeGroups import make_groups
 from checkValidGroup import get_invalid_groups
 from StableGrouping.finalizing.analyzeCode import grade_groups
 from sendCanvasConvo import sendConvo
-from parseStudent import parse_students, parse_submissions, filter_students_submitted
+from StableGrouping.parsing.parseStudent import parse_students, parse_submissions, filter_students_submitted
 from dotenv import dotenv_values
 import json
 

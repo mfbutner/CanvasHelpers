@@ -1,23 +1,36 @@
-#!/usr/bin/env python3
-# this is a class containing student information
+from StableGrouping.parsing.constants import PreferInternational, Confident, PreferGender, PreferAsync
+
+
 class Student:
-
     def __init__(self):
-        # Student identification information
-        self.name = "default_name"
+        # Basic student identification information
+        self.name = ""
         self.id_num = 0
-        self.schoolEmail = "default_email"
-        self.firstName = "default_firstName"
-        self.lastName = "default_lastName"
+        self.schoolEmail = ""
+        self.firstName = ""
+        self.lastName = ""
 
-        # Student preferred pronouns
-        self.pronouns = "default/defaults"
-        # If student prefers the same pronouns
-        # 0 - Not same pronouns 1 - No preference 2 - Prefer the same pronouns
-        self.prefer_same = 1
+        # Student preferences
+        # Preferred Pronouns
+        self.pronouns = ""
+        # Language preference
+        self.language = "English"
+        # Is the student international and would they like to be with another international student
+        # 0 - not international 1 - no preference 2 - is international and would like to match
+        self.international = PreferInternational.not_international.value
+        # If student prefers being the leader
+        self.prefer_leader = False
+        # How confident the student feels (0 - 2) default is 1
+        self.confidence = Confident.default_confidence.value
 
+        # If student prefers the same pronouns: 0 - Not same pronouns 1 - No preference 2 - Prefer the same pronouns
+        self.prefer_same = PreferGender.same_pronouns.value
+
+        # Does the student prefer to meet asynchronously
+        # 0 - No preference 1 - Synchronous 2 - Asynchronous
+        self.prefer_async = PreferAsync.dont_care_async.value
         # Student available meeting times in PST
-        # [Day][time] in 4 hour in hr intervals from 12am to 12am starting Sunday
+        # [day][time] in 4 hour in hr intervals from 12am to 12am starting Sunday
         self.meeting_times = [[False, False, False, False, False, False],
                               [False, False, False, False, False, False],
                               [False, False, False, False, False, False],
@@ -26,39 +39,19 @@ class Student:
                               [False, False, False, False, False, False],
                               [False, False, False, False, False, False]]
 
-        # Does the student prefer to meet asynchronously
-        # 0 - No preference 1 - Synchronous 2 - Asynchronous
-        self.prefer_async = 0
-
-        # contact preference and information
+        # contact preference and information (Order: [Discord, Phone Number, Email])
         self.contact_preference = [False, False, False, True]
-        self.contact_information = ["defaultDiscordName#2424", "(000) 000-0000", "defaultEmail@gmail.com"]
-
-        # If student prefers being the leader
-        self.prefer_leader = False
-
-        # Is the student international and would they like to be with another international student
-        # 0 - not international 1 - no preference 2 - is international and would like to match
-        self.international = 0
-
-        # Language preference
-        self.language = "English"
-
-        # What the student prefers to do.
-        self.activity_choice = "default"
-        self.free_response = "default"
+        self.contact_information = ["", "", ""]
 
         # The what the student prioritizes in a study group most to least.
-        self.priority_list = ["default", "default", "default", "default", "default"]
+        self.priority_list = ["", "", "", "", ""]
+        # What the student prefers to do.
+        self.activity_choice = ""
+        self.free_response = ""
 
-        # How confident the student feels (0 - 2) default is 1
-        self.confidence = 1
-
-        # partner the student wants
-        self.partner = "default"
-
-        # the email of the partner that the student wants
-        self.partner_email = "default"
+        # partner the student wants and their email
+        self.partner = ""
+        self.partner_email = ""
 
     def __str__(self):
         student_details = (f"Student: {self.name} ({self.lastName}, {self.firstName})\n"

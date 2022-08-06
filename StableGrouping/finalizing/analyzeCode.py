@@ -67,7 +67,7 @@ def grade_groups(groups: list, match_before: dict):
             flag_option = False
 
             # Default students should not affect stats
-            if person.pronouns == "default/defaults":
+            if not person.pronouns:
                 default_students = default_students + 1
                 continue
             else:
@@ -131,7 +131,7 @@ def grade_groups(groups: list, match_before: dict):
             # Find the highest priority that the student managed to get
             for i in range(5):
                 # If at any point, they default, ignore the rest of their opinions
-                if person.priority_list[i] == "default":
+                if not person.priority_list[i]:
                     break
                 elif person.priority_list[i] == "Gender":
                     if flag_gender:

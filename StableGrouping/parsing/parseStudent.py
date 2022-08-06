@@ -1,34 +1,6 @@
-import re
-from enum import Enum
-from studentClass import Student
-import pandas as pd
-import json
-
-NO_ANSWER = "No Answer"
-
-
-class PreferGender(Enum):
-    same_pronouns = 2
-    diff_pronouns = 0
-    dont_care_pronouns = 1
-
-
-class PreferAsync(Enum):
-    like_sync = 1
-    like_async = 2
-    dont_care_async = 0
-
-
-class PreferInternat(Enum):
-    not_internat = 0
-    prefer_internat_partner = 2
-    dont_care_internat = 1
-
-
-class Confident(Enum):
-    is_confident = 2
-    not_confident = 0
-    default_confidence = 1
+from StableGrouping.parsing.studentClass import Student
+from StableGrouping.parsing.constants import NO_ANSWER, PreferGender, PreferAsync, PreferInternational, Confident
+from StableGrouping.parsing.indexQuestions import index_questions
 
 
 def parse_students(canvas_students):
@@ -50,80 +22,6 @@ def parse_students(canvas_students):
         all_students[student.id] = student_instance
 
     return all_students
-
-
-def reindex_essay_questions(course, quiz, question_index):
-    quiz_assignment = course.get_assignment(quiz.assignment_id)
-    quiz_submissions = quiz_assignment.get_submissions(include="submission_history")
-    quiz_filtered_submissions = [submission for submission in quiz_submissions if submission.submitted_at is not None]
-
-    for question_key, question in question_index.items():
-        question_type = question["question_type"]
-        if question_type != "essay_question" and question_type != "fill_in_multiple_blanks_question":
-            continue
-
-        question_id = question["id"]
-        reindexed_dict = {}
-        question_index[question_key] = reindexed_dict
-
-        # TODO: Account for people submitting twice (Keep latest using submission.attempt)
-        for submission in quiz_filtered_submissions:
-            # TODO: Check to make sure submission_history is always a single item
-            submitter_id = submission.user_id
-            submission_details = submission.submission_history[0]["submission_data"]
-            for answer in submission_details:
-                if str(answer["question_id"]) == question_id:
-                    reindexed_dict[submitter_id] = answer
-                    break
-
-    print("===== Reindexed Essay Questions ======")
-
-
-def index_questions(course, quiz, config):
-    statistics = list(quiz.get_statistics())[0]
-    all_questions = statistics.question_statistics
-
-    # Returns this object with None replaced with the corresponding item from all_questions
-    question_index = {
-        "pronouns_select": None,
-        "pronouns_other": None,
-        "prefer_same_gender": None,
-        "prefer_synchronous": None,
-        "time_free": None,
-        "prefer_communication_method": None,
-        "prefer_communication_info": None,
-        "prefer_to_lead": None,
-        "prefer_other_international": None,
-        "language_select": None,
-        "language_other": None,
-        "activity_select": None,
-        "activity_specify": None,
-        "priorities": None,
-        "confidence": None
-    }
-
-    patterns = config["patterns"]
-    for question in all_questions:
-        for index_key in question_index.keys():
-            # TODO: Fix possibility that multiple questions could match
-            if re.search(patterns[index_key], question["question_text"]):
-                question_index[index_key] = question
-                continue
-
-        # Warning: No matches found for this question
-        if question not in question_index.values():
-            print("No Match for Question:")
-            print(question["question_text"])
-
-    print("===== Question Indexing Complete =====")
-    print("===== See Missed Questions Above =====")
-
-    # Change the format of free response (essay_question) questions by replacing their key: values
-    # with responses instead of useless data
-    # Modifies question_index directly
-    reindex_essay_questions(course, quiz, question_index)
-
-    return question_index
 
 
 def filter_students_submitted(all_students, quiz_submissions):
@@ -162,7 +60,6 @@ def parse_submissions(students_submitted, course, quiz, config):
     # 1 - No preference (Default)
     # 2 - Prefer the same pronouns
     # Using if statements for now
-
     for answer in question_index["prefer_same_gender"]["answers"]:
         answer_text = answer["text"]
         if answer_text == NO_ANSWER:
@@ -210,14 +107,12 @@ def parse_submissions(students_submitted, course, quiz, config):
 
         for user_id in answer["user_ids"]:
             if answer_text == "I am not an international student.":
-                students_submitted[user_id].international = PreferInternat.not_internat.value
+                students_submitted[user_id].international = PreferInternational.not_international.value
             elif answer_text == "I would like to be placed with another international student.":
-                students_submitted[user_id].international = PreferInternat.prefer_internat_partner.value
+                students_submitted[user_id].international = PreferInternational.prefer_international_partner.value
             else:
-                students_submitted[user_id].international = PreferInternat.dont_care_internat.value
+                students_submitted[user_id].international = PreferInternational.dont_care_international.value
 
-    # Q7 on the Canvas quiz question
-    # Default: "default"
     for answer in question_index["activity_select"]["answers"]:
         answer_text = answer["text"]
         if answer_text == NO_ANSWER:
@@ -334,9 +229,10 @@ def parse_submissions(students_submitted, course, quiz, config):
     return
 
 
+# TODO: Remove function since the repo has been rewritten to operate differently. For now, this is kept for reference
 # temporary stopgap for adding partner option
 # add the actual question to the full quiz
-def parsePartnerQuiz(quizData: pd, CLASS_ID: int, dictSt: dict, missingSt: dict):
+def parsePartnerQuiz(quizData, CLASS_ID: int, dictSt: dict, missingSt: dict):
     personNameQ = '1162587'
     personEmailQ = '1162588'
     if CLASS_ID == 516271:
