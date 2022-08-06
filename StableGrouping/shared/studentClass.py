@@ -11,23 +11,16 @@ class Student:
         self.lastName = ""
 
         # Student preferences
-        # Preferred Pronouns
         self.pronouns = ""
-        # Language preference
         self.language = "English"
-        # Is the student international and would they like to be with another international student
-        # 0 - not international 1 - no preference 2 - is international and would like to match
         self.international = PreferInternational.not_international.value
-        # If student prefers being the leader
         self.prefer_leader = False
-        # How confident the student feels (0 - 2) default is 1
         self.confidence = Confident.default_confidence.value
 
-        # If student prefers the same pronouns: 0 - Not same pronouns 1 - No preference 2 - Prefer the same pronouns
+        # If student prefers the same pronouns
         self.prefer_same = PreferGender.same_pronouns.value
 
         # Does the student prefer to meet asynchronously
-        # 0 - No preference 1 - Synchronous 2 - Asynchronous
         self.prefer_async = PreferAsync.dont_care_async.value
         # Student available meeting times in PST
         # [day][time] in 4 hour in hr intervals from 12am to 12am starting Sunday
@@ -43,9 +36,9 @@ class Student:
         self.contact_preference = [False, False, False, True]
         self.contact_information = ["", "", ""]
 
-        # The what the student prioritizes in a study group most to least.
+        # The what the student prioritizes in a study group from most to least.
         self.priority_list = ["", "", "", "", ""]
-        # What the student prefers to do.
+        # What activity the student prefers to do.
         self.activity_choice = ""
         self.free_response = ""
 

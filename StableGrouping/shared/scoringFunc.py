@@ -1,4 +1,4 @@
-from StableGrouping.shared.studentClass import Student
+from StableGrouping.shared.constants import Confident
 from StableGrouping.matching.checkValidGroup import is_valid_group
 from StableGrouping.matching.matchingFunc import match_international, match_language, match_time, match_activity, \
     match_gender, match_partner
@@ -10,12 +10,13 @@ def score_at_least_one_confidence_level(student_list: list):
     med_confidence_flag = False
     high_confidence_flag = False
     for student in student_list:
-        if student.confidence == 0:
+        if student.confidence == Confident.not_confident.value:
             low_confidence_flag = True
-        elif student.confidence == 1:
+        elif student.confidence == Confident.default_confidence.value:
             med_confidence_flag = True
-        elif student.confidence == 2:
+        elif student.confidence == Confident.is_confident.value:
             high_confidence_flag = True
+
     if low_confidence_flag and med_confidence_flag and high_confidence_flag:
         return 150
     elif low_confidence_flag and med_confidence_flag or med_confidence_flag and high_confidence_flag or low_confidence_flag and high_confidence_flag:
@@ -25,7 +26,7 @@ def score_at_least_one_confidence_level(student_list: list):
 
 
 # Score student2 by student1's metric, return the score
-def score_one_by_one(student1: Student, student2: Student, match_dict: dict):
+def score_one_by_one(student1, student2, match_dict: dict):
     # Assign weights to the priority list
     score_weights = [50, 30, 15, 5, 0]
     score = 0
@@ -35,26 +36,28 @@ def score_one_by_one(student1: Student, student2: Student, match_dict: dict):
 
     for i in range(4):
         # If the priority list hits default, score no further
-        if not student1.priority_list[i]:
+        priority_item = student1.priority_list[i]
+        if not priority_item:
             break
+
         # If the student priority is matched, add its weight to the score
-        elif student1.priority_list[i] == "International":
+        if priority_item == "International":
             if match_international(student1, student2):
                 score += score_weights[i]
-        elif student1.priority_list[i] == "Language":
+        elif priority_item == "Language":
             if match_language(student1, student2):
                 score += score_weights[i]
-        elif student1.priority_list[i] == "Matching Time to Meet":
+        elif priority_item == "Matching Time to Meet":
             if match_time(student1, student2):
                 score += score_weights[i]
-        elif student1.priority_list[i] == "What They Want to Do":
+        elif priority_item == "What They Want to Do":
             if match_activity(student1, student2):
                 score += score_weights[i]
-        elif student1.priority_list[i] == "Gender":
+        elif priority_item == "Gender":
             if match_gender(student1, student2):
                 score += score_weights[i]
         else:
-            print("Error: This index of the priority list does not meet any acceptable criteria", student1.name, i)
+            print(f"Error: This index of the priority list does not meet any acceptable criteria: {student1.name} {i}")
 
     # If the two students have matched before, punish it harshly in score
     # The punishment needs to be high enough to make groups with only one match still poor
@@ -112,7 +115,7 @@ def score_two_by_two(student_pair1: list, student_pair2: list, match_before):
 
 
 # Score a group of people by the preferences of one person, preferably for four people or more
-def score_group_by_one(student: Student, group: list, matched_before: dict):
+def score_group_by_one(student, group: list, matched_before: dict):
     score = 0
 
     # If anyone likes anyone else, score high
@@ -154,7 +157,7 @@ def score_group_by_one(student: Student, group: list, matched_before: dict):
 
 
 # Score a person by the group preferences of multiple people, preferably for four or more
-def score_one_by_group(student: Student, group: list, matched_before: dict):
+def score_one_by_group(student, group: list, matched_before: dict):
     score = 0
 
     for student1 in group:
