@@ -2,7 +2,7 @@ from canvasapi import Canvas
 from StableGrouping.matching.makeGroups import make_groups
 from StableGrouping.matching.checkValidGroup import get_invalid_groups
 from StableGrouping.finalizing.analyzeCode import grade_groups
-from sendCanvasConvo import sendConvo
+from StableGrouping.finalizing.sendCanvasConvo import send_convo
 from StableGrouping.parsing.parseStudent import parse_students, parse_submissions, filter_students_submitted
 from dotenv import dotenv_values
 import json
@@ -46,7 +46,7 @@ groups = make_groups(students_submitted, students_not_submitted, matched_before)
 
 # Now that groups are matched, send emails and form groups
 if "ENVIRONMENT" in env and env["ENVIRONMENT"] == "PRODUCTION":
-    sendConvo(canvas, config["course"]["id"], groups, str(config["group_number"]))
+    send_convo(canvas, config["course"]["id"], groups, str(config["group_number"]))
 
 # Analyze the groups: how many students with a preference got it?
 grade_groups(groups, matched_before)
