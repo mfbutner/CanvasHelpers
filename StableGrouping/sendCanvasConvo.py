@@ -14,8 +14,8 @@
 # Import the canvas class
 from canvasapi import Canvas
 
-# need getBody to create the body of the message
-from createMessageBody import getBody
+# need get_body to create the body of the message
+from StableGrouping.finalizing.createMessageBody import get_body
 
 
 def getStudentIds(student_list: list):
@@ -78,7 +78,7 @@ def sendConvo(canvas: Canvas, course_number: int, group_list: list, study_group_
         #edit the group
         curr_group.edit(members=members)
 
-        body = getBody(group_list[group])
+        body = get_body(group_list[group])
         #make the conversation
 
         table_id = [uploadTable(canvas)]
