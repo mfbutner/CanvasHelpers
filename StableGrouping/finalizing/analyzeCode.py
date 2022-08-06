@@ -1,6 +1,6 @@
 from StableGrouping.matching.matchingFunc import match_gender, match_time, match_international
 from ..scoringFunc import scoreAtLeastOneConfidenceLevel
-from ..checkValidGroup import isValidGroup
+from StableGrouping.matching.checkValidGroup import is_valid_group
 
 
 # Analyze the groups on set criteria
@@ -47,7 +47,7 @@ def grade_groups(groups: list, match_before: dict):
         num_groups = num_groups + 1
 
         # increment valid group if the groups are valid
-        if isValidGroup(match_before, group) == 0:
+        if is_valid_group(match_before, group) == 0:
             num_valid_groups = num_valid_groups + 1
 
         # increment confidenceLevels if group has a mixture of high to low confidence

@@ -1,6 +1,6 @@
 from canvasapi import Canvas
 from StableGrouping.matching.makeGroups import make_groups
-from checkValidGroup import get_invalid_groups
+from StableGrouping.matching.checkValidGroup import get_invalid_groups
 from StableGrouping.finalizing.analyzeCode import grade_groups
 from sendCanvasConvo import sendConvo
 from StableGrouping.parsing.parseStudent import parse_students, parse_submissions, filter_students_submitted

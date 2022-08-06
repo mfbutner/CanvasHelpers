@@ -1,6 +1,7 @@
-""" This file has 2 functions: invalidGroupDict and isValidGroup.
+""" This file has 2 functions: invalidGroupDict and is_valid_group.
 invalidGroupDict returns a dictionary. This function only needs to be run once.
-isValidGroup takes in that dictionary (and a list of student objects) and returns the count of how many times students have overlapped with each other
+is_valid_group takes in that dictionary (and a list of Student objects) and returns how many times students have
+               overlapped with each other.
 """
 
 
@@ -12,19 +13,19 @@ def get_invalid_groups(course, all_students):
     # get a list of group categories
     group_categories = course.get_group_categories()
 
-    studentid_groupid = {str(student.id_num): [] for student in all_students.values()}
+    student_id_group_id_map = {str(student.id_num): [] for student in all_students.values()}
 
     for category in group_categories:
         group_list = category.get_groups()
         for group in group_list:
             users_list = group.get_users()
             for user in users_list:
-                studentid_groupid[str(user.id)].append(group.id)
+                student_id_group_id_map[str(user.id)].append(group.id)
 
-    return studentid_groupid
+    return student_id_group_id_map
 
 
-def isValidGroup(invalid_group_dict: dict, student_list: list):
+def is_valid_group(invalid_group_dict: dict, student_list: list):
     """
     takes in a dictionary where the keys are STRING student id numbers, and the values are INT group numbers
     takes in a list of student objects

@@ -1,7 +1,7 @@
 from ..preferenceLists import preferenceSymmetricalSort, preferenceAsymmetricalSort
 from matching.games import StableMarriage, StableRoommates
 from ..scoringFunc import scoreGroupByOne, scoreTwoByTwo
-from ..checkValidGroup import isValidGroup
+from StableGrouping.matching.checkValidGroup import is_valid_group
 from StableGrouping.matching.matchingFunc import match_partner, match_sym_partner
 
 
@@ -27,7 +27,7 @@ def add_extras(quintuplets: list, leftover_students: list, matched_before: dict)
             # Test whether the group has matched before
             temp_list = [student]
             temp_list.extend(quintuplets[i])
-            if isValidGroup(matched_before, temp_list) == 0:
+            if is_valid_group(matched_before, temp_list) == 0:
                 # The group is valid so you may commence
                 temp_score = scoreGroupByOne(student, quintuplets[i], matched_before)
                 if temp_score > max_score:
@@ -101,7 +101,7 @@ def remove_impossible_quin(ans: dict, match_dict: dict, students: dict, alone_st
             if not flag_quad:
                 print("Could not find quad in removeImpossible")
 
-            if isValidGroup(match_dict, temp_list) != 0:
+            if is_valid_group(match_dict, temp_list) != 0:
                 keys_to_take_out.append(key)
 
     for key in keys_to_take_out:
@@ -171,7 +171,7 @@ def make_quintuplets(quads: list, alone_students: dict, singles: dict, matched_b
             if index1 not in list_used_indexes_alone and index2 not in list_used_indexes_quads:
                 temp_list = [(extra_students_alone[index1])]
                 temp_list.extend(extra_students_quads[index2])
-                if isValidGroup(matched_before, temp_list) == 0:
+                if is_valid_group(matched_before, temp_list) == 0:
                     list_used_indexes_alone.append(index1)
                     list_used_indexes_quads.append(index2)
                     groups_to_make.append([index1, index2])
@@ -242,7 +242,7 @@ def remove_impossible_two(game: dict, match_dict: dict, students: dict, pairs: l
                     break
 
             # If the two people cannot be in the group, then we are going to remove the first person
-            if isValidGroup(match_dict, temp_list) != 0:
+            if is_valid_group(match_dict, temp_list) != 0:
                 # Delete both people from the list and move them into extra_students
                 keys_to_take_out.append(key)
 
@@ -327,7 +327,7 @@ def remove_impossible_one(game: dict, match_dict: dict, students: dict, students
             list_students = [students[int(str(key))], students[int(str(game[key]))]]
 
             # If the two people cannot be in the group, then we are going to remove the first person
-            if isValidGroup(match_dict, list_students) != 0:
+            if is_valid_group(match_dict, list_students) != 0:
                 # Delete both people from the list and move them into extra_students
                 keys_to_take_out.append(key)
                 continue
@@ -400,7 +400,7 @@ def make_pairs(students: dict, match_dict: dict):
         for index1 in range(len(extraStudents)):
             for index2 in range(len(extraStudents)):
                 if index1 != index2 and (index1 not in listUsedIndexes) and (index2 not in listUsedIndexes):
-                    if isValidGroup(match_dict, [extraStudents[index1], extraStudents[index2]]) == 0:
+                    if is_valid_group(match_dict, [extraStudents[index1], extraStudents[index2]]) == 0:
                         listUsedIndexes.append(index1)
                         listUsedIndexes.append(index2)
                         pairsToMake.append([index1, index2])
@@ -467,8 +467,8 @@ def make_quads(students: dict, match_dict: dict, pairs: list):
         for index1 in range(len(extraStudents)):
             for index2 in range(len(extraStudents)):
                 if index1 != index2 and (index1 not in listUsedIndexes) and (index2 not in listUsedIndexes):
-                    if isValidGroup(match_dict,
-                                    [extraStudents[index1][0], extraStudents[index1][1], extraStudents[index2][0],
+                    if is_valid_group(match_dict,
+                                      [extraStudents[index1][0], extraStudents[index1][1], extraStudents[index2][0],
                                      extraStudents[index2][1]]) == 0:
                         listUsedIndexes.append(index1)
                         listUsedIndexes.append(index2)

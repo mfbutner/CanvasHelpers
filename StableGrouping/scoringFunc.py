@@ -5,7 +5,7 @@ from StableGrouping.matching.matchingFunc import match_time
 from StableGrouping.matching.matchingFunc import match_activity
 from StableGrouping.matching.matchingFunc import match_gender
 from StableGrouping.matching.matchingFunc import match_partner
-from checkValidGroup import isValidGroup
+from StableGrouping.matching.checkValidGroup import is_valid_group
 
 
 # Reward a group with at least one person of each confidence level, or minorly reward with two confidence levels
@@ -63,7 +63,7 @@ def scoreOneByOne(student1: Student, student2: Student, matchDict: dict):
     # If the two students have matched before, punish it harshly in score
     # The punishment needs to be high enough to make groups with only one match still poor
     tempList = [student1, student2]
-    score = score - 2000 * isValidGroup(matchDict, tempList)
+    score = score - 2000 * is_valid_group(matchDict, tempList)
 
     return score
 
