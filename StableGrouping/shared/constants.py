@@ -19,11 +19,11 @@ class PreferAsync(Enum):
 
 class PreferInternational(Enum):
     not_international = 0
-    prefer_international_partner = 2
     dont_care_international = 1
+    prefer_international_partner = 2
 
 
 class Confident(Enum):
-    is_confident = 2
     not_confident = 0
     default_confidence = 1
+    is_confident = 2
