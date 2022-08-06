@@ -1,4 +1,4 @@
-from ..scoringFunc import scoreOneByOne, scoreTwoByTwo, scoreGroupByOne, scoreOneByGroup
+from StableGrouping.shared.scoringFunc import score_one_by_one, score_two_by_two, score_group_by_one, score_one_by_group
 
 
 # Creates a dictionary of students, where each student corresponds to a list of students in order of preference
@@ -16,12 +16,12 @@ def preference_symmetrical_sort(list_students: list, type_sort: str, matched_bef
             if type_sort == "OneByOne":
                 # Don't gauge students by themselves
                 if student1.id_num != student2.id_num:
-                    temp_array.append([str(student2.id_num), scoreOneByOne(student1, student2, matched_before)])
+                    temp_array.append([str(student2.id_num), score_one_by_one(student1, student2, matched_before)])
 
             elif type_sort == "TwoByTwo":
                 # Don't gauge student pairs by themselves
                 if student1[0].id_num != student2[0].id_num:
-                    temp_array.append([str(student2[0].id_num), scoreTwoByTwo(student1, student2, matched_before)])
+                    temp_array.append([str(student2[0].id_num), score_two_by_two(student1, student2, matched_before)])
 
         # Now sort the list with max score first
         sorted(temp_array, key=lambda score: score[1], reverse=True)
@@ -51,9 +51,9 @@ def preference_asymmetrical_sort(list_students1: list, list_students2: list, typ
         temp_array = []
         for student2List in list_students2:
             if type_sort == "OneByGroup":
-                temp_array.append([str(student2List.id_num), scoreOneByGroup(student2List, student1, match_before)])
+                temp_array.append([str(student2List.id_num), score_one_by_group(student2List, student1, match_before)])
             elif type_sort == "GroupByOne":
-                temp_array.append([str(student2List[0].id_num), scoreGroupByOne(student1, student2List, match_before)])
+                temp_array.append([str(student2List[0].id_num), score_group_by_one(student1, student2List, match_before)])
 
         # Now sort the list with max score first
         sorted(temp_array, key=lambda score: score[1], reverse=True)

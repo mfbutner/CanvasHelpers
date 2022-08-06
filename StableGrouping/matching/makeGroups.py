@@ -1,6 +1,6 @@
 from StableGrouping.matching.preferenceLists import preference_symmetrical_sort, preference_asymmetrical_sort
 from matching.games import StableMarriage, StableRoommates
-from ..scoringFunc import scoreGroupByOne, scoreTwoByTwo
+from StableGrouping.shared.scoringFunc import score_group_by_one, score_two_by_two
 from StableGrouping.matching.checkValidGroup import is_valid_group
 from StableGrouping.matching.matchingFunc import match_partner, match_sym_partner
 
@@ -29,7 +29,7 @@ def add_extras(quintuplets: list, leftover_students: list, matched_before: dict)
             temp_list.extend(quintuplets[i])
             if is_valid_group(matched_before, temp_list) == 0:
                 # The group is valid so you may commence
-                temp_score = scoreGroupByOne(student, quintuplets[i], matched_before)
+                temp_score = score_group_by_one(student, quintuplets[i], matched_before)
                 if temp_score > max_score:
                     index = i
                     max_score = temp_score
@@ -495,14 +495,14 @@ def make_quads(students: dict, match_dict: dict, pairs: list):
 
 def find_min_index(quads: list, matched_before: dict, no_take_list: list):
     index = 0
-    minScore = scoreTwoByTwo([quads[0][0], quads[0][1]], [quads[0][2], quads[0][3]], matched_before)
+    minScore = score_two_by_two([quads[0][0], quads[0][1]], [quads[0][2], quads[0][3]], matched_before)
 
     for i in range(len(quads)):
         pair1 = [quads[i][0], quads[i][1]]
         pair2 = [quads[i][2], quads[i][3]]
 
-        if scoreTwoByTwo(pair1, pair2, matched_before) < minScore and i not in no_take_list:
-            minScore = scoreTwoByTwo(pair1, pair2, matched_before)
+        if score_two_by_two(pair1, pair2, matched_before) < minScore and i not in no_take_list:
+            minScore = score_two_by_two(pair1, pair2, matched_before)
             index = i
 
     return index

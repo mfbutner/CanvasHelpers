@@ -1,5 +1,5 @@
 from StableGrouping.matching.matchingFunc import match_gender, match_time, match_international
-from ..scoringFunc import scoreAtLeastOneConfidenceLevel
+from StableGrouping.shared.scoringFunc import score_at_least_one_confidence_level
 from StableGrouping.matching.checkValidGroup import is_valid_group
 
 
@@ -51,7 +51,7 @@ def grade_groups(groups: list, match_before: dict):
             num_valid_groups = num_valid_groups + 1
 
         # increment confidenceLevels if group has a mixture of high to low confidence
-        if scoreAtLeastOneConfidenceLevel(group) > 0:
+        if score_at_least_one_confidence_level(group) > 0:
             num_groups_mix_confidence = num_groups_mix_confidence + 1
 
         # a flag that becomes true if anyone in the group is a leader
