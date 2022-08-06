@@ -1,9 +1,9 @@
 from canvasapi import Canvas
 from makeGroups import make_groups
 from checkValidGroup import get_invalid_groups
-from analyzeCode import gradeGroups
+from StableGrouping.finalizing.analyzeCode import grade_groups
 from sendCanvasConvo import sendConvo
-from parseStudent import parse_students, parse_submissions, filter_students_submitted, parsePartnerQuiz
+from parseStudent import parse_students, parse_submissions, filter_students_submitted
 from dotenv import dotenv_values
 import json
 
@@ -49,4 +49,4 @@ if "ENVIRONMENT" in env and env["ENVIRONMENT"] == "PRODUCTION":
     sendConvo(canvas, config["course"]["id"], groups, str(config["group_number"]))
 
 # Analyze the groups: how many students with a preference got it?
-gradeGroups(groups, matched_before)
+grade_groups(groups, matched_before)
