@@ -53,7 +53,8 @@ def preference_asymmetrical_sort(list_students1: list, list_students2: list, typ
             if type_sort == "OneByGroup":
                 temp_array.append([str(student2List.id_num), score_one_by_group(student2List, student1, match_before)])
             elif type_sort == "GroupByOne":
-                temp_array.append([str(student2List[0].id_num), score_group_by_one(student1, student2List, match_before)])
+                temp_array.append(
+                    [str(student2List[0].id_num), score_group_by_one(student1, student2List, match_before)])
 
         # Now sort the list with max score first
         sorted(temp_array, key=lambda score: score[1], reverse=True)

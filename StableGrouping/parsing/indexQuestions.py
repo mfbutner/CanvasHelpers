@@ -1,5 +1,6 @@
 import re
 
+
 def reindex_essay_questions(course, quiz, question_index):
     quiz_assignment = course.get_assignment(quiz.assignment_id)
     quiz_submissions = quiz_assignment.get_submissions(include="submission_history")

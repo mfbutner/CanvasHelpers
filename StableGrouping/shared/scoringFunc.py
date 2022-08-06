@@ -1,7 +1,7 @@
-from StableGrouping.shared.constants import Confident
 from StableGrouping.matching.checkValidGroup import is_valid_group
 from StableGrouping.matching.matchingFunc import match_international, match_language, match_time, match_activity, \
     match_gender, match_partner
+from StableGrouping.shared.constants import Confident
 
 
 # Reward a group with at least one person of each confidence level, or minor reward with two confidence levels

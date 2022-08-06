@@ -1,13 +1,14 @@
-""" This file has 2 functions: invalidGroupDict and is_valid_group.
-invalidGroupDict returns a dictionary. This function only needs to be run once.
-is_valid_group takes in that dictionary (and a list of Student objects) and returns how many times students have
-               overlapped with each other.
+"""
+    This file has 2 functions: invalidGroupDict and is_valid_group.
+    invalidGroupDict returns a dictionary. This function only needs to be run once.
+    is_valid_group takes in that dictionary (and a list of Student objects) and returns how many times students have
+                   overlapped with each other.
 """
 
 
 def get_invalid_groups(course, all_students):
     """
-    return a dictionary where the keys are STRING student id numbers, and the values are INT group numbers
+        returns a dictionary where the keys are STRING student id numbers, and the values are INT group numbers
     """
 
     # get a list of group categories
@@ -27,20 +28,20 @@ def get_invalid_groups(course, all_students):
 
 def is_valid_group(invalid_group_dict: dict, student_list: list):
     """
-    takes in a dictionary where the keys are STRING student id numbers, and the values are INT group numbers
-    takes in a list of student objects
-    returns an int (the number of times students have ever been in a same group before)
+        takes in a dictionary where the keys are STRING student id numbers, and the values are INT group numbers
+        takes in a list of student objects
+        returns an int (the number of times students have ever been in a same group before)
     """
     count = 0
     for student in student_list:
         student_id = str(student.id_num)
-        prevMembers = invalid_group_dict[student_id]
+        prev_members = invalid_group_dict[student_id]
         for other_student in student_list:
             other_student_id = str(other_student.id_num)
             if student_id != other_student_id:
-                other_prevMembers = invalid_group_dict[other_student_id]
-                sameGroup = set(prevMembers) & set(other_prevMembers)
-                if sameGroup:
+                other_prev_members = invalid_group_dict[other_student_id]
+                same_group = set(prev_members) & set(other_prev_members)
+                if same_group:
                     count += 1
 
     return count

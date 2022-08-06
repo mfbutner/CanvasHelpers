@@ -1,8 +1,9 @@
-from StableGrouping.matching.preferenceLists import preference_symmetrical_sort, preference_asymmetrical_sort
 from matching.games import StableMarriage, StableRoommates
-from StableGrouping.shared.scoringFunc import score_group_by_one, score_two_by_two
+
 from StableGrouping.matching.checkValidGroup import is_valid_group
 from StableGrouping.matching.matchingFunc import match_partner, match_sym_partner
+from StableGrouping.matching.preferenceLists import preference_symmetrical_sort, preference_asymmetrical_sort
+from StableGrouping.shared.scoringFunc import score_group_by_one, score_two_by_two
 
 
 def quad_has_partner(quad: list):
@@ -364,63 +365,63 @@ def move_students_one(ans: dict, pairs: list, students: dict):
 # Make pairs of student-student
 def make_pairs(students: dict, match_dict: dict):
     # Make a copy that won't change the original students
-    extraStudents = []
+    extra_students = []
 
     for student in students:
-        extraStudents.append((students[student]))
+        extra_students.append((students[student]))
 
     pairs = []
 
     # Control mechanisms for the loop: check if all the students have been paired, and that the list has not been
-    finished = len(extraStudents) == 0
+    finished = len(extra_students) == 0
 
     i = 0
     # You don't want to loop too many times, but run five times at most to find good matches that have not matched before
     while not finished and i < 10:
-        preferenceList = preference_symmetrical_sort(extraStudents, "OneByOne", match_dict)
-        game = StableRoommates.create_from_dictionary(preferenceList)
+        preference_list = preference_symmetrical_sort(extra_students, "OneByOne", match_dict)
+        game = StableRoommates.create_from_dictionary(preference_list)
         ans = game.solve()
 
         # remove the students who did not find matches out, delete them from the ans dict
-        extraStudents = remove_impossible_one(ans, match_dict, students, extraStudents)
+        extra_students = remove_impossible_one(ans, match_dict, students, extra_students)
 
         # Take the remaining, successful students, and place them into pairs
         move_students_one(ans, pairs, students)
 
         # Update your controls
-        if len(extraStudents) == 0:
+        if len(extra_students) == 0:
             finished = True
             break
 
         i += 1
 
     for index in range(5):
-        listUsedIndexes = []
-        pairsToMake = []
-        for index1 in range(len(extraStudents)):
-            for index2 in range(len(extraStudents)):
-                if index1 != index2 and (index1 not in listUsedIndexes) and (index2 not in listUsedIndexes):
-                    if is_valid_group(match_dict, [extraStudents[index1], extraStudents[index2]]) == 0:
-                        listUsedIndexes.append(index1)
-                        listUsedIndexes.append(index2)
-                        pairsToMake.append([index1, index2])
+        list_used_indexes = []
+        pairs_to_make = []
+        for index1 in range(len(extra_students)):
+            for index2 in range(len(extra_students)):
+                if index1 != index2 and (index1 not in list_used_indexes) and (index2 not in list_used_indexes):
+                    if is_valid_group(match_dict, [extra_students[index1], extra_students[index2]]) == 0:
+                        list_used_indexes.append(index1)
+                        list_used_indexes.append(index2)
+                        pairs_to_make.append([index1, index2])
 
-        usedStudents = []
-        for pairToMake in pairsToMake:
-            pairs.append([extraStudents[pairToMake[0]], extraStudents[pairToMake[1]]])
-            usedStudents.extend([extraStudents[pairToMake[0]], extraStudents[pairToMake[1]]])
+        used_students = []
+        for pairToMake in pairs_to_make:
+            pairs.append([extra_students[pairToMake[0]], extra_students[pairToMake[1]]])
+            used_students.extend([extra_students[pairToMake[0]], extra_students[pairToMake[1]]])
 
-        for student in usedStudents:
-            extraStudents.remove(student)
+        for student in used_students:
+            extra_students.remove(student)
 
-    if len(extraStudents) % 2 == 1:
-        print("Problem: odd number of students in extraStudents")
+    if len(extra_students) % 2 == 1:
+        print("Problem: odd number of students in extra_students")
 
     # Match the rest of the students randomly and print that the matching sucked
-    for index in range(0, len(extraStudents), 2):
-        if (index + 1) < len(extraStudents):
-            pairs.append([extraStudents[index], extraStudents[index + 1]])
-    extraStudents.clear()
+    for index in range(0, len(extra_students), 2):
+        if (index + 1) < len(extra_students):
+            pairs.append([extra_students[index], extra_students[index + 1]])
+    extra_students.clear()
 
     # Return the pairs list (list[Student, Student])
     return pairs
@@ -431,78 +432,78 @@ def make_pairs(students: dict, match_dict: dict):
 # match_dict - a dictionary of all invalid matching
 def make_quads(students: dict, match_dict: dict, pairs: list):
     # Make a copy that won't change the original students
-    extraStudents = []
+    extra_students = []
 
     for pair in pairs:
-        extraStudents.append(pair)
+        extra_students.append(pair)
 
     quads = []
 
     # Control mechanisms for the loop: check if all the pairs been put into quads
     finished = False
-    if len(extraStudents) == 0:
+    if len(extra_students) == 0:
         finished = True
     i = 0
 
     # You don't want to loop too many times, but run five times at most to find good matches that have not matched before
     while not finished and i < 10:
-        preferenceList = preference_symmetrical_sort(extraStudents, "TwoByTwo", match_dict)
-        game = StableRoommates.create_from_dictionary(preferenceList)
+        preference_list = preference_symmetrical_sort(extra_students, "TwoByTwo", match_dict)
+        game = StableRoommates.create_from_dictionary(preference_list)
         ans = game.solve()
 
         # remove the students who did not find matches out, delete them from the ans dict
-        extraStudents = remove_impossible_two(ans, match_dict, students, pairs, extraStudents)
+        extra_students = remove_impossible_two(ans, match_dict, students, pairs, extra_students)
 
         # Take the remaining, successful students, and place them into pairs
         move_students_two(ans, quads, students, pairs)
 
         # Update your controls
-        if len(extraStudents) == 0:
+        if len(extra_students) == 0:
             finished = True
         i += 1
 
     for index in range(5):
-        listUsedIndexes = []
-        pairsToMake = []
-        for index1 in range(len(extraStudents)):
-            for index2 in range(len(extraStudents)):
-                if index1 != index2 and (index1 not in listUsedIndexes) and (index2 not in listUsedIndexes):
+        list_used_indexes = []
+        pairs_to_make = []
+        for index1 in range(len(extra_students)):
+            for index2 in range(len(extra_students)):
+                if index1 != index2 and (index1 not in list_used_indexes) and (index2 not in list_used_indexes):
                     if is_valid_group(match_dict,
-                                      [extraStudents[index1][0], extraStudents[index1][1], extraStudents[index2][0],
-                                     extraStudents[index2][1]]) == 0:
-                        listUsedIndexes.append(index1)
-                        listUsedIndexes.append(index2)
-                        pairsToMake.append([index1, index2])
+                                      [extra_students[index1][0], extra_students[index1][1], extra_students[index2][0],
+                                       extra_students[index2][1]]) == 0:
+                        list_used_indexes.append(index1)
+                        list_used_indexes.append(index2)
+                        pairs_to_make.append([index1, index2])
 
-        usedStudents = []
-        for pairToMake in pairsToMake:
+        used_students = []
+        for pairToMake in pairs_to_make:
             quads.append(
-                [extraStudents[pairToMake[0]][0], extraStudents[pairToMake[0]][1], extraStudents[pairToMake[1]][0],
-                 extraStudents[pairToMake[1]][1]])
-            usedStudents.extend([extraStudents[pairToMake[0]], extraStudents[pairToMake[1]]])
+                [extra_students[pairToMake[0]][0], extra_students[pairToMake[0]][1], extra_students[pairToMake[1]][0],
+                 extra_students[pairToMake[1]][1]])
+            used_students.extend([extra_students[pairToMake[0]], extra_students[pairToMake[1]]])
 
-        for student in usedStudents:
-            extraStudents.remove(student)
+        for student in used_students:
+            extra_students.remove(student)
 
     # Now do random
-    for index in range(0, len(extraStudents), 2):
-        quads.append([extraStudents[index][0], extraStudents[index][1], extraStudents[index + 1][0],
-                      extraStudents[index + 1][1]])
-    extraStudents.clear()
+    for index in range(0, len(extra_students), 2):
+        quads.append([extra_students[index][0], extra_students[index][1], extra_students[index + 1][0],
+                      extra_students[index + 1][1]])
+    extra_students.clear()
 
     return quads
 
 
 def find_min_index(quads: list, matched_before: dict, no_take_list: list):
     index = 0
-    minScore = score_two_by_two([quads[0][0], quads[0][1]], [quads[0][2], quads[0][3]], matched_before)
+    min_score = score_two_by_two([quads[0][0], quads[0][1]], [quads[0][2], quads[0][3]], matched_before)
 
     for i in range(len(quads)):
         pair1 = [quads[i][0], quads[i][1]]
         pair2 = [quads[i][2], quads[i][3]]
 
-        if score_two_by_two(pair1, pair2, matched_before) < minScore and i not in no_take_list:
-            minScore = score_two_by_two(pair1, pair2, matched_before)
+        if score_two_by_two(pair1, pair2, matched_before) < min_score and i not in no_take_list:
+            min_score = score_two_by_two(pair1, pair2, matched_before)
             index = i
 
     return index
@@ -512,17 +513,17 @@ def clean_quads(quads: list, singles: dict, num_groups: int, matched_before: dic
     if len(quads) == num_groups:
         return
 
-    noTakeList = []
+    no_take_list = []
     # In the case that there are too many quads, break up the least happy ones
     while len(quads) > num_groups:
-        index = find_min_index(quads, matched_before, noTakeList)
-        removeQuad = quads[index]
-        if not quad_has_partner(removeQuad):
-            quads.remove(removeQuad)
-            for person in removeQuad:
+        index = find_min_index(quads, matched_before, no_take_list)
+        remove_quad = quads[index]
+        if not quad_has_partner(remove_quad):
+            quads.remove(remove_quad)
+            for person in remove_quad:
                 singles[int(person.id_num)] = person
         else:
-            noTakeList.append(index)
+            no_take_list.append(index)
 
     # This should not happen
     if len(quads) < num_groups:

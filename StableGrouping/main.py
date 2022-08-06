@@ -1,11 +1,13 @@
+import json
+
 from canvasapi import Canvas
-from StableGrouping.matching.makeGroups import make_groups
-from StableGrouping.matching.checkValidGroup import get_invalid_groups
+from dotenv import dotenv_values
+
 from StableGrouping.finalizing.analyzeCode import grade_groups
 from StableGrouping.finalizing.sendCanvasConvo import send_convo
-from StableGrouping.parsing.parseStudent import parse_students, parse_submissions, filter_students_submitted
-from dotenv import dotenv_values
-import json
+from StableGrouping.matching.checkValidGroup import get_invalid_groups
+from StableGrouping.matching.makeGroups import make_groups
+from StableGrouping.parsing.parseStudent import parse_students, filter_students_submitted, parse_submissions
 
 # Load .env file with environment variables from project root (Same folder as config.json, .gitignore, and more)
 env = dotenv_values("../.env")

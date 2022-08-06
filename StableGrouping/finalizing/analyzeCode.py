@@ -1,6 +1,6 @@
+from StableGrouping.matching.checkValidGroup import is_valid_group
 from StableGrouping.matching.matchingFunc import match_gender, match_time, match_international
 from StableGrouping.shared.scoringFunc import score_at_least_one_confidence_level
-from StableGrouping.matching.checkValidGroup import is_valid_group
 
 
 # Analyze the groups on set criteria
