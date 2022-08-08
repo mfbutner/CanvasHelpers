@@ -1,13 +1,15 @@
-from canvasapi import Canvas
-from makeGroups import makeGroups
-from checkValidGroup import invalidGroupDict
-from analyzeCode import gradeGroups
-from sendCanvasConvo import sendConvo
-from parseStudent import parse_students, parse, parseEmails, parsePartnerQuiz, parse_submissions, filter_students_submitted
-from dotenv import dotenv_values
 import json
 
-# Load .env file with environment variables from project root
+from canvasapi import Canvas
+from dotenv import dotenv_values
+
+from StableGrouping.finalizing.analyzeCode import grade_groups
+from StableGrouping.finalizing.sendCanvasConvo import send_convo
+from StableGrouping.matching.checkValidGroup import get_invalid_groups
+from StableGrouping.matching.makeGroups import make_groups
+from StableGrouping.parsing.parseStudent import parse_students, filter_students_submitted, parse_submissions
+
+# Load .env file with environment variables from project root (Same folder as config.json, .gitignore, and more)
 env = dotenv_values("../.env")
 API_URL = env["API_URL"]
 API_KEY = env["API_KEY"]
@@ -25,7 +27,7 @@ course = canvas.get_course(config["course"]["id"])
 
 # Get a list of all students still enrolled in the course
 students = course.get_users(enrollment_type="student")
-# Parse students into Student class instances. Sets basic info: idNum, name, name (first and last), and email
+# Parse students into Student class instances. Sets basic info: id_num, name, name (first and last), and email
 all_students = parse_students(students)
 
 # Get selected Canvas quiz to match partners with
@@ -33,20 +35,20 @@ quiz = course.get_quiz(config["quiz_id"])
 
 # Separate the all_students dictionary into two dictionaries: One for those who submitted and one for those who haven't
 students_submitted = filter_students_submitted(all_students, quiz.get_submissions())
-students_not_submitted = {idNum: student for (idNum, student) in all_students.items() if idNum not in students_submitted}
+students_not_submitted = {s_id: student for (s_id, student) in all_students.items() if s_id not in students_submitted}
 
 # Modifies Student instances in students_submitted by updating their properties with their quiz responses
-parse_submissions(students_submitted, quiz, config)
+parse_submissions(students_submitted, course, quiz, config)
 
-
-# Find the people who were matchedBefore, place it into a dict
-matchedBefore = invalidGroupDict(canvas, config["course"]["id"])
+# Dictionary of people who have already been matched in the past
+matched_before = get_invalid_groups(course, all_students)
 
 # Create the groups:
-groups = makeGroups(students_submitted, students_not_submitted, matchedBefore)
+groups = make_groups(students_submitted, students_not_submitted, matched_before)
 
 # Now that groups are matched, send emails and form groups
-sendConvo(canvas, config["course"]["id"], groups, config["group_number"])
+if "ENVIRONMENT" in env and env["ENVIRONMENT"] == "PRODUCTION":
+    send_convo(canvas, config["course"]["id"], groups, str(config["group_number"]))
 
-# Anaylze the groups: how many students with a preference got it?
-gradeGroups(groups, matchedBefore)
+# Analyze the groups: how many students with a preference got it?
+grade_groups(groups, matched_before)
