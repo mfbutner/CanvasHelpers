@@ -38,16 +38,16 @@ class PartnerEvalQuizGrader:
         for filename in os.listdir("./quiz_results/quiz_reports"):
             print("   ", filename)
             files.append(os.path.join("./quiz_results/quiz_reports/", filename))
-        individual_students_stats = [
-            PartnerEvalQuizIndividualStats(name, id, sorted(files))
-            for name, id in self.student_id_map.items()
-        ]
-        print("ok i made the csvs")
-        final_grades = {}
+
+        individual_students_stats = []
         csv_files = {}
-        for student in individual_students_stats:
-            final_grades[int(student.id)] = student.final_score
-            csv_files[int(student.id)] = student.csv_file_path
+        for name, id in self.student_id_map.items():
+            individual_students_stats.append(
+                PartnerEvalQuizIndividualStats(name, id, sorted(files))
+            )
+            csv_files[id] = individual_students_stats[-1].csv_file_path
+
+        print("ok i made the csvs")
         assignment = self.course.create_assignment(
             assignment={
                 "name": assignment_name,
@@ -69,14 +69,22 @@ class PartnerEvalQuizGrader:
                 for student in individual_students_stats
             }
         )
-        print("done grades")
-        for student in individual_students_stats:
-            submission = assignment.get_submission(int(student.id))
-            submission.upload_comment(student.csv_file_path)
+
+        # wait for assignment to get submissions
+        # if you don't wait, assignment.get_submissions() returns 0 submissions
+        while not len(list(assignment.get_submissions())):
+            continue
+
+        for submission in assignment.get_submissions():
+            if submission.user_id not in self.student_id_map.values():
+                continue  # submisssion is a "ghost submission" (from Canvas's Test Student)
+            submission.upload_comment(csv_files[submission.user_id])
 
         # debugging purposes
-        for k, v in final_grades.items():
-            print(f"ID {k} will receive {round(v,2 )} as their final score")
+        for student in individual_students_stats:
+            print(
+                f"ID {student.id} will receive {student.final_score} as their final score"
+            )
 
         print("Finished upload!")
 
@@ -90,4 +98,4 @@ if __name__ == "__main__":
     with open("./self_and_partner_evaluation_questions.json") as f:
         json_questions = json.load(f)
     grader = PartnerEvalQuizGrader(course, json_questions)
-    grader.upload_final_grades_to_canvas("test grading files")
+    grader.upload_final_grades_to_canvas("overall grading test")

@@ -15,7 +15,6 @@ class PartnerEvalQuizIndividualStats:
 
         self.detailed_scores = []
         self.qualitative_subjects = None
-        self.quantitative_overall_subjects = None
 
         self.csv_file_path = (
             f"./quiz_results/individual_student_reports/{self.name}.csv"
@@ -81,16 +80,13 @@ class PartnerEvalQuizIndividualStats:
             self.scores[qualitative_subject + "Diff"].append(0)
         row.append(0)  # average qualitative difference
         self.scores["Qualitative Difference"].append(0)
-        for quantitative_overall_subject in json_file["info"][
-            "quantitative_overall_subjects"
-        ]:
-            self_score = json_file[self.id][quantitative_overall_subject][0]
-            row.append(
-                f"Self: {self_score}\nPartner: N/A\nAverage: {self_score}\nDiff (self - partner): 0"
-            )
-            self.scores["Project Contribution" + "Self"].append(self_score)
-            self.scores["Project Contribution" + "Average"].append(self_score)
-            self.scores["Project Contribution" + "Diff"].append(0)
+        self_score = json_file[self.id]["Project Contribution"][0]
+        row.append(
+            f"Self: {self_score}\nPartner: N/A\nAverage: {self_score}\nDiff (self - partner): 0"
+        )
+        self.scores["Project Contribution" + "Self"].append(self_score)
+        self.scores["Project Contribution" + "Average"].append(self_score)
+        self.scores["Project Contribution" + "Diff"].append(0)
 
     def __give_quiz_scores(self, json_file: dict, row: list) -> None:
         qualitative_differences = []

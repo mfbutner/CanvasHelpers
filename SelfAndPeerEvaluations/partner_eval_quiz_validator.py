@@ -71,7 +71,7 @@ class PartnerEvalQuizValidator:
             else self.assignment.name + " Validator"
         )
         print(f'Assigning students "{name}"')
-        assignment = self.course.create_assignment(
+        validation_assignment = self.course.create_assignment(
             assignment={
                 "name": name,
                 "description": f"Whether you submitted {self.assignment.name} correctly. If you received a 0, please go back and resubmitt {self.assignment.name} with the commented corrections. This score is totally independent from the grade you will receive from your related project submission.",
@@ -82,6 +82,7 @@ class PartnerEvalQuizValidator:
                 "lock_at": datetime.datetime.now().isoformat(),
                 "unlock_at": datetime.datetime.now().isoformat(),
                 "published": True,
+                "omit_from_final_grade": True,
             }
         )
         grade_data = defaultdict(dict)
@@ -93,14 +94,14 @@ class PartnerEvalQuizValidator:
                 )
             else:
                 grade_data[student_id]["posted_grade"] = 1
-        assignment.submissions_bulk_update(grade_data=grade_data)
+        validation_assignment.submissions_bulk_update(grade_data=grade_data)
         if len(self.quiz_errors.keys()) == 0:  # all students submitted perfectly
             return
         else:
-            assignment.create_override(
+            self.assignment.create_override(
                 assignment_override={
                     "student_ids": list(self.quiz_errors.keys()),
-                    "title": f"{assignment.name} make up",
+                    "title": f"{self.assignment.name} make up",
                     "unlock_at": datetime.datetime.now(),
                     "due_at": datetime.datetime.now() + datetime.timedelta(days=2),
                     "lock_at": datetime.datetime.now() + datetime.timedelta(days=2),
@@ -317,14 +318,19 @@ class PartnerEvalQuizValidator:
         """
         final_pairings = {}
         for student_id in self.quiz_grades["info"]["submissions"]:
-            partner_id = potential_pairings[student_id]
-            if partner_id == "Solo Submission":
-                final_pairings[student_id] = "Solo Submission"
-            elif potential_pairings[partner_id] != student_id:
+            if student_id not in potential_pairings:
                 self.quiz_errors[student_id].append(f"Cannot verify partnership")
                 final_pairings[student_id] = "Unknown"
+                self.quiz_grades[student_id]["valid_solo_submission"].append(False)
             else:
-                final_pairings[student_id] = partner_id
+                partner_id = potential_pairings[student_id]
+                if partner_id == "Solo Submission":
+                    final_pairings[student_id] = "Solo Submission"
+                elif potential_pairings[partner_id] != student_id:
+                    self.quiz_errors[student_id].append(f"Cannot verify partnership")
+                    final_pairings[student_id] = "Unknown"
+                else:
+                    final_pairings[student_id] = partner_id
         return final_pairings
 
     def __parse_qualitative_self_evals(self) -> None:
@@ -448,4 +454,4 @@ if __name__ == "__main__":
     with open("./self_and_partner_evaluation_questions.json") as f:
         json_questions = json.load(f)
     validator = PartnerEvalQuizValidator(course, json_questions)
-    validator.validate_quiz(False)
+    validator.validate_quiz(True)
