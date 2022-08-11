@@ -1,15 +1,19 @@
+import argparse
 import canvasapi
 import datetime
 import json
-from typing import Optional
+from typing import Optional, Union
 from utils import make_student_id_map
+
+JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
+JsonDict = dict[str, JsonValue]
 
 
 class PartnerEvalQuizCreator:
     def __init__(
         self,
         course: canvasapi.course.Course,
-        json_questions: dict,
+        json_questions: JsonDict,
         assignment_name: str,
         unlock_date: Optional[datetime.datetime] = None,
         due_date: Optional[datetime.datetime] = None,

@@ -2,14 +2,18 @@ import canvasapi
 from collections import defaultdict
 import datetime
 import json
+from typing import Union
 from utils import find_partner_eval_ag, make_student_id_map
+
+JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
+JsonDict = dict[str, JsonValue]
 
 
 class PartnerEvalQuizValidator:
     def __init__(
         self,
         course: canvasapi.course.Course,
-        json_questions: dict,
+        json_questions: JsonDict,
         assignment_group: canvasapi.assignment.AssignmentGroup = None,
     ):
         self.course = course
@@ -115,6 +119,7 @@ class PartnerEvalQuizValidator:
         for index, json_question in enumerate(self.json_questions):
             if json_question["question_name"] == "Solo Submission Justification":
                 question_id = self.canvas_questions[index]["id"]
+                break
         justification_index = None
 
         outfile = open(
@@ -131,12 +136,13 @@ class PartnerEvalQuizValidator:
                 for index, _ in enumerate(submission_data):
                     if _["question_id"] == int(question_id):
                         justification_index = index
+                        break
 
             justification = submission_data[justification_index]["text"]
             if justification == "":
                 justification = "No justification provided."
             outfile.writelines(
-                f'{user_id} ({self.quiz_grades[user_id]["name"][0]}): {justification}\n'
+                f'{user_id} ({self.quiz_grades[user_id]["name"]}): {justification}\n'
             )
         outfile.close()
         print(
@@ -171,6 +177,7 @@ class PartnerEvalQuizValidator:
         for index, json_question in enumerate(self.json_questions):
             if json_question["question_name"] == "Project Contribution":
                 question_stats = self.canvas_questions[index]
+                break
         subject = "Project Contribution"
         # initialize each student's Project Contribution to list of 2 elements
         for student_id in self.quiz_grades["info"]["submissions"]:
@@ -302,10 +309,10 @@ class PartnerEvalQuizValidator:
                 for user_id in answer["user_ids"]:
                     potential_pairings[user_id] = partner_id
                     if partner_id == "Solo Submission":
-                        self.quiz_grades[user_id]["valid_solo_submission"].append(True)
+                        self.quiz_grades[user_id]["valid_solo_submission"] = True
                         self.solo_submission_ids.append(user_id)
                     else:
-                        self.quiz_grades[user_id]["valid_solo_submission"].append(False)
+                        self.quiz_grades[user_id]["valid_solo_submission"] = False
             except KeyError:  # skip answers that no students picked
                 continue
         return self.__finalize_partner_pairings(potential_pairings)
@@ -319,9 +326,9 @@ class PartnerEvalQuizValidator:
         final_pairings = {}
         for student_id in self.quiz_grades["info"]["submissions"]:
             if student_id not in potential_pairings:
-                self.quiz_errors[student_id].append(f"Cannot verify partnership")
+                self.quiz_errors[student_id].append(f"Missing partner Identification")
                 final_pairings[student_id] = "Unknown"
-                self.quiz_grades[student_id]["valid_solo_submission"].append(False)
+                self.quiz_grades[student_id]["valid_solo_submission"] = False
             else:
                 partner_id = potential_pairings[student_id]
                 if partner_id == "Solo Submission":
@@ -394,6 +401,10 @@ class PartnerEvalQuizValidator:
         self.quiz_grades["info"]["quiz_id"] = self.assignment.quiz_id
         self.quiz_grades["info"]["quiz_name"] = self.assignment.name
         self.quiz_grades["info"]["submissions"] = []
+        self.quiz_grades["info"]["weighting"] = {
+            "qualitative": 0.4,
+            "project_contribution": 0.6,
+        }
         for submission in self.assignment.get_submissions():
             if submission.workflow_state == "unsubmitted":
                 continue
@@ -401,9 +412,9 @@ class PartnerEvalQuizValidator:
             if user_id not in self.student_id_map.values():
                 continue  # student is no longer in course
             self.quiz_grades["info"]["submissions"].append(user_id)
-            self.quiz_grades[user_id]["name"].append(
-                [name for name, uid in self.student_id_map.items() if uid == user_id][0]
-            )
+            self.quiz_grades[user_id]["name"] = [
+                name for name, uid in self.student_id_map.items() if uid == user_id
+            ][0]
 
     def __get_assignment(self) -> canvasapi.assignment.Assignment:
         """
@@ -454,4 +465,4 @@ if __name__ == "__main__":
     with open("./self_and_partner_evaluation_questions.json") as f:
         json_questions = json.load(f)
     validator = PartnerEvalQuizValidator(course, json_questions)
-    validator.validate_quiz(True)
+    validator.validate_quiz(False)

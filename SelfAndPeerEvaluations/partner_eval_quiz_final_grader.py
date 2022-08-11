@@ -1,20 +1,27 @@
 import canvasapi
-from collections import defaultdict
 import datetime
 import json
 import os
+import time
+from typing import Union
 from utils import *
+from partner_eval_quiz_individual_stats import PartnerEvalQuizIndividualStats
+
+JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
+JsonDict = dict[str, JsonValue]
 
 
 class PartnerEvalQuizGrader:
     def __init__(
         self,
         course: canvasapi.course.Course,
-        json_questions: dict,
+        json_questions: JsonDict,
+        reports_path: str,
         assignment_group: canvasapi.assignment.AssignmentGroup = None,
     ):
         self.course = course
         self.json_questions = json_questions
+        self.reports_path = reports_path
 
         self.assignment_group = (
             assignment_group
@@ -30,14 +37,19 @@ class PartnerEvalQuizGrader:
         self.student_id_map = make_student_id_map(self.course)
 
     def upload_final_grades_to_canvas(
-        self, assignment_name="Overall Evaluation Grade"
+        self, assignment_name: str = "Overall Evaluation Grade"
     ) -> None:
+        """
+        upload's ALL students final evaluation grades onto Canvas and
+        attaches a CSV file of the student's score breakdown to each submission
+        """
+        # TODO: put nice docstring here
         files = []
         print("We'll be basing final grade off of these files:")
         print("These files will be processed in proper sorted order.")
-        for filename in os.listdir("./quiz_results/quiz_reports"):
+        for filename in os.listdir(self.reports_path):
             print("   ", filename)
-            files.append(os.path.join("./quiz_results/quiz_reports/", filename))
+            files.append(os.path.join(self.reports_path, filename))
 
         individual_students_stats = []
         csv_files = {}
@@ -47,7 +59,6 @@ class PartnerEvalQuizGrader:
             )
             csv_files[id] = individual_students_stats[-1].csv_file_path
 
-        print("ok i made the csvs")
         assignment = self.course.create_assignment(
             assignment={
                 "name": assignment_name,
@@ -63,21 +74,25 @@ class PartnerEvalQuizGrader:
         )
         print("Uploading final grades and csv files to Canvas")
         print("This might take a while")
-        assignment.submissions_bulk_update(
+        upload_progress = assignment.submissions_bulk_update(
             grade_data={
                 student.id: {"posted_grade": student.final_score}
                 for student in individual_students_stats
             }
         )
 
+        for student in individual_students_stats:
+            student.write_to_csv()
+
         # wait for assignment to get submissions
         # if you don't wait, assignment.get_submissions() returns 0 submissions
-        while not len(list(assignment.get_submissions())):
-            continue
+        while upload_progress.workflow_state != "completed":
+            time.sleep(5)  # just wait a bit before querying again
+            upload_progress = upload_progress.query()
 
         for submission in assignment.get_submissions():
             if submission.user_id not in self.student_id_map.values():
-                continue  # submisssion is a "ghost submission" (from Canvas's Test Student)
+                continue  # submisssion is a "ghost submission" (from Canvas's Test Student), no way around this as of now
             submission.upload_comment(csv_files[submission.user_id])
 
         # debugging purposes
@@ -97,5 +112,6 @@ if __name__ == "__main__":
     course = canvas.get_course(1599)  # sandbox course ID
     with open("./self_and_partner_evaluation_questions.json") as f:
         json_questions = json.load(f)
-    grader = PartnerEvalQuizGrader(course, json_questions)
+    path = "./quiz_results/quiz_reports"
+    grader = PartnerEvalQuizGrader(course, json_questions, path)
     grader.upload_final_grades_to_canvas("overall grading test")
