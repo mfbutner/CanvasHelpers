@@ -93,7 +93,7 @@ class SelfAndPeerEvaluationQuizValidator:
             3*. assigning students a "did you submit correctly" assignment
             4*. giving students with problematic quizzes a few extra days to resubmit
         * only exectued if user wants to
-        If a validation assignment is created, students will be assigned a "did you submit it correctly" assignment for the quiz you asked to validate. Correct submissions will be given a 1/1 (100%). Incorrect submissions will be given a 0/1 (0%) and comments indicating which questions students need to go back and answer.
+        If a validation assignment is created, students will be assigned a "did you submit it correctly" assignment for the quiz you asked to validate. Correct submissions will be given a 1/1 (100%). Incorrect submissions will be given a 0/1 (0%) and comments indicating which questions students need to go back and answer on quiz you asked to validate.
         :modifies: self.quiz_grades to store quiz results
                    self.solo_submissions to store solo submissions
         """
@@ -117,6 +117,8 @@ class SelfAndPeerEvaluationQuizValidator:
         """
         creates a "Did you submit correctly" assignment for all students
         and allows problematic students to resubmit the original quiz
+        :returns: None. Instead, a validation assignment is uploaded to Canvas and
+                  students with problematic quizzes are given extra days to resubmit
         """
         name = (
             validation_assignment_name
@@ -163,6 +165,7 @@ class SelfAndPeerEvaluationQuizValidator:
     def __log_solo_submissions(self) -> None:
         """
         log solo submssion id's and justifications to a .txt file
+        :returns: None. Instead, a .txt file is written to log solo submission justifcations
         """
         for index, json_question in enumerate(self.json_questions):
             if json_question["question_name"] == "Solo Submission Justification":
@@ -202,8 +205,11 @@ class SelfAndPeerEvaluationQuizValidator:
     def __parse_quiz_questions(self) -> None:
         """
         parses through all quiz questions and stores results into self.quiz_grades
-        :returns: None, instead self.quiz_grades, self.quiz_errors,
-                  and self.solo_submission_ids are directly modified
+        :returns: None
+        :modifies: self.quiz_grades to log quiz results,
+                   self.quiz_errors to log students who have quiz errors and what they are,
+                   self.partner_id_map to map students to their partners
+                   self.solo_submission_ids to log which students were solo submissions
         """
         self.__parse_qualitative_self_evals()
         self.partner_id_map = self.__make_partner_id_map()
@@ -215,6 +221,8 @@ class SelfAndPeerEvaluationQuizValidator:
         parse the project contribution question and store results in self.quiz_grades[individual_student]["Project Contribution"]
         missing answers are stored into self.quiz_errors
         :returns: None, instead self.quiz_grades and self.quiz_errors are directly modified
+        :modifies: self.quiz_grades to log contribution results,
+                   self.quiz_errors to log students who have quiz errors and what they are
         """
         contrib_mappings = {
             "No Answer": None,
@@ -259,7 +267,9 @@ class SelfAndPeerEvaluationQuizValidator:
         that is, every submission contains 2 contribution scores (1 if solo submission)
         if a student's partner did not evalute a student, give student their own score
         solo submisisons are given 1 (100%) contribution
-        :returns: None, instead self.quiz_grades and self.quiz_errors are directly modified
+        :returns: None
+        :modifies: self.quiz_grades to log contribution results,
+                   self.quiz_errors to log students who have quiz errors and what they are
         """
         subject = "Project Contribution"
         for student_id in self.quiz_grades["info"]["submissions"]:
@@ -281,7 +291,9 @@ class SelfAndPeerEvaluationQuizValidator:
         parses through the partner evaluation questions and stores results into
         self.quiz_grades[individaul_student][category]
         missing answers are stored into self.quiz_errors
-        :returns: None, instead self.quiz_grades and self.quiz_errors are directly modified
+        :returns: None
+        :modifies: self.quiz_grades to log qualitative partner quiz results,
+                   self.quiz_errors to log students who have quiz errors and what they are
         """
         qual_mappings = {
             "Strongly disagree": 1,
@@ -321,7 +333,9 @@ class SelfAndPeerEvaluationQuizValidator:
         parse through each submission in self.quiz_grades and make sure it is correctly
         that is, every submission contains a partner evaluation score for each subject
         if a student's partner did not evalute a student, give student their own score
-        :returns: None, instead self.quiz_grades and self.quiz_errors are directly modified
+        :returns: None
+        :modifies: self.quiz_grades to log qualitative partner quiz results,
+                   self.quiz_errors to log students who have quiz errors and what they are
         """
         for student_id in self.quiz_grades["info"]["submissions"]:
             for subject in self.quiz_grades["info"]["qualitative_subjects"]:
@@ -380,7 +394,7 @@ class SelfAndPeerEvaluationQuizValidator:
         final_pairings = {}
         for student_id in self.quiz_grades["info"]["submissions"]:
             if student_id not in potential_pairings:
-                self.quiz_errors[student_id].append(f"Missing partner Identification")
+                self.quiz_errors[student_id].append(f"Missing partner identification")
                 final_pairings[student_id] = "Unknown"
                 self.quiz_grades[student_id]["valid_solo_submission"] = False
             else:
@@ -401,7 +415,9 @@ class SelfAndPeerEvaluationQuizValidator:
         missing answers are stores into self.quiz_errors
         Since self and partner evaluations should share the same subjects,
         we also store the subjects into self.quiz_grades["info"]["qualitative_subjects"]
-        :returns: None, instead self.quiz_grades and self.quiz_errors are directly modified
+        :returns: None
+        :modifies: self.quiz_grades to log qualitative self quiz results,
+                   self.quiz_errors to log students who have quiz errors and what they are
         """
         qual_mappings = {
             "Strongly disagree": 1,
@@ -433,7 +449,9 @@ class SelfAndPeerEvaluationQuizValidator:
         parse through each submission in self.quiz_grades and make sure it is correctly
         that is, every submission contains a self evaluation score for each subject
         if there is no score, log the error to quiz_errors and give 1 (default)
-        :returns: None, instead self.quiz_grades and self.quiz_errors are directly modified
+        :returns: None
+        :modifies: self.quiz_grades to log qualitative self quiz results,
+                   self.quiz_errors to log students who have quiz errors and what they are
         """
         for student_id in self.quiz_grades["info"]["submissions"]:
             for subject in self.quiz_grades["info"]["qualitative_subjects"]:
@@ -451,6 +469,7 @@ class SelfAndPeerEvaluationQuizValidator:
         write info about an assignment's quiz_id, name, submissions, and submission names
         to self.quiz_grades
         :returns: None, instead self.quiz_grades is directly modified
+        :modifies: self.quiz_grades to log quiz metdadata
         """
         self.quiz_grades["info"]["quiz_id"] = self.assignment.quiz_id
         self.quiz_grades["info"]["quiz_name"] = self.assignment.name
@@ -548,7 +567,7 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         "--create_validation_assignment",
         action="store_true",
         required=False,
-        help="Whether or not to create the validation assignment.",
+        help='Whether or not to create the validation assignment.\nIf a validation assignment is created, students will be assigned a "did you submit it correctly" assignment for the quiz you asked to validate. Correct (complete) submissions will be given a 1/1 (100%). Incorrect submissions will be given a 0/1 (0%) and comments indicating which questions students need to go back and answer on quiz you asked to validate.',
     )
     parser.add_argument(
         "--validation_assignment_name",

@@ -35,6 +35,9 @@ class SelfAndPeerEvaluationQuizCreator:
             lock_date
         )
         quiz.upload_to_canvas()
+    public functions
+    ---
+    upload_to_canvas(): uploads a evaluation quiz to canvas
     """
 
     def __init__(
@@ -47,11 +50,6 @@ class SelfAndPeerEvaluationQuizCreator:
         due_date: datetime.datetime,
         lock_date: datetime.datetime,
     ):
-        """
-        public functions
-        ---
-        upload_to_canvas(): uploads a evaluation quiz to canvas
-        """
         self.course = course
         self.json_questions = json_questions
         self.assignment_name = assignment_name
@@ -63,7 +61,11 @@ class SelfAndPeerEvaluationQuizCreator:
         self.lock_date = lock_date
 
     def upload_to_canvas(self) -> None:
-        print("Uploading quiz assignment to canvas")
+        """
+        uploads quiz assignemnt to Canvas
+        :returns: None
+        """
+        print(f'Uploading "{self.assignment_name}" quiz assignment to Canvas')
         print("This might take a while")
         quiz_info = self.__create_quiz_info()
         quiz_questions = self.__create_quiz_questions()

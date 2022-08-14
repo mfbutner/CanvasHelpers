@@ -25,9 +25,11 @@ class EvalIndividualStats:
     :var self.qualitative_subjects: the list of qualitative subjects for qualitative subject categorization
     :var self.scores: all values associated with a student based on quiz reports
     :var self.detailed_scores: self.scores formatted for CSV writing
+
     :var self.csv_file_path: the path where the studuent score breakdown will be
     :var self.final_score: the final, overall score the student will get
     public functions
+    ---
     write_to_csv()
     """
 

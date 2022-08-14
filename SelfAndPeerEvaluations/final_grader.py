@@ -58,6 +58,8 @@ class SelfAndPeerEvaluationFinalGrader:
         """
         upload's ALL students final evaluation grades onto Canvas and
         attaches a CSV file of the student's score breakdown to each submission
+        :returns: None. Instead a final grade assignment is uploaded to Canvas and
+                  a CSV file of a student's score breakdown is attached as a comment
         """
         files = []
         print("We'll be basing final grade off of these files:")
