@@ -174,14 +174,14 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         dest="quiz_reports_path",
         type=str,
         required=True,
-        help="The path to the directory where the quiz reports are located.",
+        help="The path to the directory where the quiz reports are located.\nIt's ok if the directory path has a trailing `/`.",
     )
     parser.add_argument(
         "--csv_reports_path",
         dest="csv_reports_path",
         type=str,
         required=True,
-        help="The path to the directory to store each students' CSV report.",
+        help="The path to the directory to store each students' CSV report.\nIt's ok if the directory path has a trailing `/`.",
     )
     return parser
 

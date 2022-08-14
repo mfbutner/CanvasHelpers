@@ -76,8 +76,8 @@ class SelfAndPeerEvaluationQuizValidator:
             list(self.quiz.get_statistics())[0]
         ).question_statistics
         self.quiz_grades = defaultdict(lambda: defaultdict(list))
-        self.quiz_errors = defaultdict(list)
-        self.solo_submission_ids = list()
+        self.quiz_errors = defaultdict(list)  # key: ID (int), value: list of error strs
+        self.solo_submission_ids = list()  # list of IDs (int)
         self.student_id_map = make_student_id_map(self.course)
 
     def validate_quiz(
@@ -93,6 +93,7 @@ class SelfAndPeerEvaluationQuizValidator:
             3*. assigning students a "did you submit correctly" assignment
             4*. giving students with problematic quizzes a few extra days to resubmit
         * only exectued if user wants to
+        If a validation assignment is created, students will be assigned a "did you submit it correctly" assignment for the quiz you asked to validate. Correct submissions will be given a 1/1 (100%). Incorrect submissions will be given a 0/1 (0%) and comments indicating which questions students need to go back and answer.
         :modifies: self.quiz_grades to store quiz results
                    self.solo_submissions to store solo submissions
         """
@@ -576,14 +577,14 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         dest="quiz_report_path",
         type=str,
         required=True,
-        help="The path to the directory where you want to store the quiz report.",
+        help="The path to the directory where you want to store the quiz report.\nIt's ok if the directory path has a trailing `/`.",
     )
     parser.add_argument(
         "--solo_sub_path",
         dest="solo_sub_path",
         type=str,
         required=True,
-        help="The path to the directory where you want to store the solo submissions log.",
+        help="The path to the directory where you want to store the solo submissions log.\nIt's ok if the directory path has a trailing `/`.",
     )
     return parser
 
