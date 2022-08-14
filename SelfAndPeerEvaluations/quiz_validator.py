@@ -577,7 +577,7 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         dest="quiz_report_path",
         type=str,
         required=True,
-        help="The path to the directory where you want to store the quiz report.\nIt's ok if the directory path has a trailing `/`.",
+        help="The path to the directory where you want to store the quiz report.\nIt's ok if the directory path has a trailing `/`.\nNOTE: The report WILL override any exist report with the same name.",
     )
     parser.add_argument(
         "--solo_sub_path",

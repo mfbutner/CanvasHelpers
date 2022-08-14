@@ -34,7 +34,7 @@ def select_ags_from_list(ag_list: list[canvasapi.assignment.AssignmentGroup]) ->
     """
     print(f"Here are the assignment groups I found")
     for index, ag in enumerate(ag_list):
-        print(index, ".", ag.name)
+        print(str(index) + ".", ag.name)
     while True:
         index = input(
             f"Please select the assignment group (0 - {len(ag_list) - 1}). Or enter 'q' to quit the program: "

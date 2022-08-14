@@ -167,7 +167,11 @@ class EvalIndividualStats:
         qualitative_differences = []
         for qualitative_subject in json_file["info"]["qualitative_subjects"]:
             self_score = json_file[self.id][qualitative_subject][0]
-            partner_score = json_file[self.id][qualitative_subject][1]
+            try:
+                partner_score = json_file[self.id][qualitative_subject][1]
+            except IndexError:  # student was an invalid solo submission, so their "partner" gives them the lowest scores possible
+                json_file[self.id][qualitative_subject].append(1)
+                partner_score = json_file[self.id][qualitative_subject][1]
             average_score = round(
                 statistics.fmean(json_file[self.id][qualitative_subject]), 2
             )
@@ -187,7 +191,11 @@ class EvalIndividualStats:
             round(statistics.fmean(qualitative_differences), 2)
         )
         self_score = json_file[self.id]["Project Contribution"][0]
-        partner_score = json_file[self.id]["Project Contribution"][1]
+        try:
+            partner_score = json_file[self.id]["Project Contribution"][1]
+        except IndexError:  # student was an invalid solo submission, so their "partner" gives them the lowest score possible
+            json_file[self.id]["Project Contribution"].append(0)
+            partner_score = json_file[self.id]["Project Contribution"][1]
         average_score = round(
             statistics.fmean(json_file[self.id]["Project Contribution"]),
             2,
