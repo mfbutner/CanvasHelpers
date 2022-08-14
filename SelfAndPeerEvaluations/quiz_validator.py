@@ -173,31 +173,30 @@ class SelfAndPeerEvaluationQuizValidator:
                 break
         justification_index = None
 
-        outfile = open(
+        with open(
             os.path.join(
                 self.solo_sub_path, f"{self.assignment.name}_solo_submissions.txt"
             ),
             "w",
-        )
-        outfile.writelines("id (name): justification\n")
-        for user_id in self.solo_submission_ids:
-            submission = self.assignment.get_submission(
-                user_id, include="submission_history"
-            )
-            submission_data = submission.submission_history[0]["submission_data"]
-            if justification_index is None:
-                for index, _ in enumerate(submission_data):
-                    if _["question_id"] == int(question_id):
-                        justification_index = index
-                        break
+        ) as outfile:
+            outfile.writelines("id (name): justification\n")
+            for user_id in self.solo_submission_ids:
+                submission = self.assignment.get_submission(
+                    user_id, include="submission_history"
+                )
+                submission_data = submission.submission_history[0]["submission_data"]
+                if justification_index is None:
+                    for index, question in enumerate(submission_data):
+                        if question["question_id"] == int(question_id):
+                            justification_index = index
+                            break
 
-            justification = submission_data[justification_index]["text"]
-            if justification == "":
-                justification = "No justification provided."
-            outfile.writelines(
-                f'{user_id} ({self.quiz_grades[user_id]["name"]}): {justification}\n'
-            )
-        outfile.close()
+                justification = submission_data[justification_index]["text"]
+                if justification.strip() == "":
+                    justification = "No justification provided."
+                outfile.writelines(
+                    f'{user_id} ({self.quiz_grades[user_id]["name"]}): {justification}\n'
+                )
         print(
             f"Solo submissions justifcations saved to {self.solo_sub_path} as {self.assignment.name}_solo_submissions.txt"
         )
