@@ -1,20 +1,62 @@
+"""Script to validate a single Self and Peer Evaluation quiz on Canvas
+
+Contains a SelfAndPeerEvaluationQuizValidator class that handles the quiz
+validation. A quiz will be validated by 
+    (1) generating a quiz report JSON file that lists all student scores, 
+    (2) logging solo submissions and their justificaitons to a .txt file
+    (3*) Assigning students a "Did you submit correctly assignment"
+    (4*) Giving students with problematic quizzes a few extra days to resubmit
+    * will only be executed on user choice
+Requires an external JSON file of quiz questions to actually get question information.
+
+Typical Usage example:
+
+    python3 quiz_validator.py @validator_args.txt --questions_file_path ./questions.json
+"""
+import argparse
 import canvasapi
 from collections import defaultdict
 import datetime
 import json
+import os
 from typing import Union
-from utils import find_partner_eval_ag, make_student_id_map
+from utils import find_ag, make_student_id_map
 
 JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
 JsonDict = dict[str, JsonValue]
 
 
-class PartnerEvalQuizValidator:
+class SelfAndPeerEvaluationQuizValidator:
+    """Class that stores the evaluation quiz validator logic
+
+    You can validate a quiz by calling validate_quiz(create_validation_assignment, validation_assignment_name)
+    A quiz will be validated by
+        (1) generating a quiz report JSON file that lists all student scores,
+        (2) logging solo submissions and their justificaitons to a .txt file
+        (3*) Assigning students a "Did you submit correctly assignment"
+        (4*) Giving students with problematic quizzes a few extra days to resubmit
+    * will only be executed on user choice
+
+    Typical Usage example:
+        validator = SelfAndPeerEvaluationQuizValidator(
+            course,
+            json_questions,
+            assignment_group_name,
+            quiz_report_path,
+            solo_sub_path,
+        )
+        validator.validate_quiz(
+            create_validation_assignment, validation_assignment_name
+        )
+    """
+
     def __init__(
         self,
         course: canvasapi.course.Course,
         json_questions: JsonDict,
-        assignment_group: canvasapi.assignment.AssignmentGroup = None,
+        assignment_group_name: str,
+        quiz_report_path: str,
+        solo_sub_path: str,
     ):
         self.course = course
         self.json_questions = [
@@ -23,16 +65,9 @@ class PartnerEvalQuizValidator:
             if question["question_type"]
             != "text_only_question"  # text_only_question's aren't stored in canvas question statistics
         ]
-        self.assignment_group = (
-            assignment_group
-            if assignment_group is not None
-            else find_partner_eval_ag(course)
-        )
-        # make sure that assignment group has assignment attribute
-        if not hasattr(self.assignment_group, "assignments"):
-            self.assignment_group = course.get_assignment_group(
-                self.assignment_group.id, include=["assignments"]
-            )
+        self.assignment_group = find_ag(course, assignment_group_name)
+        self.quiz_report_path = quiz_report_path
+        self.solo_sub_path = solo_sub_path
         self.assignment = self.__get_assignment()
         self.quiz = self.course.get_quiz(self.assignment.quiz_id)
         self.canvas_questions = (
@@ -44,37 +79,49 @@ class PartnerEvalQuizValidator:
         self.student_id_map = make_student_id_map(self.course)
 
     def validate_quiz(
-        self, create_validation_assignment=False, validation_assignment_name=""
+        self,
+        create_validation_assignment: bool,
+        validation_assignment_name: str,
+        extra_days: int,
     ) -> None:
         """
         validates a evaluation quiz by
             1. parsing through all the questions and storing results into JSON file
             2. logging solo submissions into a .txt file
-            3. assigning students a "did you submit correctly" assignment
+            3*. assigning students a "did you submit correctly" assignment
+            4*. giving students with problematic quizzes a few extra days to resubmit
+        * only exectued if user wants to
+        :modifies: self.quiz_grades to store quiz results
+                   self.solo_submissions to store solo submissions
         """
         print(f'Validating "{self.assignment.name}"...')
         self.__write_quiz_metadata()
         self.__parse_quiz_questions()
         with open(
-            f"./quiz_results/quiz_reports/{self.assignment.name}.json", "w"
+            os.path.join(self.quiz_report_path, f"{self.assignment.name}.json"), "w"
         ) as outfile:
             json.dump(self.quiz_grades, outfile)
-        print(
-            f"Report saved to ./quiz_results/quiz_reports/{self.assignment.name}.json"
-        )
+        print(f"Report saved to {self.quiz_report_path} as {self.assignment.name}.json")
 
         self.__log_solo_submissions()
         if create_validation_assignment:
-            self.__create_validation_assignment(validation_assignment_name)
+            self.__create_validation_assignment(validation_assignment_name, extra_days)
         print(f"Finish validating {self.assignment.name}")
 
-    def __create_validation_assignment(self, validation_assignment_name: str) -> None:
+    def __create_validation_assignment(
+        self, validation_assignment_name: str, extra_days: int
+    ) -> None:
+        """
+        creates a "Did you submit correctly" assignment for all students
+        and allows problematic students to resubmit the original quiz
+        """
         name = (
             validation_assignment_name
-            if validation_assignment_name != ""
+            if validation_assignment_name is not None
             else self.assignment.name + " Validator"
         )
-        print(f'Assigning students "{name}"')
+        print(f'Assigning students "{name}" assignment')
+        now = datetime.datetime.now()
         validation_assignment = self.course.create_assignment(
             assignment={
                 "name": name,
@@ -82,9 +129,9 @@ class PartnerEvalQuizValidator:
                 "assignment_group_id": self.assignment.assignment_group_id,
                 "submission_types": ["none"],
                 "points_possible": 1,
-                "due_at": datetime.datetime.now().isoformat(),
-                "lock_at": datetime.datetime.now().isoformat(),
-                "unlock_at": datetime.datetime.now().isoformat(),
+                "due_at": now,
+                "lock_at": now,
+                "unlock_at": now,
                 "published": True,
                 "omit_from_final_grade": True,
             }
@@ -99,16 +146,14 @@ class PartnerEvalQuizValidator:
             else:
                 grade_data[student_id]["posted_grade"] = 1
         validation_assignment.submissions_bulk_update(grade_data=grade_data)
-        if len(self.quiz_errors.keys()) == 0:  # all students submitted perfectly
-            return
-        else:
+        if self.quiz_errors:
             self.assignment.create_override(
                 assignment_override={
                     "student_ids": list(self.quiz_errors.keys()),
                     "title": f"{self.assignment.name} make up",
-                    "unlock_at": datetime.datetime.now(),
-                    "due_at": datetime.datetime.now() + datetime.timedelta(days=2),
-                    "lock_at": datetime.datetime.now() + datetime.timedelta(days=2),
+                    "unlock_at": now,
+                    "due_at": now + datetime.timedelta(days=extra_days),
+                    "lock_at": now + datetime.timedelta(days=extra_days),
                 }
             )
 
@@ -123,7 +168,9 @@ class PartnerEvalQuizValidator:
         justification_index = None
 
         outfile = open(
-            f"./quiz_results/solo_submissions/{self.assignment.name}_solo_submissions.txt",
+            os.path.join(
+                self.solo_sub_path, f"{self.assignment.name}_solo_submissions.txt"
+            ),
             "w",
         )
         outfile.writelines("id (name): justification\n")
@@ -146,7 +193,7 @@ class PartnerEvalQuizValidator:
             )
         outfile.close()
         print(
-            f"Solo submissions justifcations saved to ./quiz_results/solo_submissions/{self.assignment.name}_solo_submissions.txt"
+            f"Solo submissions justifcations saved to {self.solo_sub_path} as {self.assignment.name}_solo_submissions.txt"
         )
 
     def __parse_quiz_questions(self) -> None:
@@ -286,7 +333,7 @@ class PartnerEvalQuizValidator:
                             self.quiz_grades[student_id][subject][0]
                         )
 
-    def __make_partner_id_map(self) -> dict:
+    def __make_partner_id_map(self) -> dict[int, Union[int, str]]:
         """
         maps all submisison student_id's to their partner_id
         all pairings in this dict are valid. that is, each pairing claimed each other
@@ -294,6 +341,7 @@ class PartnerEvalQuizValidator:
         id is logged to self.solo_submission_ids
         unknown partnerships have a partner called "Unknown"
         :returns: dict of id's to partner_id
+        :modifies: self.quiz_grades to log whether a student is a valid solo submission
         """
         for index, json_question in enumerate(self.json_questions):
             if json_question["question_name"] == "Partner Identification":
@@ -317,11 +365,14 @@ class PartnerEvalQuizValidator:
                 continue
         return self.__finalize_partner_pairings(potential_pairings)
 
-    def __finalize_partner_pairings(self, potential_pairings: dict) -> dict:
+    def __finalize_partner_pairings(
+        self, potential_pairings: dict[int, Union[int, str]]
+    ) -> dict[int, Union[int, str]]:
         """
         verifies that each partnership is claimed by both partners
         otherwise, map both partners to "Unknown"
         :returns: dict of id's to partner_id
+        :modifies: self.quiz_grades to log whether a studnet is a valid solo submission
         """
         final_pairings = {}
         for student_id in self.quiz_grades["info"]["submissions"]:
@@ -456,13 +507,102 @@ class PartnerEvalQuizValidator:
         return evaluation_assignments
 
 
-if __name__ == "__main__":
-    url = "https://canvas.ucdavis.edu"
-    key = str(input("Enter API key:"))
+def create_arguement_parser() -> argparse.ArgumentParser:
+    """
+    Creates the quiz_validator arguement parser
+    :returns: quiz_validator arguement parser
+    """
+    parser = argparse.ArgumentParser(
+        prog="quiz_validator",
+        description="Script to validate a single Self and Peer Evaluation quiz on Canvas\nRead args from file by prefixing file_name with '@' (e.g. python3 quiz_validator.py @my_args.txt)",
+        fromfile_prefix_chars="@",
+    )
+    parser.add_argument(
+        "--canvas_url",
+        dest="canvas_url",
+        required=True,
+        default="https://canvas.ucdavis.edu/",
+        help="Your Canvas URL. By default, https://canvas.ucdavis.edu",
+    )
+    parser.add_argument(
+        "--key", dest="canvas_key", required=True, help="Your Canvas API key."
+    )
+    parser.add_argument(
+        "--course_id",
+        dest="course_id",
+        required=True,
+        help="The id of the course.\nThis ID is located at the end of /coures in the Canvas URL.",
+    )
+    parser.add_argument(
+        "--assignment_group_name",
+        dest="assignment_group_name",
+        required=True,
+        help="The name of the assignment group where the "
+        "Self and Peer Evaluation quiz assignments are located."
+        "If the assignment group is not found, you will be asked to select it from a list of assignment groups.",
+    )
+    parser.add_argument(
+        "--create_validation_assignment",
+        action="store_true",
+        required=False,
+        help="Whether or not to create the validation assignment.",
+    )
+    parser.add_argument(
+        "--validation_assignment_name",
+        dest="validation_assignment_name",
+        type=str,
+        required=False,
+        help="The name of the validation assignment.\nIf no name is passed, but a validation assignment is created, the assignment will be named '{validated_assignment} Validator.",
+    )
+    parser.add_argument(
+        "--extra_days",
+        dest="extra_days",
+        type=int,
+        default=2,
+        required=False,
+        help="The number of extra days students will get to resubmit the quiz that had issues with. By default, it is 2 extra days.",
+    )
+    parser.add_argument(
+        "--questions_path",
+        dest="questions_path",
+        type=str,
+        required=True,
+        help="The path to the JSON file of questions the quiz is off of.",
+    )
+    parser.add_argument(
+        "--quiz_report_path",
+        dest="quiz_report_path",
+        type=str,
+        required=True,
+        help="The path to the directory where you want to store the quiz report.",
+    )
+    parser.add_argument(
+        "--solo_sub_path",
+        dest="solo_sub_path",
+        type=str,
+        required=True,
+        help="The path to the directory where you want to store the solo submissions log.",
+    )
+    return parser
 
-    canvas = canvasapi.Canvas(url, key)
-    course = canvas.get_course(1599)  # sandbox course ID
-    with open("./self_and_partner_evaluation_questions.json") as f:
+
+if __name__ == "__main__":
+    parser = create_arguement_parser()
+    args = parser.parse_args()
+
+    canvas = canvasapi.Canvas(args.canvas_url, args.canvas_key)
+    course = canvas.get_course(args.course_id)
+    with open(args.questions_path) as f:
         json_questions = json.load(f)
-    validator = PartnerEvalQuizValidator(course, json_questions)
-    validator.validate_quiz(False)
+    validator = SelfAndPeerEvaluationQuizValidator(
+        course,
+        json_questions,
+        args.assignment_group_name,
+        args.quiz_report_path,
+        args.solo_sub_path,
+    )
+    validator.validate_quiz(
+        args.create_validation_assignment,
+        args.validation_assignment_name,
+        args.extra_days,
+    )

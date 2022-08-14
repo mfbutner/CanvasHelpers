@@ -3,26 +3,50 @@ from collections import defaultdict
 import random
 
 
-def find_partner_eval_ag(
-    course: canvasapi.course.Course,
+def find_ag(
+    course: canvasapi.course.Course, ag_name: str
 ) -> canvasapi.assignment.AssignmentGroup:
     """
-    looks for an AssignmentGroup named "Partner Evaluations"
-    ends program if no AssignmentGroup is found
-    :returns: "Partner Evaluations" assignment group
+    looks for an AssignmentGroup named ag_name
+    if no AssignmentGroup is found, prompts user to select an AssignmentGroup
+    :returns: assignment_group that includes assignment info
     """
-    partner_eval_ag = None
+    target_ag = None
+    ag_list = []
     for ag in course.get_assignment_groups():
-        if ag.name == "Partner Evalulations":
-            partner_eval_ag = ag
+        ag_list.append(ag)
+        if ag.name == ag_name:
+            target_ag = ag
             break
 
-    if partner_eval_ag is None:
-        print('"Partner Evaluations" category does not exist!')
-        print("Cannot grade, so ending program now")
-        exit(1)
+    if target_ag is None:
+        print(f"Cannot find {ag_name} assignment group")
+        target_ag_index = select_ags_from_list(ag_list)
+        target_ag = ag_list[target_ag_index]
 
-    return course.get_assignment_group(partner_eval_ag.id, include=["assignments"])
+    return course.get_assignment_group(target_ag.id, include=["assignments"])
+
+
+def select_ags_from_list(ag_list: list[canvasapi.assignment.AssignmentGroup]) -> int:
+    """
+    lists out all the assignment groups in ag_list and prompts user to selects one
+    :returns: index where selected assignment group is located in ag_list
+    """
+    print(f"Here are the assignment groups I found")
+    for index, ag in enumerate(ag_list):
+        print(index, ".", ag.name)
+    while True:
+        index = input(
+            f"Please select the assignment group (0 - {len(ag_list) - 1}). Or enter 'q' to quit the program: "
+        )
+        if input == "q":
+            exit()
+        try:
+            index = int(index)
+            if 0 <= index < len(ag_list):
+                return index
+        except:
+            continue
 
 
 def make_student_id_map(course: canvasapi.course.Course) -> dict[str, int]:

@@ -199,7 +199,7 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         dest="assignment_group_name",
         required=True,
         help="The name of the assignment group for the "
-        "Kudo Point Giving assignments to be created under."
+        "Self and Peer Evaluation quiz assignment to be created under."
         "If the assignment group is not found, you will be asked if you want to create it.",
     )
     parser.add_argument(
@@ -230,8 +230,8 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         help="The number of days an assignment can be turned in late. By default there are no late days.",
     )
     parser.add_argument(
-        "--questions_file_path",
-        dest="questions_file_path",
+        "--questions_path",
+        dest="questions_path",
         type=str,
         required=True,
         help="The path to the JSON file of questions you want the quiz to be off of.",
@@ -245,7 +245,7 @@ if __name__ == "__main__":
 
     canvas = canvasapi.Canvas(args.canvas_url, args.canvas_key)
     course = canvas.get_course(args.course_id)
-    with open(args.questions_file_path) as f:
+    with open(args.questions_path) as f:
         json_questions = json.load(f)
 
     quiz = SelfAndPeerEvaluationQuizCreator(
