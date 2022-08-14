@@ -8,6 +8,8 @@ validation. A quiz will be validated by
     (4*) Giving students with problematic quizzes a few extra days to resubmit
     * will only be executed on user choice
 Requires an external JSON file of quiz questions to actually get question information.
+Requires directory to store quiz report in 
+Requires directory to store solo submission report in
 
 Typical Usage example:
 

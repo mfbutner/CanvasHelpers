@@ -1,6 +1,11 @@
+"""Internal class to store indivdiaul student evaluation grades
+
+This class is not intended to be used outside of the scripts it's called from.
+"""
 from collections import defaultdict, deque
 import csv
 import json
+import os
 import statistics
 from typing import Union
 
@@ -8,8 +13,8 @@ JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
 JsonDict = dict[str, JsonValue]
 
 
-class PartnerEvalQuizIndividualStats:
-    """
+class EvalIndividualStats:
+    """Class to store an individual student's evaluation grades and final, overall grade
     :param name: the sortable name of the student (e.g. Smith, John)
     :param id: the Canvas ID of the student
     :param files: the list of quiz report files to grade the student on
@@ -26,7 +31,7 @@ class PartnerEvalQuizIndividualStats:
     write_to_csv()
     """
 
-    def __init__(self, name: str, id: int, files: list[str]):
+    def __init__(self, name: str, id: int, files: list[str], csv_report_path: str):
         self.name = "".join(filter(str.isalnum, name))
         self.id = str(id)
         self.scores = defaultdict(list[Union[int, float]])
@@ -34,9 +39,8 @@ class PartnerEvalQuizIndividualStats:
 
         self.qualitative_subjects = self.__get_qualitative_subjects()
 
-        self.csv_file_path = (
-            f"./quiz_results/individual_student_reports/{self.name}.csv"
-        )
+        self.csv_file_path = os.path.join(csv_report_path, f"{self.name}.csv")
+
         self.final_score = self.__get_final_score()
         self.__format_csv_info()
 
