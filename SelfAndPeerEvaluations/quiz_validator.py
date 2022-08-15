@@ -106,10 +106,33 @@ class SelfAndPeerEvaluationQuizValidator:
             json.dump(self.quiz_grades, outfile)
         print(f"Report saved to {self.quiz_report_path} as {self.assignment.name}.json")
 
+        self.__log_quiz_errors()
+
         self.__log_solo_submissions()
         if create_validation_assignment:
             self.__create_validation_assignment(validation_assignment_name, extra_days)
         print(f"Finish validating {self.assignment.name}")
+
+    def __log_quiz_errors(self) -> None:
+        """
+        logs students who had quiz errors to a .txt file
+        :returns: None. Instead, a .txt file is created
+        """
+        with open(
+            os.path.join(self.solo_sub_path, f"{self.assignment.name}_quiz_errors.txt"),
+            "w",
+        ) as outfile:
+            outfile.writelines("id (name): errors\n")
+            if not self.quiz_errors:
+                outfile.writelines("No quiz errors for this assignment!")
+                return
+            for user_id in self.quiz_errors:
+                outfile.writelines(
+                    f'{user_id} ({self.quiz_grades[user_id]["name"]}): {self.quiz_errors[user_id]}\n'
+                )
+        print(
+            f"Students with quiz errors saved to {self.solo_sub_path} as {self.assignment.name}_quiz_errors.txt"
+        )
 
     def __create_validation_assignment(
         self, validation_assignment_name: str, extra_days: int
@@ -180,6 +203,9 @@ class SelfAndPeerEvaluationQuizValidator:
             "w",
         ) as outfile:
             outfile.writelines("id (name): justification\n")
+            if not self.solo_submission_ids:
+                outfile.writelines("No solo submissions for this assignment!")
+                return
             for user_id in self.solo_submission_ids:
                 submission = self.assignment.get_submission(
                     user_id, include="submission_history"
