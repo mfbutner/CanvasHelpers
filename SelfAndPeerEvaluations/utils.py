@@ -1,6 +1,6 @@
 import canvasapi
 from collections import defaultdict
-import random
+from typing import DefaultDict, Iterable
 
 
 def find_ag(
@@ -49,90 +49,99 @@ def select_ags_from_list(ag_list: list[canvasapi.assignment.AssignmentGroup]) ->
             continue
 
 
-def make_student_id_map(course: canvasapi.course.Course) -> dict[str, int]:
+def make_unique_student_id_map(
+    students: Iterable[canvasapi.user.User], min_characters_of_email_to_use: int = 0
+) -> dict[str, canvasapi.user.User]:
     """
-    Creates a mapping of unique student sortable names to Canvas ID's
-    we initially create a dict where keys are student names and value is list [SID, canvas ID] so that we can have a student's SID avaliable for duplicates
-    If student sortable names are duplicate, then last 4 or 5 digits are appended to student sortable name
-    :returns: dict where key is unique sortable name and value is canvas ID
-    """
-    raw_students = defaultdict(list)
-    dup_list = set()
-    for raw_student in course.get_users(sort="username", enrollment_type=["student"]):
-        if (
-            raw_student.sis_user_id is None
-        ):  # FIXME: delete for real class; not all sandbox student have SID
-            raw_student.sis_user_id = random.randint(0, 100)
+    Creates a mapping from a unique, displayable id to a student. The id is the first_name, last_name (partial email).
+    (partial email) only appears if there is more than one student with the same name or min_characters_of_email_to_use
+    is set higher than 0. Partial Email is formed by taking characters from the front and back of the students' emails
+    (excluding the email domain) until the email becomes unique among the students that have the same name.
 
-        if raw_student.sortable_name in dup_list:
-            add_another_duplicate_student(raw_student, raw_students)
-        elif raw_student.sortable_name in raw_students.keys():
-            add_first_duplicate_student(raw_student, dup_list, raw_students)
+    :param students: The students to create a unique mapping for
+    :param min_characters_of_email_to_use: The minimum number of characters from the student's email that must be taken.
+    This number is taken from the front AND back of the email so the actual number of characters from a student's
+    email would be double the number specified. For example, if an email was abcdefg@example.com and
+    min_characters_of_email_to_use was 2 then the email appended to the students name would be ab****fg@example.com
+    :return: a dictionary mapping unique student ids to students
+    """
+    student_name_to_student_map: DefaultDict[str, list["Student"]] = defaultdict(list)
+
+    # group students together that have the same name
+    for student in students:
+        student_name_to_student_map[student.sortable_name].append(student)
+
+    unique_id_to_student_map = {}
+    for students_with_same_name in student_name_to_student_map.values():
+        for unique_id, student in _create_unique_identifier_for_students(
+            students_with_same_name, min_characters_of_email_to_use
+        ):
+            unique_id_to_student_map[unique_id] = student
+    return unique_id_to_student_map
+
+
+def _create_unique_identifier_for_students(
+    students_with_same_identifier: Iterable[canvasapi.user.User],
+    min_characters_of_email_to_use: int = 0,
+) -> Iterable[tuple[str, canvasapi.user.User]]:
+    """
+    Creates a unique identifier for each student in students_with_same_identifier. The identifier is
+    last_name, first_name (partial_email).
+    (partial email) only appears if there is more than one student with the same name or min_characters_of_email_to_use
+    is set higher than 0. Partial Email is formed by taking characters from the front and back of the students' emails
+    (excluding the email domain) until the email becomes unique among the students that have the same name.
+
+    :param students_with_same_identifier: An iterable of one or more students that all share the same name
+    :param min_characters_of_email_to_use: The minimum number of characters from the student's email that must be taken.
+    This number is taken from the front AND back of the email so the actual number of characters from a student's
+    email would be double the number specified. For example, if an email was abcdefg@example.com and
+    min_characters_of_email_to_use was 2 then the email appended to the students name would be ab****fg@example.com
+    :return: An iterable of tuples of the form (unique_id, User) for each User in students_with_same_identifier
+    :raise ValueError if min_characters_of_email_to_use < 0
+    """
+
+    if min_characters_of_email_to_use < 0:
+        raise ValueError(
+            f"min_characters_of_email_to_use must be >= 0 but is {min_characters_of_email_to_use}"
+        )
+
+    # break students email into account and domain
+    students_with_same_identifier = [
+        (student, student.email.rsplit("@", 1))
+        for student in students_with_same_identifier
+    ]
+    while (
+        True
+    ):  # while we haven't found a unique mapping for all students sharing the same name
+        mappings = {}
+        for student, (email_account, email_domain) in students_with_same_identifier:
+            if min_characters_of_email_to_use * 2 > len(
+                student.email
+            ):  # maybe + 1 to deal with odd length emails
+                duplicates = [
+                    dup_student
+                    for dup_student, (_, _) in students_with_same_identifier
+                    if dup_student.email == student.email
+                ]
+                raise ValueError(
+                    f"Impossible to form unique ids as {len(duplicates)} students "
+                    f"share {student.sortable_name}({student.email})."
+                )
+            new_id = (
+                f"{student.sortable_name} "
+                f"({email_account[:min_characters_of_email_to_use]}"
+                f"****"
+                f"{email_account[-min_characters_of_email_to_use:]}"
+                f"@{email_domain})"
+                if min_characters_of_email_to_use > 0
+                else student.sortable_name
+            )
+            if (
+                new_id in mappings
+            ):  # still matching despite adding a portion of their email to their name
+                min_characters_of_email_to_use += 1  # use more of their email
+                break
+            else:
+                mappings[new_id] = student
         else:
-            raw_students[raw_student.sortable_name] = [
-                raw_student.sis_user_id,
-                raw_student.id,
-            ]
-
-    student_id_map = {student: raw_students[student][1] for student in raw_students}
-    return student_id_map
-
-
-def add_another_duplicate_student(
-    dupe_student: canvasapi.user.User, raw_students: dict[str, list]
-) -> None:
-    """
-    Adds in the duplicate student with their last 4 or 5 SID digits appened to their name
-    Modifies students in raw_students if necessary
-    :param dupe_student: the duplicate student to be added to raw_students
-    :param raw_students: the dict of all students
-    :returns: None, instead, raw_students is directly modified
-    """
-    duplicate_name = dupe_student.sortable_name
-    dupe_SID = str(dupe_student.sis_user_id)
-    if duplicate_name + " (XXXXX" + dupe_SID[-4:] + ")" in raw_students:
-        in_dict_SID = raw_students[duplicate_name + " (XXXXX" + dupe_SID[-4:] + ")"][0]
-        raw_students.pop(raw_students[duplicate_name + " (XXXXX" + dupe_SID[-4:] + ")"])
-        raw_students[duplicate_name + " (XXXXX" + in_dict_SID[-5:] + ")"] = in_dict_SID
-        raw_students[duplicate_name + " (XXXXX" + dupe_SID[-5:] + ")"] = [
-            dupe_SID,
-            dupe_student.id,
-        ]
-    else:
-        raw_students[duplicate_name + " (XXXXX" + dupe_SID[-4:] + ")"] = [
-            dupe_SID,
-            dupe_student.id,
-        ]
-
-
-def add_first_duplicate_student(
-    dupe_student: canvasapi.user.User, dupe_list: set, raw_students: dict[str, list]
-) -> None:
-    """
-    Adds in the duplicate student with their last 4 or 5 SID digits appended to their name
-    Also removes the original student in the raw_students dict and
-    adds the original student back with their last 4 or 5 SID digits appended to their name
-    :param dupe_student: the duplicate student to be added to raw_students
-    :param dup_list: the list of sortable_names that have duplicate students
-    :param raw_students: the dict of all students
-    :returns: None, instead, dup_list and raw_students are directly modified
-    """
-    duplicate_name = dupe_student.sortable_name
-    dupe_list.add(duplicate_name)
-
-    in_dict_SID = str(raw_students[dupe_student.sortable_name][0])
-    dupe_SID = str(dupe_student.sis_user_id)
-    for index in range(4, 6):
-        if in_dict_SID[-index:] == dupe_SID[-index:]:
-            continue
-        # add duplicate student in with appened SID
-        raw_students[duplicate_name + " (XXXXX" + dupe_SID[-index:] + ")"] = [
-            dupe_SID,
-            dupe_student.id,
-        ]
-        # add original student back in with appened SID
-        raw_students[
-            duplicate_name + " (XXXXX" + in_dict_SID[-index:] + ")"
-        ] = raw_students[dupe_student.sortable_name]
-        raw_students.pop(dupe_student.sortable_name)
-        break
+            return mappings.items()

@@ -13,7 +13,7 @@ import canvasapi
 import datetime
 import json
 from typing import Union
-from utils import make_student_id_map
+from utils import make_unique_student_id_map
 
 JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
 JsonDict = dict[str, JsonValue]
@@ -162,7 +162,10 @@ class SelfAndPeerEvaluationQuizCreator:
         the same sortable_name AND same last 5 digits.
         :return: list of answers properly formated for canvasapi
         """
-        students = make_student_id_map(self.course).keys()
+        students = self.course.get_users(
+            enrollment_type=["student"], enrollment_state=["active"]
+        )
+        students = make_unique_student_id_map(students).keys()
         answers = [{"answer_text": student, "answer_weight": 1} for student in students]
         answers.append(
             {"answer_text": "I did not submit with a partner.", "answer_weight": 1}
