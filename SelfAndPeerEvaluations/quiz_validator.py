@@ -388,6 +388,7 @@ class SelfAndPeerEvaluationQuizValidator:
         for index, json_question in enumerate(self.json_questions):
             if json_question["question_name"] == "Partner Identification":
                 question_stats = self.canvas_questions[index]
+                break
         potential_pairings = {}
         for answer in question_stats["answers"]:
             try:
@@ -417,6 +418,29 @@ class SelfAndPeerEvaluationQuizValidator:
         :modifies: self.quiz_grades to log whether a studnet is a valid solo submission
         """
         final_pairings = {}
+        # add in confirmed pairs (both claimed each other, or solo submission)
+        for student_id in self.quiz_grades["info"]["submissions"]:
+            try:
+                if student_id not in potential_pairings:
+                    continue
+                partner_id = potential_pairings[student_id]
+                if partner_id == "Solo Submission" or potential_pairings[partner_id] == student_id:
+                    final_pairings[student_id] = partner_id
+            except KeyError: # student and/or partner did not answer question
+                continue
+
+        # validate the rest of the students who aren't in confirmed pairings
+        for student_id in self.quiz_grades["info"]["submissions"]:
+            if student_id not in potential_pairings: # student did not answer question
+                self.quiz_errors[student_id].append(f"Missing partner identification")
+                final_pairings[student_id] = "Unknown"
+                self.quiz_grades[student_id]["valid_solo_submission"] = False
+                continue
+            
+            if student_id not in final_pairings: # student is in a mismatch
+                # TODO 
+
+
         for student_id in self.quiz_grades["info"]["submissions"]:
             if student_id not in potential_pairings:
                 self.quiz_errors[student_id].append(f"Missing partner identification")
