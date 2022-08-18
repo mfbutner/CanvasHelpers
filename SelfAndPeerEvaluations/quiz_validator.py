@@ -22,7 +22,7 @@ import datetime
 import json
 import os
 from typing import Union
-from utils import find_ag, make_student_id_map
+from utils import find_ag, make_unique_student_id_map
 
 JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
 JsonDict = dict[str, JsonValue]
@@ -46,6 +46,7 @@ class SelfAndPeerEvaluationQuizValidator:
             assignment_group_name,
             quiz_report_path,
             solo_sub_path,
+            quiz_errors_path
         )
         validator.validate_quiz(
             create_validation_assignment, validation_assignment_name
@@ -59,6 +60,7 @@ class SelfAndPeerEvaluationQuizValidator:
         assignment_group_name: str,
         quiz_report_path: str,
         solo_sub_path: str,
+        quiz_errors_path: str,
     ):
         self.course = course
         self.json_questions = [
@@ -70,6 +72,8 @@ class SelfAndPeerEvaluationQuizValidator:
         self.assignment_group = find_ag(course, assignment_group_name)
         self.quiz_report_path = quiz_report_path
         self.solo_sub_path = solo_sub_path
+        self.quiz_errors_path = quiz_errors_path
+
         self.assignment = self.__get_assignment()
         self.quiz = self.course.get_quiz(self.assignment.quiz_id)
         self.canvas_questions = (
@@ -77,8 +81,14 @@ class SelfAndPeerEvaluationQuizValidator:
         ).question_statistics
         self.quiz_grades = defaultdict(lambda: defaultdict(list))
         self.quiz_errors = defaultdict(list)  # key: ID (int), value: list of error strs
+        self.quiz_potential_errors = defaultdict(
+            str
+        )  # key: ID (int), value: id mismatch message
         self.solo_submission_ids = list()  # list of IDs (int)
-        self.student_id_map = make_student_id_map(self.course)
+        students = course.get_users(
+            enrollment_type=["student"], enrollment_state=["active"]
+        )
+        self.student_id_map = make_unique_student_id_map(students)
 
     def validate_quiz(
         self,
@@ -100,38 +110,56 @@ class SelfAndPeerEvaluationQuizValidator:
         print(f'Validating "{self.assignment.name}"...')
         self.__write_quiz_metadata()
         self.__parse_quiz_questions()
-        with open(
-            os.path.join(self.quiz_report_path, f"{self.assignment.name}.json"), "w"
-        ) as outfile:
-            json.dump(self.quiz_grades, outfile)
-        print(f"Report saved to {self.quiz_report_path} as {self.assignment.name}.json")
 
+        self.__log_quiz_report()
         self.__log_quiz_errors()
-
         self.__log_solo_submissions()
+
         if create_validation_assignment:
             self.__create_validation_assignment(validation_assignment_name, extra_days)
         print(f"Finish validating {self.assignment.name}")
 
+    def __log_quiz_report(self) -> None:
+        """
+        log the overall quiz report that details scores for every student
+        :returns: None. Instead, a .json file is created for the quiz report
+        """
+        with open(
+            os.path.join(self.quiz_report_path, f"{self.assignment.name}.json"), "w"
+        ) as outfile:
+            json.dump(self.quiz_grades, outfile)
+        print(
+            f'Report saved to {os.path.join(self.quiz_report_path, f"{self.assignment.name}.json")}'
+        )
+
     def __log_quiz_errors(self) -> None:
         """
         logs students who had quiz errors to a .txt file
-        :returns: None. Instead, a .txt file is created
+        :returns: None. Instead, a .txt file is created if there are any quiz errors
         """
+        if not self.quiz_errors and not self.quiz_potential_errors:
+            return
         with open(
-            os.path.join(self.solo_sub_path, f"{self.assignment.name}_quiz_errors.txt"),
+            os.path.join(
+                self.quiz_errors_path, f"{self.assignment.name}_quiz_errors.txt"
+            ),
             "w",
         ) as outfile:
-            outfile.writelines("id (name): errors\n")
-            if not self.quiz_errors:
-                outfile.writelines("No quiz errors for this assignment!")
-                return
-            for user_id in self.quiz_errors:
-                outfile.writelines(
-                    f'{user_id} ({self.quiz_grades[user_id]["name"]}): {self.quiz_errors[user_id]}\n'
-                )
+            if self.quiz_errors:
+                outfile.writelines("id (name): errors\n")
+                for user_id in self.quiz_errors:
+                    outfile.writelines(
+                        f'{user_id} ({self.quiz_grades[user_id]["name"]}): {self.quiz_errors[user_id]}\n'
+                    )
+            if self.quiz_potential_errors:
+                outfile.writelines("\n")
+                outfile.writelines("id (name): potential errors\n")
+                for user_id in self.quiz_potential_errors:
+                    outfile.writelines(
+                        f"{user_id} ({self.quiz_grades[user_id]['name']}): {self.quiz_potential_errors[user_id]}\n"
+                    )
         print(
-            f"Students with quiz errors saved to {self.solo_sub_path} as {self.assignment.name}_quiz_errors.txt"
+            f'Students with quiz errors saved to {os.path.join(self.quiz_errors_path, f"{self.assignment.name}_quiz_errors.txt")}'
         )
 
     def __create_validation_assignment(
@@ -173,11 +201,18 @@ class SelfAndPeerEvaluationQuizValidator:
                 )
             else:
                 grade_data[student_id]["posted_grade"] = 1
+            if student_id in self.quiz_potential_errors:
+                grade_data[student_id]["text_comment"] = self.quiz_potential_errors[
+                    student_id
+                ]
         validation_assignment.submissions_bulk_update(grade_data=grade_data)
-        if self.quiz_errors:
+        if self.quiz_errors or self.quiz_potential_errors:
             self.assignment.create_override(
                 assignment_override={
-                    "student_ids": list(self.quiz_errors.keys()),
+                    "student_ids": list(
+                        set(self.quiz_errors.keys())
+                        | set(self.quiz_potential_errors.keys())
+                    ),
                     "title": f"{self.assignment.name} make up",
                     "unlock_at": now,
                     "due_at": now + datetime.timedelta(days=extra_days),
@@ -188,13 +223,16 @@ class SelfAndPeerEvaluationQuizValidator:
     def __log_solo_submissions(self) -> None:
         """
         log solo submssion id's and justifications to a .txt file
-        :returns: None. Instead, a .txt file is written to log solo submission justifcations
+        :returns: None. Instead, a .txt file is written to log solo submission justifcations if there are any solo submisions
         """
         for index, json_question in enumerate(self.json_questions):
             if json_question["question_name"] == "Solo Submission Justification":
                 question_id = self.canvas_questions[index]["id"]
                 break
         justification_index = None
+
+        if not self.solo_submission_ids:
+            return
 
         with open(
             os.path.join(
@@ -203,9 +241,6 @@ class SelfAndPeerEvaluationQuizValidator:
             "w",
         ) as outfile:
             outfile.writelines("id (name): justification\n")
-            if not self.solo_submission_ids:
-                outfile.writelines("No solo submissions for this assignment!")
-                return
             for user_id in self.solo_submission_ids:
                 submission = self.assignment.get_submission(
                     user_id, include="submission_history"
@@ -395,7 +430,7 @@ class SelfAndPeerEvaluationQuizValidator:
                 if answer["text"] == "I did not submit with a partner.":
                     partner_id = "Solo Submission"
                 else:
-                    partner_id = self.student_id_map[answer["text"]]
+                    partner_id = self.student_id_map[answer["text"]].id
 
                 for user_id in answer["user_ids"]:
                     potential_pairings[user_id] = partner_id
@@ -415,46 +450,94 @@ class SelfAndPeerEvaluationQuizValidator:
         verifies that each partnership is claimed by both partners
         otherwise, map both partners to "Unknown"
         :returns: dict of id's to partner_id
-        :modifies: self.quiz_grades to log whether a studnet is a valid solo submission
+        :modifies: self.quiz_grades to log whether a student is a valid solo submission
+                   self.quiz_errors to log incorrect identifications
+                   self.quiz_potential_errors to log potential incorrect indentifications
         """
         final_pairings = {}
         # add in confirmed pairs (both claimed each other, or solo submission)
+        # and students who didn't answer the indentification question
         for student_id in self.quiz_grades["info"]["submissions"]:
             try:
-                if student_id not in potential_pairings:
+                if student_id not in potential_pairings:  # no answer
+                    final_pairings[student_id] = "Unknown"
+                    self.quiz_errors[student_id].append(
+                        f"Missing partner identification"
+                    )
+                    self.quiz_grades[student_id]["valid_solo_submission"] = False
                     continue
                 partner_id = potential_pairings[student_id]
-                if partner_id == "Solo Submission" or potential_pairings[partner_id] == student_id:
+                if (
+                    partner_id == "Solo Submission"
+                    or potential_pairings[partner_id] == student_id
+                ):
                     final_pairings[student_id] = partner_id
-            except KeyError: # student and/or partner did not answer question
+            except KeyError:  # student and/or partner did not answer question
                 continue
 
         # validate the rest of the students who aren't in confirmed pairings
         for student_id in self.quiz_grades["info"]["submissions"]:
-            if student_id not in potential_pairings: # student did not answer question
-                self.quiz_errors[student_id].append(f"Missing partner identification")
-                final_pairings[student_id] = "Unknown"
-                self.quiz_grades[student_id]["valid_solo_submission"] = False
+            if student_id in final_pairings:
                 continue
-            
-            if student_id not in final_pairings: # student is in a mismatch
-                # TODO 
-
-
-        for student_id in self.quiz_grades["info"]["submissions"]:
-            if student_id not in potential_pairings:
-                self.quiz_errors[student_id].append(f"Missing partner identification")
-                final_pairings[student_id] = "Unknown"
-                self.quiz_grades[student_id]["valid_solo_submission"] = False
-            else:
-                partner_id = potential_pairings[student_id]
-                if partner_id == "Solo Submission":
-                    final_pairings[student_id] = "Solo Submission"
-                elif potential_pairings[partner_id] != student_id:
-                    self.quiz_errors[student_id].append(f"Cannot verify partnership")
-                    final_pairings[student_id] = "Unknown"
+            student_id_name = self.quiz_grades[student_id]["name"]
+            claimed_partner_id = potential_pairings[student_id]
+            if (
+                claimed_partner_id in final_pairings
+                and final_pairings[claimed_partner_id] != "Unknown"
+            ):
+                claimed_partner_name = self.quiz_grades[claimed_partner_id]["name"]
+                if final_pairings[claimed_partner_id] == "Solo Submission":
+                    self.quiz_errors[student_id].append(
+                        f"Looks like you claimed {claimed_partner_name} as your partner, but {claimed_partner_name} said that they worked alone. Please double check your submission and make sure that there are no errors."
+                    )
+                    self.quiz_potential_errors[
+                        claimed_partner_id
+                    ] = f"Looks like you said you worked alone, but {student_id_name} claimed you as their partner. Please make double check your submission and make sure that there are no errors. You won't lose any points."
                 else:
-                    final_pairings[student_id] = partner_id
+                    claimed_partner_partner_id = final_pairings[claimed_partner_id]
+                    claimed_partner_partner_name = self.quiz_grades[
+                        claimed_partner_partner_id
+                    ]["name"]
+                    self.quiz_errors[student_id].append(
+                        f"Looks like you claimed {claimed_partner_name} as your partner, but {claimed_partner_name} and {claimed_partner_partner_name} claimed each other as partners. Please double check your submission and make sure that there are no errors."
+                    )
+                    self.quiz_potential_errors[
+                        claimed_partner_id
+                    ] = f"Looks like you and {claimed_partner_partner_name} claimed each other as partners, but {student_id_name} claimed you as their partner. Please double check your submission and make sure that there are no errors. You won't lose any points."
+                    self.quiz_potential_errors[
+                        claimed_partner_partner_id
+                    ] = f"Looks like you and {claimed_partner_name} claimed each other as partners, but {student_id_name} claimed {claimed_partner_name} as their partner. Please double check your submission and make sure that there are no errors. You won't lose any points."
+            else:  # partner's partner is Unknown, or someone else (that didn't claim partner)
+                if claimed_partner_id in potential_pairings:
+                    claimed_partner_partner_id = potential_pairings[claimed_partner_id]
+                    claimed_partner_partner_name = "Unknown"
+                    if (
+                        claimed_partner_partner_id
+                        in self.quiz_grades["info"]["submissions"]
+                    ):
+                        claimed_partner_partner_name = self.quiz_grades[
+                            claimed_partner_partner_id
+                        ]["name"]
+                    elif claimed_partner_partner_id != "Unknown":
+                        # we'll have to look them up the hard way (via the known, student_id_map)
+                        # NOTE: If claimed_partner_partner is no longer in course, and self.student_id_map or the quiz wasn't updated to account for that,
+                        #       there could be some lookup error
+                        claimed_partner_partner_name = [
+                            student
+                            for student in self.student_id_map.values()
+                            if student.id == claimed_partner_partner_id
+                        ][0].sortable_name
+                    self.quiz_errors[student_id].append(
+                        f"Looks like your partner claimed {claimed_partner_partner_name} as their partner. Please double check your submission and make sure that there are no errors."
+                    )
+                else:
+                    claimed_partner_partner_name = "Unknown (No Submission)"
+                    self.quiz_errors[student_id].append(
+                        f"Looks like your partner did not identify their partner, so we cannot verify your partnership with them. Please double check your submission and make sure that there are no errors."
+                    )
+
+            final_pairings[student_id] = "Unknown"
+
         return final_pairings
 
     def __parse_qualitative_self_evals(self) -> None:
@@ -531,11 +614,10 @@ class SelfAndPeerEvaluationQuizValidator:
             if submission.workflow_state == "unsubmitted":
                 continue
             user_id = submission.user_id
-            if user_id not in self.student_id_map.values():
-                continue  # student is no longer in course
+            students = self.student_id_map.values()
             self.quiz_grades["info"]["submissions"].append(user_id)
             self.quiz_grades[user_id]["name"] = [
-                name for name, uid in self.student_id_map.items() if uid == user_id
+                student.sortable_name for student in students if student.id == user_id
             ][0]
 
     def __get_assignment(self) -> canvasapi.assignment.Assignment:
@@ -652,7 +734,14 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         dest="solo_sub_path",
         type=str,
         required=True,
-        help="The path to the directory where you want to store the solo submissions log.\nIt's ok if the directory path has a trailing `/`.",
+        help="The path to the directory where you want to store the solo submissions log.\nIt's ok if the directory path has a trailing `/`.\nNOTE: The log WILL override any exist log with the same name.",
+    )
+    parser.add_argument(
+        "--quiz_errors_path",
+        dest="quiz_errors_path",
+        type=str,
+        required=True,
+        help="The path to the directory where you want to store the quiz errors log.\nIt's ok if the directory path has a trailing `/`.\nNOTE: The log WILL override any exist log with the same name.",
     )
     return parser
 
@@ -671,6 +760,7 @@ if __name__ == "__main__":
         args.assignment_group_name,
         args.quiz_report_path,
         args.solo_sub_path,
+        args.quiz_errors_path,
     )
     validator.validate_quiz(
         args.create_validation_assignment,
