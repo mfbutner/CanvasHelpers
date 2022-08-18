@@ -455,12 +455,48 @@ class SelfAndPeerEvaluationQuizValidator:
                    self.quiz_potential_errors to log potential incorrect indentifications
         """
         final_pairings = {}
-        # add in confirmed pairs (both claimed each other, or solo submission)
-        # and students who didn't answer the indentification question
+        final_pairings = self.__get_confirmed_pairings(potential_pairings)
+
+        # validate the rest of the students who aren't in confirmed pairings
+        for student_id in self.quiz_grades["info"]["submissions"]:
+            if student_id in final_pairings:
+                continue
+            claimed_partner_id = potential_pairings[student_id]
+            if (
+                claimed_partner_id in final_pairings
+                and final_pairings[claimed_partner_id] != "Unknown"
+            ):
+                self.__log_known_pairing_mismatch(
+                    student_id, claimed_partner_id, final_pairings
+                )
+            else:  # partner's partner someone else (that didn't claim partner), or Unknown
+                if claimed_partner_id in potential_pairings:
+                    self.__log_potential_pairing_mismatch(
+                        student_id, claimed_partner_id, potential_pairings
+                    )
+                else:
+                    self.quiz_errors[student_id].append(
+                        f"Looks like your partner did not identify their partner, so we cannot verify your partnership with them. Please double check your submission and make sure that there are no errors."
+                    )
+
+            final_pairings[student_id] = "Unknown"
+
+        return final_pairings
+
+    def __get_confirmed_pairings(
+        self, potential_pairings: dict[int, Union[int, str]]
+    ) -> dict[int, Union[int, str]]:
+        """
+        get confirmed pairs (both students claimed each other, or solo submission)
+            and students who didn't answer the identification question
+        :returns: dict of confirmed, finalized pairings
+        :modifies: self.quiz_errors to log students who didn't answer
+        """
+        confirmed_pairings = {}
         for student_id in self.quiz_grades["info"]["submissions"]:
             try:
                 if student_id not in potential_pairings:  # no answer
-                    final_pairings[student_id] = "Unknown"
+                    confirmed_pairings[student_id] = "Unknown"
                     self.quiz_errors[student_id].append(
                         f"Missing partner identification"
                     )
@@ -471,74 +507,83 @@ class SelfAndPeerEvaluationQuizValidator:
                     partner_id == "Solo Submission"
                     or potential_pairings[partner_id] == student_id
                 ):
-                    final_pairings[student_id] = partner_id
+                    confirmed_pairings[student_id] = partner_id
             except KeyError:  # student and/or partner did not answer question
                 continue
+        return confirmed_pairings
 
-        # validate the rest of the students who aren't in confirmed pairings
-        for student_id in self.quiz_grades["info"]["submissions"]:
-            if student_id in final_pairings:
-                continue
-            student_id_name = self.quiz_grades[student_id]["name"]
-            claimed_partner_id = potential_pairings[student_id]
-            if (
-                claimed_partner_id in final_pairings
-                and final_pairings[claimed_partner_id] != "Unknown"
-            ):
-                claimed_partner_name = self.quiz_grades[claimed_partner_id]["name"]
-                if final_pairings[claimed_partner_id] == "Solo Submission":
-                    self.quiz_errors[student_id].append(
-                        f"Looks like you claimed {claimed_partner_name} as your partner, but {claimed_partner_name} said that they worked alone. Please double check your submission and make sure that there are no errors."
-                    )
-                    self.quiz_potential_errors[
-                        claimed_partner_id
-                    ] = f"Looks like you said you worked alone, but {student_id_name} claimed you as their partner. Please make double check your submission and make sure that there are no errors. You won't lose any points."
-                else:
-                    claimed_partner_partner_id = final_pairings[claimed_partner_id]
-                    claimed_partner_partner_name = self.quiz_grades[
-                        claimed_partner_partner_id
-                    ]["name"]
-                    self.quiz_errors[student_id].append(
-                        f"Looks like you claimed {claimed_partner_name} as your partner, but {claimed_partner_name} and {claimed_partner_partner_name} claimed each other as partners. Please double check your submission and make sure that there are no errors."
-                    )
-                    self.quiz_potential_errors[
-                        claimed_partner_id
-                    ] = f"Looks like you and {claimed_partner_partner_name} claimed each other as partners, but {student_id_name} claimed you as their partner. Please double check your submission and make sure that there are no errors. You won't lose any points."
-                    self.quiz_potential_errors[
-                        claimed_partner_partner_id
-                    ] = f"Looks like you and {claimed_partner_name} claimed each other as partners, but {student_id_name} claimed {claimed_partner_name} as their partner. Please double check your submission and make sure that there are no errors. You won't lose any points."
-            else:  # partner's partner is Unknown, or someone else (that didn't claim partner)
-                if claimed_partner_id in potential_pairings:
-                    claimed_partner_partner_id = potential_pairings[claimed_partner_id]
-                    claimed_partner_partner_name = "Unknown"
-                    if (
-                        claimed_partner_partner_id
-                        in self.quiz_grades["info"]["submissions"]
-                    ):
-                        claimed_partner_partner_name = self.quiz_grades[
-                            claimed_partner_partner_id
-                        ]["name"]
-                    elif claimed_partner_partner_id != "Unknown":
-                        # we'll have to look them up the hard way (via the known, student_id_map)
-                        # NOTE: If claimed_partner_partner is no longer in course, and self.student_id_map or the quiz wasn't updated to account for that,
-                        #       there could be some lookup error
-                        claimed_partner_partner_name = [
-                            student
-                            for student in self.student_id_map.values()
-                            if student.id == claimed_partner_partner_id
-                        ][0].sortable_name
-                    self.quiz_errors[student_id].append(
-                        f"Looks like your partner claimed {claimed_partner_partner_name} as their partner. Please double check your submission and make sure that there are no errors."
-                    )
-                else:
-                    claimed_partner_partner_name = "Unknown (No Submission)"
-                    self.quiz_errors[student_id].append(
-                        f"Looks like your partner did not identify their partner, so we cannot verify your partnership with them. Please double check your submission and make sure that there are no errors."
-                    )
+    def __log_known_pairing_mismatch(
+        self,
+        student_id: int,
+        claimed_partner_id: int,
+        final_pairings: dict[int, Union[int, str]],
+    ) -> None:
+        """
+        log error of student trying to claim partnership with a known pair. that is,
+        the student is trying to say one member of a known pair is their partner when
+        in reality, the known pair are partners and the student is in the wrong
+        student will receive an "Unknown" partner while known pair is unaffected
+        :returns: none
+        :modifies: self.quiz_errors to log student error
+                   self.quiz_potential_errors to inform known pair of the issue
+        """
+        student_id_name = self.quiz_grades[student_id]["name"]
+        claimed_partner_name = self.quiz_grades[claimed_partner_id]["name"]
+        if final_pairings[claimed_partner_id] == "Solo Submission":
+            self.quiz_errors[student_id].append(
+                f"Looks like you claimed {claimed_partner_name} as your partner, but {claimed_partner_name} said that they worked alone. Please double check your submission and make sure that there are no errors."
+            )
+            self.quiz_potential_errors[
+                claimed_partner_id
+            ] = f"Looks like you said you worked alone, but {student_id_name} claimed you as their partner. Please make double check your submission and make sure that there are no errors. You won't lose any points."
+        else:
+            claimed_partner_partner_id = final_pairings[claimed_partner_id]
+            claimed_partner_partner_name = self.quiz_grades[claimed_partner_partner_id][
+                "name"
+            ]
+            self.quiz_errors[student_id].append(
+                f"Looks like you claimed {claimed_partner_name} as your partner, but {claimed_partner_name} and {claimed_partner_partner_name} claimed each other as partners. Please double check your submission and make sure that there are no errors."
+            )
+            self.quiz_potential_errors[
+                claimed_partner_id
+            ] = f"Looks like you and {claimed_partner_partner_name} claimed each other as partners, but {student_id_name} claimed you as their partner. Please double check your submission and make sure that there are no errors. You won't lose any points."
+            self.quiz_potential_errors[
+                claimed_partner_partner_id
+            ] = f"Looks like you and {claimed_partner_name} claimed each other as partners, but {student_id_name} claimed {claimed_partner_name} as their partner. Please double check your submission and make sure that there are no errors. You won't lose any points."
 
-            final_pairings[student_id] = "Unknown"
-
-        return final_pairings
+    def __log_potential_pairing_mismatch(
+        self,
+        student_id: int,
+        claimed_partner_id: int,
+        potential_pairings: dict[int, Union[int, str]],
+    ) -> None:
+        """
+        log error of student trying to claim partnership with another student who
+        claimed someone else (that we cannot confirm is actually that other student's
+        partner)
+        :returns: none
+        :modifies: self.quiz_errors to log student error
+        """
+        claimed_partner_partner_id = potential_pairings[claimed_partner_id]
+        claimed_partner_partner_name = "Unknown"
+        if claimed_partner_partner_id in self.quiz_grades["info"]["submissions"]:
+            # partner claimed a student who submitted the assignment, so we can
+            # quickly look up that student's name
+            claimed_partner_partner_name = self.quiz_grades[claimed_partner_partner_id][
+                "name"
+            ]
+        elif claimed_partner_partner_id != "Unknown":
+            # we'll have to look them up the hard way (via the known, student_id_map)
+            # NOTE: If claimed_partner_partner is no longer in course, and self.student_id_map or the quiz wasn't updated to account for that,
+            #       there could be some lookup error
+            claimed_partner_partner_name = [
+                student
+                for student in self.student_id_map.values()
+                if student.id == claimed_partner_partner_id
+            ][0].sortable_name
+        self.quiz_errors[student_id].append(
+            f"Looks like your partner claimed {claimed_partner_partner_name} as their partner. Please double check your submission and make sure that there are no errors."
+        )
 
     def __parse_qualitative_self_evals(self) -> None:
         """
