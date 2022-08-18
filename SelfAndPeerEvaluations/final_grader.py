@@ -17,7 +17,7 @@ import json
 import os
 import time
 from typing import Union
-from utils import find_ag, make_student_id_map
+from utils import find_ag, make_unique_student_id_map
 from eval_individual_stats import EvalIndividualStats
 
 JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
@@ -50,7 +50,10 @@ class SelfAndPeerEvaluationFinalGrader:
         self.json_questions = json_questions
         self.quiz_reports_path = quiz_reports_path
         self.assignment_group = find_ag(course, assignment_group_name)
-        self.student_id_map = make_student_id_map(self.course)
+        students = course.get_users(
+            enrollment_type=["student"], enrollment_state=["active"]
+        )
+        self.student_id_map = make_unique_student_id_map(students)
 
     def upload_final_grades_to_canvas(
         self, assignment_name: str, csv_report_path: str
@@ -70,11 +73,13 @@ class SelfAndPeerEvaluationFinalGrader:
 
         individual_students_stats = []
         csv_files = {}
-        for name, id in self.student_id_map.items():
+        for student in self.student_id_map.values():
             individual_students_stats.append(
-                EvalIndividualStats(name, id, sorted(files), csv_report_path)
+                EvalIndividualStats(
+                    student.sortable_name, student.id, sorted(files), csv_report_path
+                )
             )
-            csv_files[id] = individual_students_stats[-1].csv_file_path
+            csv_files[student.id] = individual_students_stats[-1].csv_file_path
 
         now = datetime.datetime.now()
         assignment = self.course.create_assignment(
@@ -108,9 +113,10 @@ class SelfAndPeerEvaluationFinalGrader:
             time.sleep(5)  # just wait a bit before querying again
             upload_progress = upload_progress.query()
 
+        valid_user_ids = [student.id for student in self.student_id_map.values()]
         for submission in assignment.get_submissions():
-            if submission.user_id not in self.student_id_map.values():
-                continue  # submisssion is a "ghost submission" (from Canvas's Test Student), no way around this as of now
+            if submission.user_id not in valid_user_ids:
+                continue  # submisssion is a "ghost submission" (from Canvas's Test Student, or pending invite), no way around this as of now
             submission.upload_comment(csv_files[submission.user_id])
 
         # debugging purposes

@@ -41,7 +41,8 @@ class EvalIndividualStats:
 
         self.qualitative_subjects = self.__get_qualitative_subjects()
 
-        self.csv_file_path = os.path.join(csv_report_path, f"{self.name}.csv")
+        # use {self.name}{self.id} to ensure no collisions
+        self.csv_file_path = os.path.join(csv_report_path, f"{self.name}{self.id}.csv")
 
         self.final_score = self.__get_final_score()
         self.__format_csv_info()
