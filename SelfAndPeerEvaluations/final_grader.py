@@ -116,10 +116,10 @@ class SelfAndPeerEvaluationFinalGrader:
         valid_user_ids = [student.id for student in self.student_id_map.values()]
         for submission in assignment.get_submissions():
             if submission.user_id not in valid_user_ids:
-                continue  # submisssion is a "ghost submission" (from Canvas's Test Student, or pending invite), no way around this as of now
+                continue  # NOTE: submisssion is a "ghost submission" (from Canvas's Test Student, or pending invite), no way around this as of now
             submission.upload_comment(csv_files[submission.user_id])
 
-        # debugging purposes
+        # FIXME: debugging printing purposes
         for student in individual_students_stats:
             print(
                 f"ID {student.id} will receive {student.final_score} as their final score"
@@ -141,16 +141,18 @@ def create_arguement_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--canvas_url",
         dest="canvas_url",
+        type=str,
         required=True,
         default="https://canvas.ucdavis.edu/",
         help="Your Canvas URL. By default, https://canvas.ucdavis.edu",
     )
     parser.add_argument(
-        "--key", dest="canvas_key", required=True, help="Your Canvas API key."
+        "--key", dest="canvas_key", type=str, required=True, help="Your Canvas API key."
     )
     parser.add_argument(
         "--course_id",
         dest="course_id",
+        type=int,
         required=True,
         help="The id of the course.\nThis ID is located at the end of /coures in the Canvas URL.",
     )

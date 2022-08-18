@@ -674,15 +674,17 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         "--canvas_url",
         dest="canvas_url",
         required=True,
+        type=str,
         default="https://canvas.ucdavis.edu/",
         help="Your Canvas URL. By default, https://canvas.ucdavis.edu",
     )
     parser.add_argument(
-        "--key", dest="canvas_key", required=True, help="Your Canvas API key."
+        "--key", dest="canvas_key", type=str, required=True, help="Your Canvas API key."
     )
     parser.add_argument(
         "--course_id",
         dest="course_id",
+        type=int,
         required=True,
         help="The id of the course.\nThis ID is located at the end of /coures in the Canvas URL.",
     )
@@ -690,6 +692,7 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         "--assignment_group_name",
         dest="assignment_group_name",
         required=True,
+        type=str,
         help="The name of the assignment group where the "
         "Self and Peer Evaluation quiz assignments are located."
         "If the assignment group is not found, you will be asked to select it from a list of assignment groups.",

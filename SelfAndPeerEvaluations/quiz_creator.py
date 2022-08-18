@@ -187,15 +187,17 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         "--canvas_url",
         dest="canvas_url",
         required=False,
+        type=str,
         default="https://canvas.ucdavis.edu/",
         help="Your Canvas URL. By default, https://canvas.ucdavis.edu",
     )
     parser.add_argument(
-        "--key", dest="canvas_key", required=True, help="Your Canvas API key."
+        "--key", type=str, dest="canvas_key", required=True, help="Your Canvas API key."
     )
     parser.add_argument(
         "--course_id",
         dest="course_id",
+        type=int,
         required=True,
         help="The id of the course.\nThis ID is located at the end of /courses in the Canvas URL.",
     )
