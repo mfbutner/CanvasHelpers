@@ -372,7 +372,7 @@ class SelfAndPeerEvaluationQuizValidator:
                 try:
                     for user_id in answer["user_ids"]:
                         partner_id = self.partner_id_map[user_id]
-                        if partner_id == "Unknown" or partner_id == "Solo Submission":
+                        if partner_id == "Solo Submission":
                             continue
 
                         if answer["text"] == "No Answer":
@@ -380,9 +380,10 @@ class SelfAndPeerEvaluationQuizValidator:
                                 f"Missing partner {subject} evaluation"
                             )
 
-                        self.quiz_grades[partner_id][subject].append(
-                            qual_mappings[answer["text"]]
-                        )
+                        if partner_id != "Unknown":
+                            self.quiz_grades[partner_id][subject].append(
+                                qual_mappings[answer["text"]]
+                            )
                 except KeyError:  # skip answers that no students picked
                     continue
 
