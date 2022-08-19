@@ -1,9 +1,9 @@
 from matching.games import StableMarriage, StableRoommates
 
-from StableGrouping.matching.checkValidGroup import is_valid_group
-from StableGrouping.matching.matchingFunc import match_partner, match_sym_partner
-from StableGrouping.matching.preferenceLists import preference_symmetrical_sort, preference_asymmetrical_sort
-from StableGrouping.shared.scoringFunc import score_group_by_one, score_two_by_two
+from ..matching.checkValidGroup import is_valid_group
+from ..matching.matchingFunc import match_partner, match_sym_partner
+from ..matching.preferenceLists import preference_symmetrical_sort, preference_asymmetrical_sort
+from ..shared.scoringFunc import score_group_by_one, score_two_by_two
 
 
 def quad_has_partner(quad: list):

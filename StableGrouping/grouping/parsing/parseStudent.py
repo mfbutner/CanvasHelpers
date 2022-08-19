@@ -1,6 +1,6 @@
-from StableGrouping.parsing.indexQuestions import index_questions
-from StableGrouping.shared.constants import NO_ANSWER, PreferGender, PreferAsync, PreferInternational, Confident
-from StableGrouping.shared.studentClass import Student
+from ..parsing.indexQuestions import index_questions
+from ..shared.constants import NO_ANSWER, PreferGender, PreferAsync, PreferInternational, Confident
+from ..shared.studentClass import Student
 
 
 def parse_students(canvas_students):

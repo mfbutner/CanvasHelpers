@@ -7,7 +7,7 @@
     study_group_number is the number of that week's study group (1-5)
 """
 # Uses get_body to create the body of the message
-from StableGrouping.finalizing.createMessageBody import get_body
+from ..finalizing.createMessageBody import get_body
 
 
 def get_student_ids(student_list: list):

@@ -1,21 +1,27 @@
 import json
-
+from os import path
 from canvasapi import Canvas
 from dotenv import dotenv_values
+from grouping.finalizing.analyzeCode import grade_groups
+from grouping.finalizing.sendCanvasConvo import send_convo
+from grouping.matching.checkValidGroup import get_invalid_groups
+from grouping.matching.makeGroups import make_groups
+from grouping.parsing.parseStudent import parse_students, filter_students_submitted, parse_submissions
 
-from StableGrouping.finalizing.analyzeCode import grade_groups
-from StableGrouping.finalizing.sendCanvasConvo import send_convo
-from StableGrouping.matching.checkValidGroup import get_invalid_groups
-from StableGrouping.matching.makeGroups import make_groups
-from StableGrouping.parsing.parseStudent import parse_students, filter_students_submitted, parse_submissions
+# Get path of configuration files
+dirname = path.dirname(__file__)
+dot_env_path = path.join(dirname, "../.env")
+config_json_path = path.join(dirname, "../config.json")
 
-# Load .env file with environment variables from project root (Same folder as config.json, .gitignore, and more)
-env = dotenv_values("../.env")
+# Load the .env configuration file from the repository/project root folder
+dot_env_file = open(dot_env_path)
+env = dotenv_values(stream=dot_env_file)
 API_URL = env["API_URL"]
 API_KEY = env["API_KEY"]
+dot_env_file.close()
 
 # Load config file for this session
-config_file = open("../config.json")
+config_file = open(config_json_path)
 config = json.load(config_file)
 config_file.close()
 
