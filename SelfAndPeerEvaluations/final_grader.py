@@ -70,14 +70,13 @@ class SelfAndPeerEvaluationFinalGrader:
         for filename in os.listdir(self.quiz_reports_path):
             print("   ", filename)
             files.append(os.path.join(self.quiz_reports_path, filename))
+        files = sorted(files)
 
         individual_students_stats = []
         csv_files = {}
-        for student in self.student_id_map.values():
+        for unique_name, student in self.student_id_map.items():
             individual_students_stats.append(
-                EvalIndividualStats(
-                    student.sortable_name, student.id, sorted(files), csv_report_path
-                )
+                EvalIndividualStats(unique_name, student.id, files, csv_report_path)
             )
             csv_files[student.id] = individual_students_stats[-1].csv_file_path
 

@@ -146,16 +146,16 @@ class SelfAndPeerEvaluationQuizValidator:
             "w",
         ) as outfile:
             if self.quiz_errors:
-                outfile.writelines("id (name): errors\n")
+                outfile.write("id (name): errors\n")
                 for user_id in self.quiz_errors:
-                    outfile.writelines(
+                    outfile.write(
                         f'{user_id} ({self.quiz_grades[user_id]["name"]}): {self.quiz_errors[user_id]}\n'
                     )
             if self.quiz_potential_errors:
-                outfile.writelines("\n")
-                outfile.writelines("id (name): potential errors\n")
+                outfile.write("\n")
+                outfile.write("id (name): potential errors\n")
                 for user_id in self.quiz_potential_errors:
-                    outfile.writelines(
+                    outfile.write(
                         f"{user_id} ({self.quiz_grades[user_id]['name']}): {self.quiz_potential_errors[user_id]}\n"
                     )
         print(
@@ -240,7 +240,7 @@ class SelfAndPeerEvaluationQuizValidator:
             ),
             "w",
         ) as outfile:
-            outfile.writelines("id (name): justification\n")
+            outfile.write("id (name): justification\n")
             for user_id in self.solo_submission_ids:
                 submission = self.assignment.get_submission(
                     user_id, include="submission_history"
@@ -255,7 +255,7 @@ class SelfAndPeerEvaluationQuizValidator:
                 justification = submission_data[justification_index]["text"]
                 if justification.strip() == "":
                     justification = "No justification provided."
-                outfile.writelines(
+                outfile.write(
                     f'{user_id} ({self.quiz_grades[user_id]["name"]}): {justification}\n'
                 )
         print(
@@ -455,7 +455,6 @@ class SelfAndPeerEvaluationQuizValidator:
                    self.quiz_errors to log incorrect identifications
                    self.quiz_potential_errors to log potential incorrect indentifications
         """
-        final_pairings = {}
         final_pairings = self.__get_confirmed_pairings(potential_pairings)
 
         # validate the rest of the students who aren't in confirmed pairings

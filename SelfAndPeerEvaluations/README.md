@@ -11,6 +11,8 @@ To be used regularly as the quarter progresses. Ideally, this is ran once right 
 
 Validates individual quiz assignemnts by checking if students submitted completely and correctly. Solo submission users and their justifactions are logged to a `.txt` file.
 
+If trying to create a validation assignment for the **second** time, please make sure to remove the initial assignment overrides. Canvas does not allow students to be in multiple assignment overrides, so it will error out and not actually give students the *second* assignment override for them to redo the quiz *again*.
+
 Note that each student in the quiz report JSON file will have a `valid_solo_submission` flag. By default all solo submission have `valid_solo_submission` set to `True`. If a student ended up not having a valid solo submisison, please set their `valid_solo_submission` value to `False`. The final grader script will handle this case by having their "partner" give them the lowest scores possible.
 
 Typical usage: `python3 quiz_validator.py @validator_args.txt --questions_file_path ./questions.json`
