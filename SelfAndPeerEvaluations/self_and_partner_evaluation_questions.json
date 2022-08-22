@@ -9,6 +9,27 @@
   "unlock at": "This key/value pair shouldn't be in the json but be built by the program from user input",
   "due_at": "This key/value pair shouldn't be in the json but be built by the program from user input",
   "lock_at": "This key/value pair shouldn't be in the json but be built by the program from user input",
+  "defaults": {
+    "multiple_choice_answers": [
+      {
+        "answer_text": "Strongly disagree",
+        "answer_weight": 1
+      },
+      {
+        "answer_text": "Disagree",
+        "answer_weight": 1
+      },
+      {
+        "answer_text": "Agree",
+        "answer_weight": 1
+      },
+      {
+        "answer_text": "Strongly agree",
+        "answer_weight": 1
+      }
+    ],
+    "points_possible": 1
+  },
   "allowed_attempts": 10,
   "questions": [
       {
@@ -21,7 +42,6 @@
             "answer_weight": 100
           }
         ],
-        "points_possible": 1,
         "grader_info": {
           "include_in_grade": false,
           "category": "decoration"
@@ -105,7 +125,6 @@
         "question_text": "<h3>Identify partner</h3><p>Who is your partner?</p>",
         "question_type": "multiple_choice_question",
         "answers": "This key/value pair shouldn't be in the json but be built by the program",
-        "points_possible": 1,
         "grader_info": {
           "include_in_grade": false,
           "category" : "identification"
@@ -115,7 +134,6 @@
         "question_name": "Solo Submission Justification",
         "question_text": "<h3>Solo Submission Justification</h3><p>If you did not submit with a partner, please explain why. If you spoke with me already about your reason, please put that here and whether or not I approved your reason. (If you did work with a partner, either (1) leave this question blank, or (2) put \"I submitted with a partner\".)</p>",
         "question_type": "essay_question",
-        "points_possible": 1,
         "grader_info": {
           "include_in_grade": false,
           "category" : "identification"
@@ -220,10 +238,9 @@
             "answer_weight": 1
           }
         ],
-        "points_possible": 1,
         "grader_info": {
           "include_in_grade": true,
-          "category": "quantitative_overall"
+          "category": "project_contribution"
         }
       }
   ]
