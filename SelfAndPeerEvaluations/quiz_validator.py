@@ -31,7 +31,7 @@ JsonDict = dict[str, JsonValue]
 class SelfAndPeerEvaluationQuizValidator:
     """Class that stores the evaluation quiz validator logic
 
-    You can validate a quiz by calling validate_quiz(create_validation_assignment, validation_assignment_name)
+    You can validate a quiz by calling validate_quiz(reopen_assignment, extra_days)
     A quiz will be validated by
         (1) generating a quiz report JSON file that lists all student scores,
         (2) logging solo submissions and their justificaitons to a .txt file
@@ -49,7 +49,7 @@ class SelfAndPeerEvaluationQuizValidator:
             quiz_errors_path
         )
         validator.validate_quiz(
-            create_validation_assignment, validation_assignment_name
+            reopen_assignment, extra_days
         )
     """
 
@@ -82,7 +82,7 @@ class SelfAndPeerEvaluationQuizValidator:
         self.quiz_grades = defaultdict(lambda: defaultdict(list))
         self.quiz_errors = defaultdict(list)  # key: ID (int), value: list of error strs
         self.quiz_potential_errors = defaultdict(
-            str
+            list[str]
         )  # key: ID (int), value: id mismatch message
         self.solo_submission_ids = list()  # list of IDs (int)
         students = course.get_users(
@@ -92,9 +92,8 @@ class SelfAndPeerEvaluationQuizValidator:
 
     def validate_quiz(
         self,
-        create_validation_assignment: bool,
-        validation_assignment_name: str,
-        extra_days: int,
+        reopen_assignment: bool = False,
+        extra_days: int = 2,
     ) -> None:
         """
         validates a evaluation quiz by
@@ -103,7 +102,6 @@ class SelfAndPeerEvaluationQuizValidator:
             3*. assigning students a "did you submit correctly" assignment
             4*. giving students with problematic quizzes a few extra days to resubmit
         * only exectued if user wants to
-        If a validation assignment is created, students will be assigned a "did you submit it correctly" assignment for the quiz you asked to validate. Correct submissions will be given a 1/1 (100%). Incorrect submissions will be given a 0/1 (0%) and comments indicating which questions students need to go back and answer on quiz you asked to validate.
         :modifies: self.quiz_grades to store quiz results
                    self.solo_submissions to store solo submissions
         """
@@ -115,8 +113,9 @@ class SelfAndPeerEvaluationQuizValidator:
         self.__log_quiz_errors()
         self.__log_solo_submissions()
 
-        if create_validation_assignment:
-            self.__create_validation_assignment(validation_assignment_name, extra_days)
+        self.__create_validation_assignment()
+
+        self.__reopen_assignment(reopen_assignment, extra_days)
         print(f"Finish validating {self.assignment.name}")
 
     def __log_quiz_report(self) -> None:
@@ -162,26 +161,21 @@ class SelfAndPeerEvaluationQuizValidator:
             f'Students with quiz errors saved to {os.path.join(self.quiz_errors_path, f"{self.assignment.name}_quiz_errors.txt")}'
         )
 
-    def __create_validation_assignment(
-        self, validation_assignment_name: str, extra_days: int
-    ) -> None:
+    def __create_validation_assignment(self) -> None:
         """
         creates a "Did you submit correctly" assignment for all students
-        and allows problematic students to resubmit the original quiz
+        and allows problematic students to resubmit the original quiz if we're
+        reopening the assignment
         :returns: None. Instead, a validation assignment is uploaded to Canvas and
                   students with problematic quizzes are given extra days to resubmit
         """
-        name = (
-            validation_assignment_name
-            if validation_assignment_name is not None
-            else self.assignment.name + " Validator"
-        )
+        name = self.assignment.name + " Validator"
         print(f'Assigning students "{name}" assignment')
         now = datetime.datetime.now()
         validation_assignment = self.course.create_assignment(
             assignment={
                 "name": name,
-                "description": f"Whether you submitted {self.assignment.name} correctly. If you received a 0, please go back and resubmitt {self.assignment.name} with the commented corrections. This score is totally independent from the grade you will receive from your related project submission.",
+                "description": f"<p>The grade for this assignment is based off of whether you submitted {self.assignment.name} correctly. A 100% on this assignment means that there were no issues with your submission for {self.assignment.name} and you don't to do anything.</p><p>If you received anything besides a 100%, look at the comments on your submission for {self.assignment.name} for what the problems with your submission are. {self.assignment.name} has been reopened for you. Please check the assignment for your new due date. Please correct your errors and resubmit the assignment. After {self.assignment.name} closes again, it will be regraded and your score updated. This update to your scores is done manually, so it may take a day or two for your instructor to update your scores.</p><p>If there are still issues with your submission after the assignment closes for the second time, please contact your TAs and explain to them what went wrong and they will decide whether or not to update your grade based on that explanation.</p>",
                 "assignment_group_id": self.assignment.assignment_group_id,
                 "submission_types": ["none"],
                 "points_possible": 1,
@@ -202,23 +196,38 @@ class SelfAndPeerEvaluationQuizValidator:
             else:
                 grade_data[student_id]["posted_grade"] = 1
             if student_id in self.quiz_potential_errors:
-                grade_data[student_id]["text_comment"] = self.quiz_potential_errors[
-                    student_id
-                ]
+                grade_data[student_id]["text_comment"] += ",\n"
+                grade_data[student_id]["text_comment"] += ",\n".join(
+                    [str(error) for error in self.quiz_potential_errors[student_id]]
+                )
         validation_assignment.submissions_bulk_update(grade_data=grade_data)
-        if self.quiz_errors or self.quiz_potential_errors:
-            self.assignment.create_override(
-                assignment_override={
-                    "student_ids": list(
-                        set(self.quiz_errors.keys())
-                        | set(self.quiz_potential_errors.keys())
-                    ),
-                    "title": f"{self.assignment.name} make up",
-                    "unlock_at": now,
-                    "due_at": now + datetime.timedelta(days=extra_days),
-                    "lock_at": now + datetime.timedelta(days=extra_days),
-                }
-            )
+
+    def __reopen_assignment(
+        self, reopen_assignment: bool = False, extra_days: int = 2
+    ) -> None:
+        """
+        reopens the assignment for students with errors to resubmit if reopen_assignment is True
+        :returns: None, instead reopens the assignment for students with errors
+        """
+        now = datetime.datetime.now()
+        if reopen_assignment:
+            if self.quiz_errors or self.quiz_potential_errors:
+                self.assignment.create_override(
+                    assignment_override={
+                        "student_ids": list(
+                            set(self.quiz_errors.keys())
+                            | set(self.quiz_potential_errors.keys())
+                        ),
+                        "title": f"{self.assignment.name} make up",
+                        "unlock_at": now,
+                        "due_at": (now + datetime.timedelta(days=extra_days)).replace(
+                            hour=23, minute=59
+                        ),
+                        "lock_at": (now + datetime.timedelta(days=extra_days)).replace(
+                            hour=23, minute=59
+                        ),
+                    }
+                )
 
     def __log_solo_submissions(self) -> None:
         """
@@ -490,7 +499,7 @@ class SelfAndPeerEvaluationQuizValidator:
         get confirmed pairs (both students claimed each other, or solo submission)
             and students who didn't answer the identification question
         :returns: dict of confirmed, finalized pairings
-        :modifies: self.quiz_errors to log students who didn't answer
+        :modifies: self.quiz_errors to log students who didn't answer or picked themselve
         """
         confirmed_pairings = {}
         for student_id in self.quiz_grades["info"]["submissions"]:
@@ -504,6 +513,15 @@ class SelfAndPeerEvaluationQuizValidator:
                     continue
                 partner_id = potential_pairings[student_id]
                 if (
+                    partner_id == student_id
+                ):  # student picked themselves as their partner instead of picking "Solo Submiion"
+                    confirmed_pairings[student_id] = "Solo Submission"
+                    self.quiz_potential_errors[student_id].append(
+                        f'Looks like you picked yourself as your partner instead of selecting "I did not submit with a partner." Please double check your submission and make sure that there are no errors. You won\'t lose any points.'
+                    )
+                    self.quiz_grades[student_id]["valid_solo_submission"] = True
+                    self.solo_submission_ids.append(student_id)
+                elif (
                     partner_id == "Solo Submission"
                     or potential_pairings[partner_id] == student_id
                 ):
@@ -533,9 +551,9 @@ class SelfAndPeerEvaluationQuizValidator:
             self.quiz_errors[student_id].append(
                 f"Looks like you claimed {claimed_partner_name} as your partner, but {claimed_partner_name} said that they worked alone. Please double check your submission and make sure that there are no errors."
             )
-            self.quiz_potential_errors[
-                claimed_partner_id
-            ] = f"Looks like you said you worked alone, but {student_id_name} claimed you as their partner. Please make double check your submission and make sure that there are no errors. You won't lose any points."
+            self.quiz_potential_errors[claimed_partner_id].append(
+                f"Looks like you said you worked alone, but {student_id_name} claimed you as their partner. Please make double check your submission and make sure that there are no errors. You won't lose any points."
+            )
         else:
             claimed_partner_partner_id = final_pairings[claimed_partner_id]
             claimed_partner_partner_name = self.quiz_grades[claimed_partner_partner_id][
@@ -544,12 +562,12 @@ class SelfAndPeerEvaluationQuizValidator:
             self.quiz_errors[student_id].append(
                 f"Looks like you claimed {claimed_partner_name} as your partner, but {claimed_partner_name} and {claimed_partner_partner_name} claimed each other as partners. Please double check your submission and make sure that there are no errors."
             )
-            self.quiz_potential_errors[
-                claimed_partner_id
-            ] = f"Looks like you and {claimed_partner_partner_name} claimed each other as partners, but {student_id_name} claimed you as their partner. Please double check your submission and make sure that there are no errors. You won't lose any points."
-            self.quiz_potential_errors[
-                claimed_partner_partner_id
-            ] = f"Looks like you and {claimed_partner_name} claimed each other as partners, but {student_id_name} claimed {claimed_partner_name} as their partner. Please double check your submission and make sure that there are no errors. You won't lose any points."
+            self.quiz_potential_errors[claimed_partner_id].append(
+                f"Looks like you and {claimed_partner_partner_name} claimed each other as partners, but {student_id_name} claimed you as their partner. Please double check your submission and make sure that there are no errors. You won't lose any points."
+            )
+            self.quiz_potential_errors[claimed_partner_partner_id].append(
+                f"Looks like you and {claimed_partner_name} claimed each other as partners, but {student_id_name} claimed {claimed_partner_name} as their partner. Please double check your submission and make sure that there are no errors. You won't lose any points."
+            )
 
     def __log_potential_pairing_mismatch(
         self,
@@ -743,17 +761,11 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         "If the assignment group is not found, you will be asked to select it from a list of assignment groups.",
     )
     parser.add_argument(
-        "--create_validation_assignment",
+        "--reopen_assignment",
+        dest="reopen_assignment",
         action="store_true",
         required=False,
-        help='Whether or not to create the validation assignment.\nIf a validation assignment is created, students will be assigned a "did you submit it correctly" assignment for the quiz you asked to validate. Correct (complete) submissions will be given a 1/1 (100%). Incorrect submissions will be given a 0/1 (0%) and comments indicating which questions students need to go back and answer on quiz you asked to validate.',
-    )
-    parser.add_argument(
-        "--validation_assignment_name",
-        dest="validation_assignment_name",
-        type=str,
-        required=False,
-        help="The name of the validation assignment.\nIf no name is passed, but a validation assignment is created, the assignment will be named '{validated_assignment} Validator.",
+        help="Whether or not to reopen the assignment for students to resubmit and ammend their issues. If this flag is passed, the assignment will be reopened for students to resubmit the assignment.",
     )
     parser.add_argument(
         "--extra_days",
@@ -811,7 +823,6 @@ if __name__ == "__main__":
         args.quiz_errors_path,
     )
     validator.validate_quiz(
-        args.create_validation_assignment,
-        args.validation_assignment_name,
+        args.reopen_assignment,
         args.extra_days,
     )

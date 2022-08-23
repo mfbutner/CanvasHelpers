@@ -118,12 +118,6 @@ class SelfAndPeerEvaluationFinalGrader:
                 continue  # NOTE: submisssion is a "ghost submission" (from Canvas's Test Student, or pending invite), no way around this as of now
             submission.upload_comment(csv_files[submission.user_id])
 
-        # FIXME: debugging printing purposes
-        for student in individual_students_stats:
-            print(
-                f"ID {student.id} will receive {student.final_score} as their final score"
-            )
-
         print("Finished upload!")
 
 

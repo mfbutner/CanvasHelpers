@@ -42,7 +42,7 @@ class EvalIndividualStats:
         self.qualitative_subjects = self.__get_qualitative_subjects()
 
         # use {self.name}{self.id} to ensure no collisions
-        self.csv_file_path = os.path.join(csv_report_path, f"{self.name}{self.id}.csv")
+        self.csv_file_path = os.path.join(csv_report_path, f"{self.name}.csv")
 
         self.final_score = self.__get_final_score()
         self.__format_csv_info()
@@ -66,11 +66,13 @@ class EvalIndividualStats:
         self.__calculate_contribution_score()
         with open(self.files[0], "r") as f:
             json_file = json.load(f)
-            qualitative_weight = json_file["info"]["weighting"]["qualitative"]
-            contribution_weight = json_file["info"]["weighting"]["project_contribution"]
+            self.qualitative_weight = json_file["info"]["weighting"]["qualitative"]
+            self.contribution_weight = json_file["info"]["weighting"][
+                "project_contribution"
+            ]
         final_score = round(
-            qualitative_weight * self.qualitative_score
-            + contribution_weight * self.contribution_score,
+            self.qualitative_weight * self.qualitative_score
+            + self.contribution_weight * self.contribution_score,
             2,
         )
         return final_score
@@ -232,7 +234,7 @@ class EvalIndividualStats:
         :returns: a properly formated CSV row for the final score output
         """
         return [
-            "Final Score\n(40% Qualitative + 60% Project Contribution)",
+            f"Final Score\n({int(self.qualitative_weight * 10)}% Qualitative + {int(self.contribution_weight * 10)}% Project Contribution)",
             self.final_score,
         ]
 
@@ -350,7 +352,7 @@ class EvalIndividualStats:
             )
             partner_avg = (
                 round(statistics.fmean(self.scores[qualitative_subject + "Partner"]), 2)
-                if self.scores[qualitative_subject + "Partner"] is not None
+                if self.scores[qualitative_subject + "Partner"]
                 else "N/A"
             )
             avg_avg = round(
@@ -383,7 +385,7 @@ class EvalIndividualStats:
         )
         partner_avg = (
             round(statistics.fmean(self.scores["Project Contribution" + "Partner"]), 2)
-            if self.scores["Project Contribution" + "Partner"] is not None
+            if self.scores["Project Contribution" + "Partner"]
             else "N/A"
         )
         avg_avg = round(
