@@ -97,7 +97,7 @@ class SelfAndPeerEvaluationQuizCreator:
         choice = input(
             f"{assignment_group_name} was not found. Do you want to create it instead? (Y/N) "
         )
-        if choice == "Y":
+        if choice == "Y" or choice == "y":
             ag = self.course.create_assignment_group(name=assignment_group_name)
             return ag.id
         else:

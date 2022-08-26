@@ -234,7 +234,7 @@ class EvalIndividualStats:
         :returns: a properly formated CSV row for the final score output
         """
         return [
-            f"Final Score\n({int(self.qualitative_weight * 10)}% Qualitative + {int(self.contribution_weight * 10)}% Project Contribution)",
+            f"Final Score\n({self.qualitative_weight * 100}% Qualitative + {self.contribution_weight * 100}% Project Contribution)",
             self.final_score,
         ]
 

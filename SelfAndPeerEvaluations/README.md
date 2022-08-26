@@ -9,7 +9,7 @@ Typical usage: `python3 quiz_creator.py @creator_args.txt --questions_file_path 
 ## quiz_validator
 To be used regularly as the quarter progresses. Ideally, this is ran once right after a evaluation assignment is due and once more after the resubmission deadline (students with quiz submission issues are given extra days to resubmit, so we want to run it twice).
 
-Validates individual quiz assignemnts by checking if students submitted completely and correctly. Solo submission users and their justifactions are logged to a `.txt` file.
+Validates individual quiz assignemnts by checking if students submitted completely and correctly. Solo submission users and their justifactions are logged to a `.txt` file. A validation assignment is created / updated to notify students about their submission and whatever issues they might have had.
 
 Note that each student in the quiz report JSON file will have a `valid_solo_submission` flag. By default all solo submission have `valid_solo_submission` set to `True`. If a student ended up not having a valid solo submisison, please set their `valid_solo_submission` value to `False`. The final grader script will handle this case by having their "partner" give them the lowest scores possible.
 

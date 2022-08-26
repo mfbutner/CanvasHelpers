@@ -113,7 +113,7 @@ class SelfAndPeerEvaluationQuizValidator:
         self.__log_quiz_errors()
         self.__log_solo_submissions()
 
-        self.__create_validation_assignment()
+        self.__create_or_update_validation_assignment()
 
         self.__reopen_assignment(reopen_assignment, extra_days)
         print(f"Finish validating {self.assignment.name}")
@@ -161,31 +161,34 @@ class SelfAndPeerEvaluationQuizValidator:
             f'Students with quiz errors saved to {os.path.join(self.quiz_errors_path, f"{self.assignment.name}_quiz_errors.txt")}'
         )
 
-    def __create_validation_assignment(self) -> None:
+    def __create_or_update_validation_assignment(self) -> None:
         """
-        creates a "Did you submit correctly" assignment for all students
+        creates/updates a "Did you submit correctly" assignment for all students
         and allows problematic students to resubmit the original quiz if we're
         reopening the assignment
-        :returns: None. Instead, a validation assignment is uploaded to Canvas and
-                  students with problematic quizzes are given extra days to resubmit
+        :returns: None. Instead, a validation assignment is uploaded to Canvas
         """
         name = self.assignment.name + " Validator"
-        print(f'Assigning students "{name}" assignment')
-        now = datetime.datetime.now()
-        validation_assignment = self.course.create_assignment(
-            assignment={
-                "name": name,
-                "description": f"<p>The grade for this assignment is based off of whether you submitted {self.assignment.name} correctly. A 100% on this assignment means that there were no issues with your submission for {self.assignment.name} and you don't to do anything.</p><p>If you received anything besides a 100%, look at the comments on your submission for {self.assignment.name} for what the problems with your submission are. {self.assignment.name} has been reopened for you. Please check the assignment for your new due date. Please correct your errors and resubmit the assignment. After {self.assignment.name} closes again, it will be regraded and your score updated. This update to your scores is done manually, so it may take a day or two for your instructor to update your scores.</p><p>If there are still issues with your submission after the assignment closes for the second time, please contact your TAs and explain to them what went wrong and they will decide whether or not to update your grade based on that explanation.</p>",
-                "assignment_group_id": self.assignment.assignment_group_id,
-                "submission_types": ["none"],
-                "points_possible": 1,
-                "due_at": now,
-                "lock_at": now,
-                "unlock_at": now,
-                "published": True,
-                "omit_from_final_grade": True,
-            }
-        )
+        validation_assignment = self.__validator_assignment_exists(name)
+        if validation_assignment is None:
+            print(f'Assigning students "{name}" assignment')
+            now = datetime.datetime.now()
+            validation_assignment = self.course.create_assignment(
+                assignment={
+                    "name": name,
+                    "description": f"<p>The grade for this assignment is based off of whether you submitted {self.assignment.name} correctly. A 100% on this assignment means that there were no issues with your submission for {self.assignment.name} and you don't to do anything.</p><p>If you received anything besides a 100%, look at the comments on your submission for {self.assignment.name} for what the problems with your submission are. {self.assignment.name} has been reopened for you. Please check the assignment for your new due date. Please correct your errors and resubmit the assignment. After {self.assignment.name} closes again, it will be regraded and your score updated. This update to your scores is done manually, so it may take a day or two for your instructor to update your scores.</p><p>If there are still issues with your submission after the assignment closes for the second time, please contact your TAs and explain to them what went wrong and they will decide whether or not to update your grade based on that explanation.</p>",
+                    "assignment_group_id": self.assignment.assignment_group_id,
+                    "submission_types": ["none"],
+                    "points_possible": 1,
+                    "due_at": now,
+                    "lock_at": now,
+                    "unlock_at": now,
+                    "published": True,
+                    "omit_from_final_grade": True,
+                }
+            )
+        else:
+            print(f'Updating students "{name}" assignment')
         grade_data = defaultdict(dict)
         for student_id in self.quiz_grades["info"]["submissions"]:
             if student_id in self.quiz_errors:
@@ -196,7 +199,10 @@ class SelfAndPeerEvaluationQuizValidator:
             else:
                 grade_data[student_id]["posted_grade"] = 1
             if student_id in self.quiz_potential_errors:
-                grade_data[student_id]["text_comment"] += ",\n"
+                if "text_comment" not in grade_data[student_id]:
+                    grade_data[student_id]["text_comment"] = ""
+                else:
+                    grade_data[student_id]["text_comment"] += ",\n"
                 grade_data[student_id]["text_comment"] += ",\n".join(
                     [str(error) for error in self.quiz_potential_errors[student_id]]
                 )
@@ -211,6 +217,7 @@ class SelfAndPeerEvaluationQuizValidator:
         """
         now = datetime.datetime.now()
         if reopen_assignment:
+            print(f"Reopening {self.assignment.name}")
             if self.quiz_errors or self.quiz_potential_errors:
                 self.assignment.create_override(
                     assignment_override={
@@ -228,6 +235,19 @@ class SelfAndPeerEvaluationQuizValidator:
                         ),
                     }
                 )
+
+    def __validator_assignment_exists(
+        self, name: str
+    ) -> canvasapi.assignment.Assignment:
+        """
+        check if validator assignment already exists
+        :param name: the name of the validation assignment
+        :returns: canvasapi.Assignment of the validator assignment if it exists
+        """
+        for assignment in self.course.get_assignments_for_group(self.assignment_group):
+            if assignment.name == name:
+                return assignment
+        return None
 
     def __log_solo_submissions(self) -> None:
         """
@@ -268,7 +288,7 @@ class SelfAndPeerEvaluationQuizValidator:
                     f'{user_id} ({self.quiz_grades[user_id]["name"]}): {justification}\n'
                 )
         print(
-            f"Solo submissions justifcations saved to {self.solo_sub_path} as {self.assignment.name}_solo_submissions.txt"
+            f'Solo submissions justifcations saved to {os.path.join(self.solo_sub_path, f"{self.assignment.name}_solo_submissions.txt")}'
         )
 
     def __parse_quiz_questions(self) -> None:
