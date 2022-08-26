@@ -190,22 +190,29 @@ class SelfAndPeerEvaluationQuizValidator:
         else:
             print(f'Updating students "{name}" assignment')
         grade_data = defaultdict(dict)
-        for student_id in self.quiz_grades["info"]["submissions"]:
-            if student_id in self.quiz_errors:
-                grade_data[student_id]["posted_grade"] = 0
-                grade_data[student_id]["text_comment"] = ",\n".join(
-                    [str(error) for error in self.quiz_errors[student_id]]
-                )
-            else:
-                grade_data[student_id]["posted_grade"] = 1
-            if student_id in self.quiz_potential_errors:
-                if "text_comment" not in grade_data[student_id]:
-                    grade_data[student_id]["text_comment"] = ""
+        for student in self.student_id_map.values():
+            student_id = student.id
+            if student_id in self.quiz_grades["info"]["submissions"]:
+                if student_id in self.quiz_errors:
+                    grade_data[student_id]["posted_grade"] = 0
+                    grade_data[student_id]["text_comment"] = ",\n".join(
+                        [str(error) for error in self.quiz_errors[student_id]]
+                    )
                 else:
-                    grade_data[student_id]["text_comment"] += ",\n"
-                grade_data[student_id]["text_comment"] += ",\n".join(
-                    [str(error) for error in self.quiz_potential_errors[student_id]]
-                )
+                    grade_data[student_id]["posted_grade"] = 1
+                if student_id in self.quiz_potential_errors:
+                    if "text_comment" not in grade_data[student_id]:
+                        grade_data[student_id]["text_comment"] = ""
+                    else:
+                        grade_data[student_id]["text_comment"] += ",\n"
+                    grade_data[student_id]["text_comment"] += ",\n".join(
+                        [str(error) for error in self.quiz_potential_errors[student_id]]
+                    )
+            else:
+                grade_data[student_id]["posted_grade"] = 0
+                grade_data[student_id][
+                    "text_comment"
+                ] = f"No submission for {self.assignment.name}"
         validation_assignment.submissions_bulk_update(grade_data=grade_data)
 
     def __reopen_assignment(
