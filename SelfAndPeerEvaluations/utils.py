@@ -1,6 +1,9 @@
 import canvasapi
 from collections import defaultdict
-from typing import DefaultDict, Iterable
+from typing import DefaultDict, Iterable, Union
+
+JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
+JsonDict = dict[str, JsonValue]
 
 
 def find_ag(

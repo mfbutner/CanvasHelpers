@@ -8,9 +8,7 @@ import json
 import os
 import statistics
 from typing import Union
-
-JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
-JsonDict = dict[str, JsonValue]
+from utils import JsonDict
 
 
 class EvalIndividualStats:

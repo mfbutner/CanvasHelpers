@@ -22,10 +22,7 @@ import datetime
 import json
 import os
 from typing import Union
-from utils import find_ag, make_unique_student_id_map
-
-JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
-JsonDict = dict[str, JsonValue]
+from utils import find_ag, make_unique_student_id_map, JsonDict
 
 
 class SelfAndPeerEvaluationQuizValidator:

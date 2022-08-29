@@ -16,12 +16,8 @@ import datetime
 import json
 import os
 import time
-from typing import Union
-from utils import find_ag, make_unique_student_id_map
+from utils import find_ag, make_unique_student_id_map, JsonDict
 from eval_individual_stats import EvalIndividualStats
-
-JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
-JsonDict = dict[str, JsonValue]
 
 
 class SelfAndPeerEvaluationFinalGrader:

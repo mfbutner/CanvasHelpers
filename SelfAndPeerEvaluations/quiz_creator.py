@@ -13,10 +13,7 @@ import canvasapi
 import datetime
 import json
 from typing import Union
-from utils import make_unique_student_id_map, select_ags_from_list
-
-JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
-JsonDict = dict[str, JsonValue]
+from utils import make_unique_student_id_map, select_ags_from_list, JsonDict
 
 
 class SelfAndPeerEvaluationQuizCreator:
