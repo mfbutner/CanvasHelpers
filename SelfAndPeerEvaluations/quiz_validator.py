@@ -707,7 +707,9 @@ class SelfAndPeerEvaluationQuizValidator:
             students = self.student_id_map.values()
             self.quiz_grades["info"]["submissions"].append(user_id)
             self.quiz_grades[user_id]["name"] = [
-                student.sortable_name for student in students if student.id == user_id
+                name
+                for name, student in self.student_id_map.items()
+                if student.id == user_id
             ][0]
 
     def __get_assignment(self) -> canvasapi.assignment.Assignment:

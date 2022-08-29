@@ -13,7 +13,7 @@ import canvasapi
 import datetime
 import json
 from typing import Union
-from utils import make_unique_student_id_map
+from utils import make_unique_student_id_map, select_ags_from_list
 
 JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
 JsonDict = dict[str, JsonValue]
@@ -88,22 +88,27 @@ class SelfAndPeerEvaluationQuizCreator:
         if user doesn't want to create new group, program exits
         :returns: assignemnt group ID of specificed assignment group
         """
+        ag_list = []
         # look for assignment group
         for ag in self.course.get_assignment_groups():
+            ag_list.append(ag)
             if ag.name == assignment_group_name:
                 return ag.id
 
         # assignment group was not found, so ask user if they want to make it
         choice = input(
-            f"{assignment_group_name} was not found. Do you want to create it instead? (Y/N) "
+            f"{assignment_group_name} was not found. Do you want to [c]reate it, [s]earch for it or [q]uit the program (c, s, q)?"
         )
-        if choice == "Y" or choice == "y":
+        if choice == "c" or choice == "C":
             ag = self.course.create_assignment_group(name=assignment_group_name)
-            return ag.id
+        elif choice == "s" or choice == "S":
+            target_ag_index = select_ags_from_list(ag_list)
+            ag = ag_list[target_ag_index]
         else:
-            print("Can't find assignment group or make it")
+            print("Can't create find assignment group or find it")
             print("Exiting creation script now.")
             exit(1)
+        return ag.id
 
     def __create_quiz_info(self) -> dict[str, Union[str, int, datetime.datetime]]:
         """
