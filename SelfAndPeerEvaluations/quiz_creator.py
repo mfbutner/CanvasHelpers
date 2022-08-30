@@ -157,11 +157,8 @@ class SelfAndPeerEvaluationQuizCreator:
     def __create_identify_partner_answers(self) -> list[dict[str, Union[str, int]]]:
         """
         Creates the multiple choice answers for "Who is your partner?" question
-        If a student has the same sortable_name as another student, then we
-        try to see if the student's name is unique with the last 4 digits of their SID appended (no SID -> XXXXXXXXX appended).
-        If a student still isn't unique with their last 4 SID digits append, then we try their last 5 SID digits.
-        It is extremely unlikely (at least 1 in 10^5 chance) that there exists students with
-        the same sortable_name AND same last 5 digits.
+        Students will all have unique names from each other. If students have the
+        same name, then we append a part of their email.
         :return: list of answers properly formated for canvasapi
         """
         students = self.course.get_users(
