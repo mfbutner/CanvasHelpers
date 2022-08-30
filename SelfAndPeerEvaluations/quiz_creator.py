@@ -13,7 +13,12 @@ import canvasapi
 import datetime
 import json
 from typing import Union
-from utils import make_unique_student_id_map, select_ags_from_list, JsonDict
+from utils import (
+    create_base_arguement_parser,
+    make_unique_student_id_map,
+    select_ags_from_list,
+    JsonDict,
+)
 
 
 class SelfAndPeerEvaluationQuizCreator:
@@ -177,28 +182,10 @@ def create_arguement_parser() -> argparse.ArgumentParser:
     Creates the quiz_creator arguement parser
     :returns: quiz_creator arguement parser
     """
-    parser = argparse.ArgumentParser(
+    parser = create_base_arguement_parser(
         prog="quiz_creator",
         description="Script to create a single Self and Peer Evaluations Quiz\nRead args from file by prefixing file_name with '@' (e.g. python3 quiz_creator.py @my_args.txt)",
-        fromfile_prefix_chars="@",
-    )
-    parser.add_argument(
-        "--canvas_url",
-        dest="canvas_url",
-        required=False,
-        type=str,
-        default="https://canvas.ucdavis.edu/",
-        help="Your Canvas URL. By default, https://canvas.ucdavis.edu",
-    )
-    parser.add_argument(
-        "--key", type=str, dest="canvas_key", required=True, help="Your Canvas API key."
-    )
-    parser.add_argument(
-        "--course_id",
-        dest="course_id",
-        type=int,
-        required=True,
-        help="The id of the course.\nThis ID is located at the end of /courses in the Canvas URL.",
+        prefix="@",
     )
     parser.add_argument(
         "--assignment_group_name",
@@ -234,13 +221,6 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         type=int,
         default=0,
         help="The number of days an assignment can be turned in late. By default there are no late days.",
-    )
-    parser.add_argument(
-        "--questions_path",
-        dest="questions_path",
-        type=str,
-        required=True,
-        help="The path to the JSON file of questions you want the quiz to be off of.",
     )
     return parser
 

@@ -4,11 +4,17 @@ This class is not intended to be used outside of the scripts it's called from.
 """
 from collections import defaultdict, deque
 import csv
+from jinja2 import Environment, FileSystemLoader
 import json
 import os
 import statistics
 from typing import Union
 from utils import JsonDict
+
+
+# all students are using the same template anyway, so just load once
+environment = Environment(loader=FileSystemLoader("./templates/"))
+template = environment.get_template("report.csv")
 
 
 class EvalIndividualStats:
@@ -39,19 +45,30 @@ class EvalIndividualStats:
 
         self.qualitative_subjects = self.__get_qualitative_subjects()
 
-        # use {self.name}{self.id} to ensure no collisions
         self.csv_file_path = os.path.join(csv_report_path, f"{self.name}.csv")
 
         self.final_score = self.__get_final_score()
-        self.__format_csv_info()
 
     def write_to_csv(self) -> None:
         """
-        write individual student stats to a report
+        write individual student stats to a CSV report
         """
+        overall_qualitative_str = f"Average of Overall Qualitative Averages\n{self.__stringify_subjects(self.qualitative_subjects)}"
+        content = template.render(
+            qualitative_weight=self.qualitative_weight,
+            contrib_weight=self.contribution_weight,
+            final_score=self.final_score,
+            overall_qualitative_str=overall_qualitative_str,
+            qualitative_score=self.qualitative_score,
+            average_qualitative=self.average_qualitative,
+            average_qualitative_difference=self.average_qualitative_difference,
+            contribution_score=self.contribution_score,
+            average_project_contribution=self.average_project_contribution,
+            average_project_contribution_difference=self.average_project_contribution_difference,
+            detailed_scores=self.detailed_scores,
+        )
         with open(self.csv_file_path, "w") as f:
-            writer = csv.writer(f)
-            writer.writerows(self.csv_file_info)
+            f.write(content)
 
     def __get_qualitative_subjects(self) -> list[str]:
         with open(self.files[0], "r") as f:
@@ -59,6 +76,11 @@ class EvalIndividualStats:
             return json_file["info"]["qualitative_subjects"]
 
     def __get_final_score(self) -> float:
+        """
+        gets the final, overall evaluation score for a student
+        :returns: the final, overall evalution score
+        :modieifes: self.qualitative_weight and self.contribution_weight to store the weighting of those categories
+        """
         self.__get_detailed_scores()
         self.__calculate_qualitative_score()
         self.__calculate_contribution_score()
@@ -89,23 +111,6 @@ class EvalIndividualStats:
             [row[i] for row in self.detailed_scores]
             for i in range(len(self.detailed_scores[0]))
         ]
-
-    def __format_csv_info(self) -> None:
-        """
-        formats self.csv_file_info for writing
-        """
-        self.csv_file_info = deque(self.detailed_scores)
-        self.csv_file_info.appendleft(["diff = self - partner"])
-        self.csv_file_info.appendleft(
-            ["INDIVIDUAL ASSIGNMENT GRADES\nAND CALCULATIONS"]
-        )
-        self.csv_file_info.extendleft([""] for _ in range(4))  # empty rows
-        self.csv_file_info.extendleft(self.__write_contribution_score())
-        self.csv_file_info.extendleft(self.__write_qualitative_score())
-        self.csv_file_info.appendleft([""])  # empty row
-        self.csv_file_info.appendleft(self.__write_final_score())
-        self.csv_file_info.appendleft([""])
-        self.csv_file_info.appendleft(["FINAL SCORE CALCULATIONS"])
 
     def __give_default_scores(self, json_file: JsonDict, row: list[str]) -> None:
         """
@@ -218,42 +223,14 @@ class EvalIndividualStats:
         qualitative_subjects to self.qualitative_subjects
         """
         # make the detailed score header just once
-        with open(files[0], "r") as f:
+        with open(files[0]) as f:
             detailed_scores_header = self.__make_detailed_header(json.load(f))
             self.detailed_scores.append(detailed_scores_header)
 
         for file in files:
-            with open(file, "r") as f:
+            with open(file) as f:
                 json_file = json.load(f)
                 self.__parse_quiz_grade(json_file)
-
-    def __write_final_score(self) -> list[Union[float, int, str]]:
-        """
-        :returns: a properly formated CSV row for the final score output
-        """
-        return [
-            f"Final Score\n({self.qualitative_weight * 100}% Qualitative + {self.contribution_weight * 100}% Project Contribution)",
-            self.final_score,
-        ]
-
-    def __write_qualitative_score(self) -> list[list[Union[float, int, str]]]:
-        """
-        :returns: properly formated CSV rows for the qualitative score output
-        """
-        overall_qualitative_str = f"Overall Qualitative Averages\n{self.__stringify_subjects(self.qualitative_subjects)}"
-        header = [
-            "",
-            "Score\n(if (diff > 0); then score=(avg - diff)/4*100;\nelse score=(avg - diff/2)/4*100)",
-            f"Average of {overall_qualitative_str}",
-            "Difference\n(Overall Average of\nAverage Qualitative Difference)",
-        ]
-        row = [
-            "Qualitative",
-            self.qualitative_score,
-            self.average_qualitative,
-            self.average_qualitative_difference,
-        ]
-        return [row, header]
 
     def __calculate_qualitative_score(self) -> None:
         """
@@ -282,24 +259,6 @@ class EvalIndividualStats:
                 ),
                 2,
             )
-
-    def __write_contribution_score(self) -> list[list[Union[float, int, str]]]:
-        """
-        :returns: properly formated CSV rows for the contribution score output
-        """
-        header = [
-            "",
-            "Score\n(if (diff > 0); then score=(avg - diff)/50*100*100;\nelse score=(avg - diff/2)/50*100*100)",
-            "Average Project Contribution",
-            "Project Contribution Difference",
-        ]
-        row = [
-            "Project Contribution",
-            self.contribution_score,
-            self.average_project_contribution,
-            self.average_project_contribution_difference,
-        ]
-        return [row, header]
 
     def __calculate_contribution_score(self) -> None:
         """

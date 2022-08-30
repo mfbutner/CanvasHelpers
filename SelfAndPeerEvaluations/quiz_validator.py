@@ -23,7 +23,12 @@ import datetime
 import json
 import os
 from typing import Union
-from utils import find_ag, make_unique_student_id_map, JsonDict
+from utils import (
+    create_base_arguement_parser,
+    find_ag,
+    make_unique_student_id_map,
+    JsonDict,
+)
 
 
 class SelfAndPeerEvaluationQuizValidator:
@@ -123,25 +128,28 @@ class SelfAndPeerEvaluationQuizValidator:
         log the overall quiz report that details scores for every student
         :returns: None. Instead, a .json file is created for the quiz report
         """
-        with open(
-            os.path.join(self.quiz_report_path, f"{self.assignment.name}.json"), "w"
-        ) as outfile:
-            json.dump(self.quiz_grades, outfile)
-        print(
-            f'Report saved to {os.path.join(self.quiz_report_path, f"{self.assignment.name}.json")}'
+        quiz_report_path = os.path.join(
+            self.quiz_report_path, f"{self.assignment.name}.json"
         )
+        with open(quiz_report_path, "w") as outfile:
+            json.dump(self.quiz_grades, outfile)
+        print(f"Report saved to {quiz_report_path}")
 
     def __log_quiz_errors(self) -> None:
         """
         logs students who had quiz errors to a .txt file
+        quiz_errors errors are missing answers or misidentified partner issues
+        quiz_potential_errors are "non-issues" that don't negatively affect a student's grade. For example if A and B were partners but C picked A, A and B would have a potential error
         :returns: None. Instead, a .txt file is created if there are any quiz errors
         """
         if not self.quiz_errors and not self.quiz_potential_errors:
             return
+
+        quiz_error_path = os.path.join(
+            self.quiz_errors_path, f"{self.assignment.name}_quiz_errors.txt"
+        )
         with open(
-            os.path.join(
-                self.quiz_errors_path, f"{self.assignment.name}_quiz_errors.txt"
-            ),
+            quiz_error_path,
             "w",
         ) as outfile:
             if self.quiz_errors:
@@ -157,9 +165,7 @@ class SelfAndPeerEvaluationQuizValidator:
                     outfile.write(
                         f"{user_id} ({self.quiz_grades[user_id]['name']}): {self.quiz_potential_errors[user_id]}\n"
                     )
-        print(
-            f'Students with quiz errors saved to {os.path.join(self.quiz_errors_path, f"{self.assignment.name}_quiz_errors.txt")}'
-        )
+        print(f"Students with quiz errors saved to {quiz_error_path}")
 
     def __create_validation_assignment(
         self, name: str
@@ -337,6 +343,9 @@ class SelfAndPeerEvaluationQuizValidator:
                    self.partner_id_map to map students to their partners
                    self.solo_submission_ids to log which students were solo submissions
         """
+        # NOTE: to ensure that each cateogry grade is [self score, partner score],
+        #       you MUST parse self evals and then partner evals first
+        #       this is necessary for the final grader to work
         self.__parse_qualitative_self_evals()
         self.partner_id_map = self.__make_partner_id_map()
         self.__parse_qualitative_partner_evals()
@@ -358,10 +367,9 @@ class SelfAndPeerEvaluationQuizValidator:
             "75% vs 25% ==> You contributed substantially more than your partner": 0.75,
             "100% vs 0% ==> You did (almost) everything while your partner didn't do (almost) anything": 1,
         }
-        for index, json_question in enumerate(self.json_questions):
-            if json_question["grader_info"]["category"] == "project_contribution":
-                question_stats = self.canvas_questions[index]
-                break
+        question_stats = self.canvas_questions[
+            get_question_index("project_contribution", self.json_questions)
+        ]
         subject = "Project Contribution"
         # initialize each student's Project Contribution to list of 2 elements
         for student_id in self.quiz_grades["info"]["submissions"]:
@@ -495,10 +503,9 @@ class SelfAndPeerEvaluationQuizValidator:
         :returns: dict of id's to partner_id
         :modifies: self.quiz_grades to log whether a student is a valid solo submission
         """
-        for index, json_question in enumerate(self.json_questions):
-            if json_question["grader_info"]["category"] == "partner_identification":
-                question_stats = self.canvas_questions[index]
-                break
+        question_stats = self.canvas_questions[
+            get_question_index("partner_identification", self.json_questions)
+        ]
         potential_pairings = {}
         for answer in question_stats["answers"]:
             if "user_ids" not in answer:
@@ -741,11 +748,7 @@ class SelfAndPeerEvaluationQuizValidator:
                 continue
             user_id = submission.user_id
             self.quiz_grades["info"]["submissions"].append(user_id)
-            self.quiz_grades[user_id]["name"] = [
-                name
-                for name, student in self.student_id_map.items()
-                if student.id == user_id
-            ][0]
+            self.quiz_grades[user_id]["name"] = self.id_to_unique_name_map[user_id]
 
     def __get_assignment(self) -> canvasapi.assignment.Assignment:
         """
@@ -787,33 +790,28 @@ class SelfAndPeerEvaluationQuizValidator:
         return evaluation_assignments
 
 
+def get_question_index(category: str, json_questions: list) -> int:
+    """
+    gets the index of the selected question in the Canvas questions list
+    :param category: the question category to find
+    :param json_questions: the json_questions list to look for the question in
+    """
+    index = -1
+    for index, json_question in enumerate(json_questions):
+        if json_question["grader_info"]["category"] == category:
+            break
+    return index
+
+
 def create_arguement_parser() -> argparse.ArgumentParser:
     """
     Creates the quiz_validator arguement parser
     :returns: quiz_validator arguement parser
     """
-    parser = argparse.ArgumentParser(
+    parser = create_base_arguement_parser(
         prog="quiz_validator",
         description="Script to validate a single Self and Peer Evaluation quiz on Canvas\nRead args from file by prefixing file_name with '@' (e.g. python3 quiz_validator.py @my_args.txt)",
-        fromfile_prefix_chars="@",
-    )
-    parser.add_argument(
-        "--canvas_url",
-        dest="canvas_url",
-        required=True,
-        type=str,
-        default="https://canvas.ucdavis.edu/",
-        help="Your Canvas URL. By default, https://canvas.ucdavis.edu",
-    )
-    parser.add_argument(
-        "--key", dest="canvas_key", type=str, required=True, help="Your Canvas API key."
-    )
-    parser.add_argument(
-        "--course_id",
-        dest="course_id",
-        type=int,
-        required=True,
-        help="The id of the course.\nThis ID is located at the end of /coures in the Canvas URL.",
+        prefix="@",
     )
     parser.add_argument(
         "--assignment_group_name",
@@ -838,13 +836,6 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         default=2,
         required=False,
         help="The number of extra days students will get to resubmit the quiz that had issues with. By default, it is 2 extra days.",
-    )
-    parser.add_argument(
-        "--questions_path",
-        dest="questions_path",
-        type=str,
-        required=True,
-        help="The path to the JSON file of questions the quiz is off of.",
     )
     parser.add_argument(
         "--quiz_report_path",

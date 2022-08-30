@@ -16,7 +16,13 @@ import datetime
 import json
 import os
 import time
-from utils import find_ag, make_unique_student_id_map, JsonDict
+import tempfile
+from utils import (
+    create_base_arguement_parser,
+    find_ag,
+    make_unique_student_id_map,
+    JsonDict,
+)
 from eval_individual_stats import EvalIndividualStats
 
 
@@ -122,28 +128,10 @@ def create_arguement_parser() -> argparse.ArgumentParser:
     creates the quiz_creator arguement parser
     :returns: quiz_creator arguement parser
     """
-    parser = argparse.ArgumentParser(
+    parser = create_base_arguement_parser(
         prog="final_grader",
         description="Script to assign the final, overall evaluations grade to students\nRead args from file by prefixing file_name with '@' (e.g. python3 final_grader.py @my_args.txt)",
-        fromfile_prefix_chars="@",
-    )
-    parser.add_argument(
-        "--canvas_url",
-        dest="canvas_url",
-        type=str,
-        required=True,
-        default="https://canvas.ucdavis.edu/",
-        help="Your Canvas URL. By default, https://canvas.ucdavis.edu",
-    )
-    parser.add_argument(
-        "--key", dest="canvas_key", type=str, required=True, help="Your Canvas API key."
-    )
-    parser.add_argument(
-        "--course_id",
-        dest="course_id",
-        type=int,
-        required=True,
-        help="The id of the course.\nThis ID is located at the end of /coures in the Canvas URL.",
+        prefix="@",
     )
     parser.add_argument(
         "--assignment_group_name",
@@ -160,13 +148,6 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         type=str,
         required=True,
         help="The name of the final, overall evaluation assignment.",
-    )
-    parser.add_argument(
-        "--questions_path",
-        dest="questions_path",
-        type=str,
-        required=True,
-        help="The path to the JSON file of questions the quizzes were off of.",
     )
     parser.add_argument(
         "--quiz_reports_path",

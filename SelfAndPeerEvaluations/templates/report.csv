@@ -1,0 +1,21 @@
+FINAL SCORE CALCULATIONS
+""
+"Final Score
+({{ qualitative_weight * 100 }}% Qualitative + {{ contrib_weight * 100 }}% Project Contribution)",{{ final_score }}
+""
+,"Score
+(if (diff > 0); then score=(avg - diff)/4*100;
+else score=(avg - diff/2)/4*100)","{{ overall_qualitative_str }}
+Qualitative,{{ qualitative_score }},{{ average_qualitative }},{{ average_qualitative_difference }}
+,"Score
+(if (diff > 0); then score=(avg - diff)/50*100*100;
+else score=(avg - diff/2)/50*100*100)",Average Project Contribution,Project Contribution Difference
+Project Contribution,{{ contribution_score }},{{ average_project_contribution }},{{average_project_contribution_difference }}
+""
+""
+""
+""
+"INDIVIDUAL ASSIGNMENT GRADES
+AND CALCULATIONS"
+diff = self - partner
+{%  for row in detailed_scores %}{% for column in row %}"{{ column }}",{% endfor %}{% endfor %}
