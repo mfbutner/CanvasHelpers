@@ -18,4 +18,21 @@ Project Contribution,{{ contribution_score }},{{ average_project_contribution }}
 "INDIVIDUAL ASSIGNMENT GRADES
 AND CALCULATIONS"
 diff = self - partner
-{%  for row in detailed_scores %}{% for column in row %}"{{ column }}",{% endfor %}{% endfor %}
+"Categories",{% for assignment in assignments %}"{{ assignment }}",{% endfor %}"Overall Average
+* -> Not used in Final Grade Calculation"
+{% for qualitative_category in qualitative_categories % }
+"{{ qualitative_category }}",{% for assignment in assignments %}"Self: {{ scores[qualitative_category + "Self"][loop.index0] }}
+Partner: {{ scores[qualitative_category + "Partner"][loop.index0] }}
+Average: {{ scores[qualitative_category + "Average"][loop.index0] }}
+Diff: {{ scores[qualitative_category + "Diff"][loop.index0] }}",{% endfor %}"Self*: {{ averages[qualitative_category + "Self"] }}
+Partner*: {{ averages[qualitative_category + "Partner"] }}
+Average: {{ averages[qualitative_category + "Average"] }}
+Diff*: {{ averages[qualitative_category + "Diff"] }}"{% endfor %}
+"{{ average_qualitative_diff_str }}",{for % assignment in assignments %}"{{ scores["Qualitative Difference"][loop.index0] }}",{% endfor %}"{{ average_qualitative_difference }}"
+"Project Contribution",{% for assignment in assignments %}"Self: {{ scores["Project Contribution" + "Self"][loop.index0] }}
+Partner: {{score["Project Contribution" + "Partner"][loop.index0] }}
+Average: {{score["Project Contribution" + "Average"][loop.index0] }}
+Diff: {{score["Project Contribution" + "Diff"][loop.index0] }}", {% endfor %}"Self*: {{ average["Project Contribution" + "Self"] }}
+Partner*: {{ averages["Project Contribution" + "Partner"] }}
+Average: {{ averages["Project Contribution" + "Average"] }}
+Diff*: {{ averages["Project Contribution" + "Diff"] }}"

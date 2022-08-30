@@ -2,8 +2,7 @@
 
 This class is not intended to be used outside of the scripts it's called from.
 """
-from collections import defaultdict, deque
-import csv
+from collections import defaultdict
 from jinja2 import Environment, FileSystemLoader
 import json
 import os
@@ -44,6 +43,7 @@ class EvalIndividualStats:
         self.files = files
 
         self.qualitative_subjects = self.__get_qualitative_subjects()
+        self.assignments: list[str] = []
 
         self.csv_file_path = os.path.join(csv_report_path, f"{self.name}.csv")
 
@@ -378,7 +378,7 @@ class EvalIndividualStats:
         :modifies: self.detailed_scores
         """
         row = []
-        row.append(json_file["info"]["quiz_name"])
+        self.assignments.append(json_file["info"]["quiz_name"])
         if self.id not in json_file:
             self.__give_default_scores(json_file, row)
         elif json_file[self.id]["valid_solo_submission"]:
