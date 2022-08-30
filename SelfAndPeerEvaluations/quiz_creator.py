@@ -138,7 +138,7 @@ class SelfAndPeerEvaluationQuizCreator:
             "multiple_choice_answers"
         ]
         for question in self.json_questions["questions"]:
-            if question["question_name"] == "Partner Identification":
+            if question["grader_info"]["category"] == "partner_identification":
                 question["answers"] = self.__create_identify_partner_answers()
             elif (
                 question["question_type"] == "multiple_choice_question"

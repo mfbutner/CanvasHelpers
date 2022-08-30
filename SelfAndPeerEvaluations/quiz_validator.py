@@ -282,7 +282,10 @@ class SelfAndPeerEvaluationQuizValidator:
             return
 
         for index, json_question in enumerate(self.json_questions):
-            if json_question["question_name"] == "Solo Submission Justification":
+            if (
+                json_question["grader_info"]["category"]
+                == "solo_submission_justification"
+            ):
                 question_id = self.canvas_questions[index]["id"]
                 break
         # locate where solo submission justification question is on Canvas question list
@@ -356,7 +359,7 @@ class SelfAndPeerEvaluationQuizValidator:
             "100% vs 0% ==> You did (almost) everything while your partner didn't do (almost) anything": 1,
         }
         for index, json_question in enumerate(self.json_questions):
-            if json_question["question_name"] == "Project Contribution":
+            if json_question["grader_info"]["category"] == "project_contribution":
                 question_stats = self.canvas_questions[index]
                 break
         subject = "Project Contribution"
@@ -493,7 +496,7 @@ class SelfAndPeerEvaluationQuizValidator:
         :modifies: self.quiz_grades to log whether a student is a valid solo submission
         """
         for index, json_question in enumerate(self.json_questions):
-            if json_question["question_name"] == "Partner Identification":
+            if json_question["grader_info"]["category"] == "partner_identification":
                 question_stats = self.canvas_questions[index]
                 break
         potential_pairings = {}
