@@ -6,13 +6,18 @@ from collections import defaultdict
 from jinja2 import Environment, FileSystemLoader
 import json
 import os
+import pathlib
 import statistics
 from typing import Union
 from utils import JsonDict
 
 
 # all students are using the same template anyway, so just load once
-environment = Environment(loader=FileSystemLoader("./templates/"))
+cur_file_path = pathlib.Path(__file__)
+template_path = cur_file_path.parent.resolve(True) / "templates"
+environment = Environment(
+    loader=FileSystemLoader(template_path), trim_blocks=True, lstrip_blocks=True
+)
 template = environment.get_template("report.csv")
 
 
@@ -27,7 +32,6 @@ class EvalIndividualStats:
     :var self.files: the list of quiz report files to grade the student on
     :var self.qualitative_subjects: the list of qualitative subjects for qualitative subject categorization
     :var self.scores: all values associated with a student based on quiz reports
-    :var self.detailed_scores: self.scores formatted for CSV writing
 
     :var self.csv_file_path: the path where the studuent score breakdown will be
     :var self.final_score: the final, overall score the student will get
@@ -39,10 +43,11 @@ class EvalIndividualStats:
     def __init__(self, name: str, id: int, files: list[str], csv_report_path: str):
         self.name = "".join(filter(str.isalnum, name))
         self.id = str(id)
-        self.scores = defaultdict(list[Union[int, float]])
+        self.scores = defaultdict(list[Union[int, float, None]])
+        self.averages = defaultdict(Union[int, float, None])
         self.files = files
 
-        self.qualitative_subjects = self.__get_qualitative_subjects()
+        self.__get_metadata()
         self.assignments: list[str] = []
 
         self.csv_file_path = os.path.join(csv_report_path, f"{self.name}.csv")
@@ -52,8 +57,13 @@ class EvalIndividualStats:
     def write_to_csv(self) -> None:
         """
         write individual student stats to a CSV report
+        :returns: None. Instead, a CSV file is written to self.csv_file_path
         """
-        overall_qualitative_str = f"Average of Overall Qualitative Averages\n{self.__stringify_subjects(self.qualitative_subjects)}"
+        subjects = stringify_subjects(self.qualitative_subjects)
+        average_qualitative_difference_str = (
+            f"Average Qualitative Difference\n{subjects}"
+        )
+        overall_qualitative_str = f"Average of Overall Qualitative Averages\n{subjects}"
         content = template.render(
             qualitative_weight=self.qualitative_weight,
             contrib_weight=self.contribution_weight,
@@ -65,31 +75,41 @@ class EvalIndividualStats:
             contribution_score=self.contribution_score,
             average_project_contribution=self.average_project_contribution,
             average_project_contribution_difference=self.average_project_contribution_difference,
-            detailed_scores=self.detailed_scores,
+            scores=self.scores,
+            averages=self.averages,
+            assignments=self.assignments,
+            qualitative_categories=self.qualitative_subjects,
+            average_qualitative_diff_str=average_qualitative_difference_str,
         )
         with open(self.csv_file_path, "w") as f:
             f.write(content)
 
-    def __get_qualitative_subjects(self) -> list[str]:
+    def __get_metadata(self) -> None:
+        """
+        gets the qualitative_subjects, qualitative_weight, and contribution_weight
+        from a single quiz report
+        we assume that quiz reports all share these values in common
+        :modifies: self.qualitative_subjects to store the qualitative_subjects
+                   self.qualitative_weight to store the weight of qualitative category
+                   self.contribution_weight to store the weight of contribution category
+        """
         with open(self.files[0], "r") as f:
             json_file = json.load(f)
-            return json_file["info"]["qualitative_subjects"]
+            self.qualitative_subjects = json_file["info"]["qualitative_subjects"]
+            self.qualitative_weight = json_file["info"]["weighting"]["qualitative"]
+            self.contribution_weight = json_file["info"]["weighting"][
+                "project_contribution"
+            ]
 
     def __get_final_score(self) -> float:
         """
         gets the final, overall evaluation score for a student
         :returns: the final, overall evalution score
-        :modieifes: self.qualitative_weight and self.contribution_weight to store the weighting of those categories
+        :modifies: self.qualitative_weight and self.contribution_weight to store the weighting of those categories
         """
-        self.__get_detailed_scores()
+        self.__get_scores()
         self.__calculate_qualitative_score()
         self.__calculate_contribution_score()
-        with open(self.files[0], "r") as f:
-            json_file = json.load(f)
-            self.qualitative_weight = json_file["info"]["weighting"]["qualitative"]
-            self.contribution_weight = json_file["info"]["weighting"][
-                "project_contribution"
-            ]
         final_score = round(
             self.qualitative_weight * self.qualitative_score
             + self.contribution_weight * self.contribution_score,
@@ -97,83 +117,67 @@ class EvalIndividualStats:
         )
         return final_score
 
-    def __get_detailed_scores(self) -> None:
+    def __get_scores(self) -> None:
         """
         gets the individual student detailed score breakdown from all assignments
         :returns: None
-        :modifies: self.detailed_scores
+        :modifies: self.scores to store score breakdown from all assignments
+                   self.averages to store average score based on all assignments
         """
-        self.detailed_scores = []
         self.__read_files(self.files)
-        self.__get_averages()
-        # transpose detailed scores
-        self.detailed_scores = [
-            [row[i] for row in self.detailed_scores]
-            for i in range(len(self.detailed_scores[0]))
-        ]
+        self.__get_qualitative_averages()
+        self.__get_project_contribution_averages()
 
-    def __give_default_scores(self, json_file: JsonDict, row: list[str]) -> None:
+    def __give_default_scores(self) -> None:
         """
         Gives a student scores of self 1, partner 1 in all qualitative subjects and
         0 in project contribution
         since they did not submit this assignment at all
         :returns: None
-        :modifies: row (where row is the assignment scores to be written in the CSV)
+        :modifies: self.scores to store the quiz scores
         """
         # default self&partner qualitative score is 1
-        for qualitative_subject in json_file["info"]["qualitative_subjects"]:
-            row.append("Self: 1\nPartner: 1\nAverage: 1\nDiff (self - partner): 0")
+        for qualitative_subject in self.qualitative_subjects:
             self.scores[qualitative_subject + "Self"].append(1)
             self.scores[qualitative_subject + "Partner"].append(1)
             self.scores[qualitative_subject + "Average"].append(1)
             self.scores[qualitative_subject + "Diff"].append(0)
 
-        row.append("0")  # average qualitative difference
         self.scores["Qualitative Difference"].append(0)
 
         # default self&partner contribution score is 0
-        row.append("Self: 0\nPartner: 0\nAverage: 0\nDiff (self - partner): 0")
         self.scores["Project Contribution" + "Self"].append(0)
         self.scores["Project Contribution" + "Partner"].append(0)
         self.scores["Project Contribution" + "Average"].append(0)
         self.scores["Project Contribution" + "Diff"].append(0)
 
-    def __give_solo_submission_scores(
-        self, json_file: JsonDict, row: list[str]
-    ) -> None:
+    def __give_solo_submission_scores(self, json_file: JsonDict) -> None:
         """
         Gives a student solo submission scores since they are a solo submission
         :returns: None
-        :modifies: row (where row is the assignment scores to be written in the CSV)
+        :modifies: self.scores to store the quiz scores
         """
-        for qualitative_subject in json_file["info"]["qualitative_subjects"]:
+        for qualitative_subject in self.qualitative_subjects:
             self_score = json_file[self.id][qualitative_subject][0]
-            row.append(
-                f"Self: {self_score}\nPartner: N/A\nAverage: {self_score}\nDiff (self - partner): 0"
-            )
             self.scores[qualitative_subject + "Self"].append(self_score)
-            # this is a solo submission, so no partner
+            self.scores[qualitative_subject + "Partner"].append(None)
             self.scores[qualitative_subject + "Average"].append(self_score)
             self.scores[qualitative_subject + "Diff"].append(0)
-        row.append(0)  # average qualitative difference
         self.scores["Qualitative Difference"].append(0)
         self_score = json_file[self.id]["Project Contribution"][0]
-        row.append(
-            f"Self: {self_score}\nPartner: N/A\nAverage: {self_score}\nDiff (self - partner): 0"
-        )
         self.scores["Project Contribution" + "Self"].append(self_score)
-        # this is a solo submission, so no partner
+        self.scores["Project Contribution" + "Partner"].append(None)
         self.scores["Project Contribution" + "Average"].append(self_score)
         self.scores["Project Contribution" + "Diff"].append(0)
 
-    def __give_quiz_scores(self, json_file: JsonDict, row: list[str]) -> None:
+    def __give_quiz_scores(self, json_file: JsonDict) -> None:
         """
         Gives a student self and partner submission scores since they submitted with a partner
         :returns: None
-        :modifies: row (where row is the assignment scores to be written in the CSV)
+        :modifies: self.scores to store the quiz scores
         """
         qualitative_differences = []
-        for qualitative_subject in json_file["info"]["qualitative_subjects"]:
+        for qualitative_subject in self.qualitative_subjects:
             self_score = json_file[self.id][qualitative_subject][0]
             try:
                 partner_score = json_file[self.id][qualitative_subject][1]
@@ -185,16 +189,10 @@ class EvalIndividualStats:
             )
             qualitative_difference = self_score - partner_score
             qualitative_differences.append(qualitative_difference)
-            row.append(
-                f"Self: {self_score}\nPartner: {partner_score}\nAverage: {average_score}\nDiff (self - partner): {qualitative_difference}"
-            )
             self.scores[qualitative_subject + "Self"].append(self_score)
             self.scores[qualitative_subject + "Partner"].append(partner_score)
             self.scores[qualitative_subject + "Average"].append(average_score)
             self.scores[qualitative_subject + "Diff"].append(qualitative_difference)
-        row.append(
-            round(statistics.fmean(qualitative_differences), 2)
-        )  # average qualitative difference
         self.scores["Qualitative Difference"].append(
             round(statistics.fmean(qualitative_differences), 2)
         )
@@ -209,9 +207,6 @@ class EvalIndividualStats:
             2,
         )
         contrib_diff = self_score - partner_score
-        row.append(
-            f"Self: {self_score}\nPartner: {partner_score}\nAverage: {average_score}\nDiff (self - partner): {contrib_diff}"
-        )
         self.scores["Project Contribution" + "Self"].append(self_score)
         self.scores["Project Contribution" + "Partner"].append(partner_score)
         self.scores["Project Contribution" + "Average"].append(average_score)
@@ -222,11 +217,6 @@ class EvalIndividualStats:
         parse through all the quiz reports and writes info about
         qualitative_subjects to self.qualitative_subjects
         """
-        # make the detailed score header just once
-        with open(files[0]) as f:
-            detailed_scores_header = self.__make_detailed_header(json.load(f))
-            self.detailed_scores.append(detailed_scores_header)
-
         for file in files:
             with open(file) as f:
                 json_file = json.load(f)
@@ -293,43 +283,42 @@ class EvalIndividualStats:
                 2,
             )
 
-    def __get_qualitative_averages(self, averages_values: list) -> None:
+    def __get_qualitative_averages(self) -> None:
         """
         calculates the overall averages for each qualitative subject and the overall average of the qualitative category
         :returns: None
-        :modifies: averages_values: a list of formatted cateogry averages
-                   self.average_qualitative: the overall qualitative cateogry average
+        :modifies: self.averages: the averages for each qualitative subject + [self, partner, average, or diff]
+                   self.average_qualitative: the overall qualitative category average
                    self.average_qualitative_difference: the overall qualitative diff average
         """
         qualitative_averages = []
 
         for qualitative_subject in self.qualitative_subjects:
-            self_avg = round(
+            self.averages[qualitative_subject + "Self"] = round(
                 statistics.fmean(self.scores[qualitative_subject + "Self"]), 2
             )
-            partner_avg = (
-                round(statistics.fmean(self.scores[qualitative_subject + "Partner"]), 2)
-                if self.scores[qualitative_subject + "Partner"]
-                else "N/A"
+            cleaned_partner = [
+                ele
+                for ele in self.scores[qualitative_subject + "Partner"]
+                if ele is not None
+            ]
+            self.averages[qualitative_subject + "Partner"] = (
+                round(statistics.fmean(cleaned_partner), 2) if cleaned_partner else None
             )
-            avg_avg = round(
+            self.averages[qualitative_subject + "Average"] = round(
                 statistics.fmean(self.scores[qualitative_subject + "Average"]), 2
             )
-            diff_avg = round(
+            self.averages[qualitative_subject + "Diff"] = round(
                 statistics.fmean(self.scores[qualitative_subject + "Diff"]), 2
             )
-            averages_values.append(
-                f"Self*: {self_avg}\nPartner*: {partner_avg}\nAverage: {avg_avg}\nDiff*: {diff_avg}"
-            )
-            qualitative_averages.append(avg_avg)
+            qualitative_averages.append(self.averages[qualitative_subject + "Average"])
         self.average_qualitative = round(statistics.fmean(qualitative_averages), 2)
 
-        averages_values.append(
-            round(statistics.fmean(self.scores["Qualitative Difference"]), 2)
+        self.average_qualitative_difference = round(
+            statistics.fmean(self.scores["Qualitative Difference"]), 2
         )
-        self.average_qualitative_difference = round(float(averages_values[-1]), 2)
 
-    def __get_project_contribution_averages(self, averages_values: list) -> None:
+    def __get_project_contribution_averages(self) -> None:
         """
         calculates the overall project contribution average
         :returns: None
@@ -337,90 +326,64 @@ class EvalIndividualStats:
                    self.average_project_contribution: the overall contrib cateogry average
                    self.average_project_contribution_difference: the overall contrib diff average
         """
-        self_avg = round(
+        self.averages["Project Contribution" + "Self"] = round(
             statistics.fmean(self.scores["Project Contribution" + "Self"]), 2
         )
-        partner_avg = (
-            round(statistics.fmean(self.scores["Project Contribution" + "Partner"]), 2)
-            if self.scores["Project Contribution" + "Partner"]
-            else "N/A"
+        cleaned_partner = [
+            ele
+            for ele in self.scores["Project Contribution" + "Partner"]
+            if ele is not None
+        ]
+        self.averages["Project Contribution" + "Partner"] = (
+            round(statistics.fmean(cleaned_partner), 2) if cleaned_partner else None
         )
-        avg_avg = round(
+        self.averages["Project Contribution" + "Average"] = round(
             statistics.fmean(self.scores["Project Contribution" + "Average"]), 2
         )
-        diff_avg = round(
+        self.averages["Project Contribution" + "Diff"] = round(
             statistics.fmean(self.scores["Project Contribution" + "Diff"]), 2
         )
-        averages_values.append(
-            f"Self*: {self_avg}\nPartner*: {partner_avg}\nAverage: {avg_avg}\nDiff: {diff_avg}"
-        )
-        self.average_project_contribution = avg_avg
-        self.average_project_contribution_difference = diff_avg
-
-    def __get_averages(self) -> None:
-        """
-        appends a row of "averages_values" to self.detailed_scores for CSV writing later
-        "averages_values" contains averages of self, partner, average, diff for each
-        qualitative category and project contribution
-        :returns: None
-        :modifies: self.detailed_scores
-        """
-        averages_values = ["Overall Average\n* -> Not used in Final Grade Calculation"]
-        self.__get_qualitative_averages(averages_values)
-        self.__get_project_contribution_averages(averages_values)
-        self.detailed_scores.append(averages_values)
+        self.average_project_contribution = self.averages[
+            "Project Contribution" + "Average"
+        ]
+        self.average_project_contribution_difference = self.averages[
+            "Project Contribution" + "Diff"
+        ]
 
     def __parse_quiz_grade(self, json_file: JsonDict) -> None:
         """
         goes through a single quiz report and extracts the values for a
         specific student
         :returns: None
-        :modifies: self.detailed_scores
+        :modifies: self.assignments to store assignment names
         """
-        row = []
         self.assignments.append(json_file["info"]["quiz_name"])
         if self.id not in json_file:
-            self.__give_default_scores(json_file, row)
+            self.__give_default_scores()
         elif json_file[self.id]["valid_solo_submission"]:
-            self.__give_solo_submission_scores(json_file, row)
+            self.__give_solo_submission_scores(json_file)
         else:
-            self.__give_quiz_scores(json_file, row)
-        self.detailed_scores.append(row)
+            self.__give_quiz_scores(json_file)
 
-    def __stringify_subjects(self, subjects: list[str]) -> str:
-        """
-        concatinates a list of subjects into a readable string where
-        each line is roughly at most 45 characters
-        :returns: one string of all subjects
-        """
-        result = "("
-        cur_line = ""
-        for subject in subjects:
-            if subject == subjects[-1]:
-                if len(cur_line + subject) >= 45:
-                    result += cur_line + "\n" + subject + ")"
-                else:
-                    result += cur_line + subject + ")"
+
+def stringify_subjects(subjects: list[str]) -> str:
+    """
+    concatinates a list of subjects into a readable string where
+    each line is roughly at most 45 characters
+    :returns: one string of all subjects
+    """
+    result = "("
+    cur_line = ""
+    for subject in subjects:
+        if subject == subjects[-1]:
+            if len(cur_line + subject) >= 45:
+                result += cur_line + "\n" + subject + ")"
             else:
-                if len(cur_line + subject) >= 45:
-                    result += cur_line + "\n"
-                    cur_line = subject + ", "
-                else:
-                    cur_line += subject + ", "
-        return result
-
-    def __make_detailed_header(self, json_file: JsonDict) -> list[str]:
-        """
-        creates a header for the detailed_scores section of the CSV that
-        contains each qualitative subject and project contribution and overall averages
-        :returns: list of strings to be in the header
-        """
-        header = ["Categories"]
-        for qualitative_subject in json_file["info"]["qualitative_subjects"]:
-            header.append(qualitative_subject)
-        average_qualitative_difference_str = f"Average Qualitative Difference\n{self.__stringify_subjects(json_file['info']['qualitative_subjects'])}"
-        header.append(average_qualitative_difference_str)
-        # since there's only one quantitative_overall_subject (contribution)
-        # we won't have an "Average Quantitative Overall Difference" column
-        header.append("Project Contribution")
-        return header
+                result += cur_line + subject + ")"
+        else:
+            if len(cur_line + subject) >= 45:
+                result += cur_line + "\n"
+                cur_line = subject + ", "
+            else:
+                cur_line += subject + ", "
+    return result
