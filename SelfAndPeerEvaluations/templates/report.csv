@@ -15,32 +15,43 @@ else score=(avg - diff/2)/50*100*100)",Average Project Contribution,Project Cont
 Project Contribution,{{ contribution_score }},{{ average_project_contribution }},{{average_project_contribution_difference }}
 ""
 ""
-""
-""
 "INDIVIDUAL ASSIGNMENT GRADES
 AND CALCULATIONS"
 diff = self - partner
 "Categories",{% for assignment in assignments %}"{{ assignment }}",{% endfor %}"Overall Average
 * -> Not used in Final Grade Calculation"
 {% for qualitative_category in qualitative_categories %}
-"{{ qualitative_category }}",{% for assignment in assignments %}"Self: {{ scores[qualitative_category + "Self"][loop.index0] }}
+"{{ qualitative_category }}",
+{%- for assignment in assignments %}
+"Self: {{ scores[qualitative_category + "Self"][loop.index0] }}
 Partner: {% if scores[qualitative_category + "Partner"][loop.index0] != None %} {{ scores[qualitative_category + "Partner"][loop.index0] }}
 {% else %} N/A 
 {% endif %}
 Average: {{ scores[qualitative_category + "Average"][loop.index0] }}
-Diff: {{ scores[qualitative_category + "Diff"][loop.index0] }}",{% endfor %}"Self*: {{ averages[qualitative_category + "Self"] }}
+Diff: {{ scores[qualitative_category + "Diff"][loop.index0] }}",
+{%- endfor %}
+"Self*: {{ averages[qualitative_category + "Self"] }}
 Partner*: {% if averages[qualitative_category + "Partner"] != None %}{{ averages[qualitative_category + "Partner"] }}
 {% else %} N/A 
 {% endif %}
 Average: {{ averages[qualitative_category + "Average"] }}
-Diff*: {{ averages[qualitative_category + "Diff"] }}"{% endfor %}
-"{{ average_qualitative_diff_str }}",{% for assignment in assignments %}"{{ scores["Qualitative Difference"][loop.index0] }}",{% endfor %}"{{ average_qualitative_difference }}"
-"Project Contribution",{% for assignment in assignments %}"Self: {{ scores["Project Contribution" + "Self"][loop.index0] }}
+Diff*: {{ averages[qualitative_category + "Diff"] }}"
+{% endfor %}
+"{{ average_qualitative_diff_str }}",
+{%- for assignment in assignments %}
+"{{ scores["Qualitative Difference"][loop.index0] }}",
+{%- endfor %}
+"{{ average_qualitative_difference }}"
+"Project Contribution",
+{%- for assignment in assignments %}
+"Self: {{ scores["Project Contribution" + "Self"][loop.index0] }}
 Partner: {% if scores["Project Contribution" + "Partner"][loop.index0] != None %} {{ scores["Project Contribution" + "Partner"][loop.index0] }}
 {% else %} N/A
 {% endif %}
 Average: {{scores["Project Contribution" + "Average"][loop.index0] }}
-Diff: {{scores["Project Contribution" + "Diff"][loop.index0] }}",{% endfor %}"Self*: {{ averages["Project Contribution" + "Self"] }}
+Diff: {{scores["Project Contribution" + "Diff"][loop.index0] }}",
+{%- endfor %}
+"Self*: {{ averages["Project Contribution" + "Self"] }}
 Partner*: {% if averages["Project Contribution" + "Partner"] != None %} {{ averages["Project Contribution" + "Partner"] }}
 {% else %} N/A
 {% endif %}
