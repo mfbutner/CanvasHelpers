@@ -54,6 +54,9 @@ class SelfAndPeerEvaluationQuizValidator:
         validator.validate_quiz(
             reopen_assignment, extra_days
         )
+
+    NOTE: The quiz report follows a really strict format for each category's score.
+          That is, the first value (0th element) will ALWAYS be the self score and the second value (1st element) will ALWAYS be the partner score.
     """
 
     def __init__(

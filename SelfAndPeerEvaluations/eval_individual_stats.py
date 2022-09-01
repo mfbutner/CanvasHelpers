@@ -23,7 +23,7 @@ template = environment.get_template("report.csv")
 
 class EvalIndividualStats:
     """Class to store an individual student's evaluation grades and final, overall grade
-    :param name: the sortable name of the student (e.g. Smith, John)
+    :param name: the unique name of the student
     :param id: the Canvas ID of the student
     :param files: the list of quiz report files to grade the student on
     member vars
@@ -31,26 +31,35 @@ class EvalIndividualStats:
     :var self.id: the Canvas ID of the student
     :var self.files: the list of quiz report files to grade the student on
     :var self.qualitative_subjects: the list of qualitative subjects for qualitative subject categorization
-    :var self.scores: all values associated with a student based on quiz reports
+    :var self.scores: all values associated with a student based on quiz reports alone
+    :var self.averages: the average values from each category in self.scores
 
-    :var self.csv_file_path: the path where the studuent score breakdown will be
+    :var self.qualitative_weight: grade weight of qualitative category
+    :var self.average_qualitative: the average qualitative score
+    :var self.average_qualitative_diff: the average qualitative score difference
+
+    :var self.contribution_weight: grade weight of contribution category
+    :var self.average_project_contribution: the average contribution score
+    :var self.average_project_contribution_diff: the average contribution score difference
+
     :var self.final_score: the final, overall score the student will get
+    :var self.csv_file_path: the path where the studuent score breakdown will be
+
     public functions
     ---
-    write_to_csv()
+    write_to_csv(): write the final, overall evaluation report to a CSV
     """
 
     def __init__(self, name: str, id: int, files: list[str], csv_report_path: str):
         self.name = "".join(filter(str.isalnum, name))
         self.id = str(id)
-        self.scores = defaultdict(list[Union[int, float, None]])
-        self.averages = defaultdict(Union[int, float, None])
         self.files = files
+        self.csv_file_path = os.path.join(csv_report_path, f"{self.name}.csv")
 
         self.__get_metadata()
         self.assignments: list[str] = []
-
-        self.csv_file_path = os.path.join(csv_report_path, f"{self.name}.csv")
+        self.scores = defaultdict(list[Union[int, float, None]])
+        self.averages = defaultdict(Union[int, float, None])
 
         self.final_score = self.__get_final_score()
 
@@ -107,7 +116,9 @@ class EvalIndividualStats:
         :returns: the final, overall evalution score
         :modifies: self.qualitative_weight and self.contribution_weight to store the weighting of those categories
         """
-        self.__get_scores()
+        self.__get_scores(self.files)
+        self.__get_qualitative_averages()
+        self.__get_project_contribution_averages()
         self.__calculate_qualitative_score()
         self.__calculate_contribution_score()
         final_score = round(
@@ -117,16 +128,33 @@ class EvalIndividualStats:
         )
         return final_score
 
-    def __get_scores(self) -> None:
+    def __get_scores(self, files: list[str]) -> None:
         """
-        gets the individual student detailed score breakdown from all assignments
+        parse through all the quiz reports and stores quiz report scores
+        into self.scores
+        :param files: list of quiz report files
         :returns: None
-        :modifies: self.scores to store score breakdown from all assignments
-                   self.averages to store average score based on all assignments
+        :modifies: self.scores to store quiz report scores
         """
-        self.__read_files(self.files)
-        self.__get_qualitative_averages()
-        self.__get_project_contribution_averages()
+        for file in files:
+            with open(file) as f:
+                json_file = json.load(f)
+                self.__parse_quiz_grade(json_file)
+
+    def __parse_quiz_grade(self, json_file: JsonDict) -> None:
+        """
+        goes through a single quiz report and extracts the values for a
+        specific student
+        :returns: None
+        :modifies: self.assignments to store assignment names
+        """
+        self.assignments.append(json_file["info"]["quiz_name"])
+        if self.id not in json_file:
+            self.__give_default_scores()
+        elif json_file[self.id]["valid_solo_submission"]:
+            self.__give_solo_submission_scores(json_file)
+        else:
+            self.__give_quiz_scores(json_file)
 
     def __give_default_scores(self) -> None:
         """
@@ -211,16 +239,6 @@ class EvalIndividualStats:
         self.scores["Project Contribution" + "Partner"].append(partner_score)
         self.scores["Project Contribution" + "Average"].append(average_score)
         self.scores["Project Contribution" + "Diff"].append(contrib_diff)
-
-    def __read_files(self, files: list[str]) -> None:
-        """
-        parse through all the quiz reports and writes info about
-        qualitative_subjects to self.qualitative_subjects
-        """
-        for file in files:
-            with open(file) as f:
-                json_file = json.load(f)
-                self.__parse_quiz_grade(json_file)
 
     def __calculate_qualitative_score(self) -> None:
         """
@@ -322,8 +340,7 @@ class EvalIndividualStats:
         """
         calculates the overall project contribution average
         :returns: None
-        :modifies: averages_values: a list of formatted cateogry averages
-                   self.average_project_contribution: the overall contrib cateogry average
+        :modifies: self.average_project_contribution: the overall contrib cateogry average
                    self.average_project_contribution_difference: the overall contrib diff average
         """
         self.averages["Project Contribution" + "Self"] = round(
@@ -350,27 +367,12 @@ class EvalIndividualStats:
             "Project Contribution" + "Diff"
         ]
 
-    def __parse_quiz_grade(self, json_file: JsonDict) -> None:
-        """
-        goes through a single quiz report and extracts the values for a
-        specific student
-        :returns: None
-        :modifies: self.assignments to store assignment names
-        """
-        self.assignments.append(json_file["info"]["quiz_name"])
-        if self.id not in json_file:
-            self.__give_default_scores()
-        elif json_file[self.id]["valid_solo_submission"]:
-            self.__give_solo_submission_scores(json_file)
-        else:
-            self.__give_quiz_scores(json_file)
-
 
 def stringify_subjects(subjects: list[str]) -> str:
     """
     concatinates a list of subjects into a readable string where
     each line is roughly at most 45 characters
-    :returns: one string of all subjects
+    :returns: one string of all subjects nicely formatted with newlines
     """
     result = "("
     cur_line = ""
