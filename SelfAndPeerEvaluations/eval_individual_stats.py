@@ -58,8 +58,10 @@ class EvalIndividualStats:
 
         self.__get_metadata()
         self.assignments: list[str] = []
-        self.scores = defaultdict(list[Union[int, float, None]])
-        self.averages = defaultdict(Union[int, float, None])
+        self.scores: dict[str, list[Union[int, float, None]]] = defaultdict(
+            list[Union[int, float, None]]
+        )
+        self.averages: dict[str, Union[int, float, None]] = {}
 
         self.final_score = self.__get_final_score()
 
@@ -74,20 +76,8 @@ class EvalIndividualStats:
         )
         overall_qualitative_str = f"Average of Overall Qualitative Averages\n{subjects}"
         content = template.render(
-            qualitative_weight=self.qualitative_weight,
-            contrib_weight=self.contribution_weight,
-            final_score=self.final_score,
+            obj=self,
             overall_qualitative_str=overall_qualitative_str,
-            qualitative_score=self.qualitative_score,
-            average_qualitative=self.average_qualitative,
-            average_qualitative_difference=self.average_qualitative_difference,
-            contribution_score=self.contribution_score,
-            average_project_contribution=self.average_project_contribution,
-            average_project_contribution_difference=self.average_project_contribution_difference,
-            scores=self.scores,
-            averages=self.averages,
-            assignments=self.assignments,
-            qualitative_categories=self.qualitative_subjects,
             average_qualitative_diff_str=average_qualitative_difference_str,
         )
         with open(self.csv_file_path, "w") as f:
@@ -174,10 +164,8 @@ class EvalIndividualStats:
         self.scores["Qualitative Difference"].append(0)
 
         # default self&partner contribution score is 0
-        self.scores["Project Contribution" + "Self"].append(0)
-        self.scores["Project Contribution" + "Partner"].append(0)
-        self.scores["Project Contribution" + "Average"].append(0)
-        self.scores["Project Contribution" + "Diff"].append(0)
+        for category in ["Self", "Partner", "Average", "Diff"]:
+            self.scores["Project Contribution" + category].append(0)
 
     def __give_solo_submission_scores(self, json_file: JsonDict) -> None:
         """
@@ -207,11 +195,11 @@ class EvalIndividualStats:
         qualitative_differences = []
         for qualitative_subject in self.qualitative_subjects:
             self_score = json_file[self.id][qualitative_subject][0]
-            try:
-                partner_score = json_file[self.id][qualitative_subject][1]
-            except IndexError:  # student was an invalid solo submission, so their "partner" gives them the lowest scores possible
-                json_file[self.id][qualitative_subject].append(1)
-                partner_score = json_file[self.id][qualitative_subject][1]
+            if len(json_file[self.id][qualitative_subject]) == 1:
+                json_file[self.id][qualitative_subject].append(
+                    1
+                )  # default missing partner eval score
+            partner_score = json_file[self.id][qualitative_subject][1]
             average_score = round(
                 statistics.fmean(json_file[self.id][qualitative_subject]), 2
             )
@@ -225,11 +213,11 @@ class EvalIndividualStats:
             round(statistics.fmean(qualitative_differences), 2)
         )
         self_score = json_file[self.id]["Project Contribution"][0]
-        try:
-            partner_score = json_file[self.id]["Project Contribution"][1]
-        except IndexError:  # student was an invalid solo submission, so their "partner" gives them the lowest score possible
-            json_file[self.id]["Project Contribution"].append(0)
-            partner_score = json_file[self.id]["Project Contribution"][1]
+        if len(json_file[self.id]["Project Contribution"]) == 1:
+            json_file[self.id]["Project Contribution"].append(
+                0
+            )  # default missing partner eval score
+        partner_score = json_file[self.id]["Project Contribution"][1]
         average_score = round(
             statistics.fmean(json_file[self.id]["Project Contribution"]),
             2,
