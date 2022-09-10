@@ -3,22 +3,12 @@
 This class is not intended to be used outside of the scripts it's called from.
 """
 from collections import defaultdict
-from jinja2 import Environment, FileSystemLoader
 import json
 import os
-import pathlib
 import statistics
+from jinja2 import Template
 from typing import Union
 from utils import JsonDict
-
-
-# all students are using the same template anyway, so just load once
-cur_file_path = pathlib.Path(__file__)
-template_path = cur_file_path.parent.resolve(True) / "templates"
-environment = Environment(
-    loader=FileSystemLoader(template_path), trim_blocks=True, lstrip_blocks=True
-)
-template = environment.get_template("report.csv")
 
 
 class EvalIndividualStats:
@@ -27,6 +17,8 @@ class EvalIndividualStats:
     :param id: the Canvas ID of the student
     :param files: the list of quiz report files to grade the student on
     member vars
+    :param csv_report_path: where to store CSV file
+    :param template: jinja template to fill out
     :var self.name:  the cleaned name of the student (e.g. SmithJohn)
     :var self.id: the Canvas ID of the student
     :var self.files: the list of quiz report files to grade the student on
@@ -50,11 +42,19 @@ class EvalIndividualStats:
     write_to_csv(): write the final, overall evaluation report to a CSV
     """
 
-    def __init__(self, name: str, id: int, files: list[str], csv_report_path: str):
+    def __init__(
+        self,
+        name: str,
+        id: int,
+        files: list[str],
+        csv_report_path: str,
+        template: Template,
+    ):
         self.name = "".join(filter(str.isalnum, name))
         self.id = str(id)
         self.files = files
         self.csv_file_path = os.path.join(csv_report_path, f"{self.name}.csv")
+        self.template = template
 
         self.__get_metadata()
         self.assignments: list[str] = []
@@ -75,7 +75,7 @@ class EvalIndividualStats:
             f"Average Qualitative Difference\n{subjects}"
         )
         overall_qualitative_str = f"Average of Overall Qualitative Averages\n{subjects}"
-        content = template.render(
+        content = self.template.render(
             obj=self,
             overall_qualitative_str=overall_qualitative_str,
             average_qualitative_diff_str=average_qualitative_difference_str,

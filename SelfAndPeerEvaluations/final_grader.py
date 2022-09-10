@@ -14,6 +14,8 @@ import argparse
 import canvasapi
 import datetime
 import json
+from jinja2 import Environment, FileSystemLoader
+import pathlib
 import os
 import time
 from utils import (
@@ -75,9 +77,18 @@ class SelfAndPeerEvaluationFinalGrader:
 
         individual_students_stats = []
         csv_files = {}
+        # all students are using the same template anyway, so just load once
+        cur_file_path = pathlib.Path(__file__)
+        template_path = cur_file_path.parent.resolve(True) / "templates"
+        environment = Environment(
+            loader=FileSystemLoader(template_path), trim_blocks=True, lstrip_blocks=True
+        )
+        template = environment.get_template("report.csv")
         for unique_name, student in self.student_id_map.items():
             individual_students_stats.append(
-                EvalIndividualStats(unique_name, student.id, files, csv_report_path)
+                EvalIndividualStats(
+                    unique_name, student.id, files, csv_report_path, template
+                )
             )
             csv_files[student.id] = individual_students_stats[-1].csv_file_path
 
