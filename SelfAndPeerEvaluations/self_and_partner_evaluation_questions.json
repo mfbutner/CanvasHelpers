@@ -127,7 +127,7 @@
         "answers": "This key/value pair shouldn't be in the json but be built by the program",
         "grader_info": {
           "include_in_grade": false,
-          "category" : "identification"
+          "category" : "partner_identification"
         }
       },
       {
@@ -136,7 +136,7 @@
         "question_type": "essay_question",
         "grader_info": {
           "include_in_grade": false,
-          "category" : "identification"
+          "category" : "solo_submission_justification"
         }
       },
       {

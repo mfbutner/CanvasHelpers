@@ -14,14 +14,17 @@ import argparse
 import canvasapi
 import datetime
 import json
+from jinja2 import Environment, FileSystemLoader
+import pathlib
 import os
 import time
-from typing import Union
-from utils import find_ag, make_unique_student_id_map
+from utils import (
+    create_base_arguement_parser,
+    find_ag,
+    make_unique_student_id_map,
+    JsonDict,
+)
 from eval_individual_stats import EvalIndividualStats
-
-JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
-JsonDict = dict[str, JsonValue]
 
 
 class SelfAndPeerEvaluationFinalGrader:
@@ -74,9 +77,18 @@ class SelfAndPeerEvaluationFinalGrader:
 
         individual_students_stats = []
         csv_files = {}
+        # all students are using the same template anyway, so just load once
+        cur_file_path = pathlib.Path(__file__)
+        template_path = cur_file_path.parent.resolve(True) / "templates"
+        environment = Environment(
+            loader=FileSystemLoader(template_path), trim_blocks=True, lstrip_blocks=True
+        )
+        template = environment.get_template("report.csv")
         for unique_name, student in self.student_id_map.items():
             individual_students_stats.append(
-                EvalIndividualStats(unique_name, student.id, files, csv_report_path)
+                EvalIndividualStats(
+                    unique_name, student.id, files, csv_report_path, template
+                )
             )
             csv_files[student.id] = individual_students_stats[-1].csv_file_path
 
@@ -118,12 +130,6 @@ class SelfAndPeerEvaluationFinalGrader:
                 continue  # NOTE: submisssion is a "ghost submission" (from Canvas's Test Student, or pending invite), no way around this as of now
             submission.upload_comment(csv_files[submission.user_id])
 
-        # FIXME: debugging printing purposes
-        for student in individual_students_stats:
-            print(
-                f"ID {student.id} will receive {student.final_score} as their final score"
-            )
-
         print("Finished upload!")
 
 
@@ -132,28 +138,10 @@ def create_arguement_parser() -> argparse.ArgumentParser:
     creates the quiz_creator arguement parser
     :returns: quiz_creator arguement parser
     """
-    parser = argparse.ArgumentParser(
+    parser = create_base_arguement_parser(
         prog="final_grader",
         description="Script to assign the final, overall evaluations grade to students\nRead args from file by prefixing file_name with '@' (e.g. python3 final_grader.py @my_args.txt)",
-        fromfile_prefix_chars="@",
-    )
-    parser.add_argument(
-        "--canvas_url",
-        dest="canvas_url",
-        type=str,
-        required=True,
-        default="https://canvas.ucdavis.edu/",
-        help="Your Canvas URL. By default, https://canvas.ucdavis.edu",
-    )
-    parser.add_argument(
-        "--key", dest="canvas_key", type=str, required=True, help="Your Canvas API key."
-    )
-    parser.add_argument(
-        "--course_id",
-        dest="course_id",
-        type=int,
-        required=True,
-        help="The id of the course.\nThis ID is located at the end of /coures in the Canvas URL.",
+        prefix="@",
     )
     parser.add_argument(
         "--assignment_group_name",
@@ -170,13 +158,6 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         type=str,
         required=True,
         help="The name of the final, overall evaluation assignment.",
-    )
-    parser.add_argument(
-        "--questions_path",
-        dest="questions_path",
-        type=str,
-        required=True,
-        help="The path to the JSON file of questions the quizzes were off of.",
     )
     parser.add_argument(
         "--quiz_reports_path",

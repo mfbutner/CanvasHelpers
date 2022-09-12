@@ -1,6 +1,53 @@
+import argparse
 import canvasapi
 from collections import defaultdict
-from typing import DefaultDict, Iterable
+from typing import DefaultDict, Iterable, Union
+
+JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
+JsonDict = dict[str, JsonValue]
+
+
+def create_base_arguement_parser(
+    prog: str, description: str, prefix: str
+) -> argparse.ArgumentParser:
+    """
+    Creates a basic arguement parser with common arguements among all scripts
+    :param prog: name of the program
+    :param description: description of the program
+    :param prefix: character to prefix file
+    :returns: a basic arguement parser
+    """
+    parser = argparse.ArgumentParser(
+        prog=prog,
+        description=description,
+        fromfile_prefix_chars=prefix,
+    )
+    parser.add_argument(
+        "--canvas_url",
+        dest="canvas_url",
+        required=True,
+        type=str,
+        default="https://canvas.ucdavis.edu/",
+        help="Your Canvas URL. By default, https://canvas.ucdavis.edu",
+    )
+    parser.add_argument(
+        "--key", dest="canvas_key", type=str, required=True, help="Your Canvas API key."
+    )
+    parser.add_argument(
+        "--course_id",
+        dest="course_id",
+        type=int,
+        required=True,
+        help="The id of the course.\nThis ID is located at the end of /coures in the Canvas URL.",
+    )
+    parser.add_argument(
+        "--questions_path",
+        dest="questions_path",
+        type=str,
+        required=True,
+        help="The path to the JSON file of questions the evaluation quiz is based off of",
+    )
+    return parser
 
 
 def find_ag(

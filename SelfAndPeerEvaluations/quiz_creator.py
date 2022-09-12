@@ -13,10 +13,12 @@ import canvasapi
 import datetime
 import json
 from typing import Union
-from utils import make_unique_student_id_map
-
-JsonValue = Union[str, int, float, bool, list["JsonValue"], "JsonDict"]
-JsonDict = dict[str, JsonValue]
+from utils import (
+    create_base_arguement_parser,
+    make_unique_student_id_map,
+    select_ags_from_list,
+    JsonDict,
+)
 
 
 class SelfAndPeerEvaluationQuizCreator:
@@ -88,22 +90,27 @@ class SelfAndPeerEvaluationQuizCreator:
         if user doesn't want to create new group, program exits
         :returns: assignemnt group ID of specificed assignment group
         """
+        ag_list = []
         # look for assignment group
         for ag in self.course.get_assignment_groups():
+            ag_list.append(ag)
             if ag.name == assignment_group_name:
                 return ag.id
 
         # assignment group was not found, so ask user if they want to make it
         choice = input(
-            f"{assignment_group_name} was not found. Do you want to create it instead? (Y/N) "
+            f"{assignment_group_name} was not found. Do you want to [c]reate it, [s]earch for it or [q]uit the program (c, s, q)?"
         )
-        if choice == "Y":
+        if choice == "c" or choice == "C":
             ag = self.course.create_assignment_group(name=assignment_group_name)
-            return ag.id
+        elif choice == "s" or choice == "S":
+            target_ag_index = select_ags_from_list(ag_list)
+            ag = ag_list[target_ag_index]
         else:
-            print("Can't find assignment group or make it")
+            print("Can't create find assignment group or find it")
             print("Exiting creation script now.")
             exit(1)
+        return ag.id
 
     def __create_quiz_info(self) -> dict[str, Union[str, int, datetime.datetime]]:
         """
@@ -136,7 +143,7 @@ class SelfAndPeerEvaluationQuizCreator:
             "multiple_choice_answers"
         ]
         for question in self.json_questions["questions"]:
-            if question["question_name"] == "Partner Identification":
+            if question["grader_info"]["category"] == "partner_identification":
                 question["answers"] = self.__create_identify_partner_answers()
             elif (
                 question["question_type"] == "multiple_choice_question"
@@ -155,11 +162,8 @@ class SelfAndPeerEvaluationQuizCreator:
     def __create_identify_partner_answers(self) -> list[dict[str, Union[str, int]]]:
         """
         Creates the multiple choice answers for "Who is your partner?" question
-        If a student has the same sortable_name as another student, then we
-        try to see if the student's name is unique with the last 4 digits of their SID appended (no SID -> XXXXXXXXX appended).
-        If a student still isn't unique with their last 4 SID digits append, then we try their last 5 SID digits.
-        It is extremely unlikely (at least 1 in 10^5 chance) that there exists students with
-        the same sortable_name AND same last 5 digits.
+        Students will all have unique names from each other. If students have the
+        same name, then we append a part of their email.
         :return: list of answers properly formated for canvasapi
         """
         students = self.course.get_users(
@@ -178,28 +182,10 @@ def create_arguement_parser() -> argparse.ArgumentParser:
     Creates the quiz_creator arguement parser
     :returns: quiz_creator arguement parser
     """
-    parser = argparse.ArgumentParser(
+    parser = create_base_arguement_parser(
         prog="quiz_creator",
         description="Script to create a single Self and Peer Evaluations Quiz\nRead args from file by prefixing file_name with '@' (e.g. python3 quiz_creator.py @my_args.txt)",
-        fromfile_prefix_chars="@",
-    )
-    parser.add_argument(
-        "--canvas_url",
-        dest="canvas_url",
-        required=False,
-        type=str,
-        default="https://canvas.ucdavis.edu/",
-        help="Your Canvas URL. By default, https://canvas.ucdavis.edu",
-    )
-    parser.add_argument(
-        "--key", type=str, dest="canvas_key", required=True, help="Your Canvas API key."
-    )
-    parser.add_argument(
-        "--course_id",
-        dest="course_id",
-        type=int,
-        required=True,
-        help="The id of the course.\nThis ID is located at the end of /courses in the Canvas URL.",
+        prefix="@",
     )
     parser.add_argument(
         "--assignment_group_name",
@@ -235,13 +221,6 @@ def create_arguement_parser() -> argparse.ArgumentParser:
         type=int,
         default=0,
         help="The number of days an assignment can be turned in late. By default there are no late days.",
-    )
-    parser.add_argument(
-        "--questions_path",
-        dest="questions_path",
-        type=str,
-        required=True,
-        help="The path to the JSON file of questions you want the quiz to be off of.",
     )
     return parser
 
