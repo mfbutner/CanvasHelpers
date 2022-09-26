@@ -1,4 +1,4 @@
-from StableGrouping.shared.scoringFunc import score_one_by_one, score_two_by_two, score_group_by_one, score_one_by_group
+from ..shared.scoringFunc import score_one_by_one, score_two_by_two, score_group_by_one, score_one_by_group
 
 
 # Creates a dictionary of students, where each student corresponds to a list of students in order of preference
