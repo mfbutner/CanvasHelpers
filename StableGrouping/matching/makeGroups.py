@@ -1,3 +1,4 @@
+import sys
 from matching.games import StableMarriage, StableRoommates
 
 from StableGrouping.matching.checkValidGroup import is_valid_group
@@ -365,6 +366,8 @@ def move_students_one(ans: dict, pairs: list, students: dict):
 # Make pairs of student-student
 def make_pairs(students: dict, match_dict: dict):
     # Make a copy that won't change the original students
+    original_limit = sys.getrecursionlimit()
+    sys.setrecursionlimit(10**7)
     extra_students = []
 
     for student in students:
@@ -424,6 +427,7 @@ def make_pairs(students: dict, match_dict: dict):
     extra_students.clear()
 
     # Return the pairs list (list[Student, Student])
+    sys.setrecursionlimit(original_limit)
     return pairs
 
 

@@ -37,12 +37,12 @@ assignment_groups = list(course.get_assignment_groups(include='assignments',
                                                       exclude_assignment_submission_types=(
                                                           'discussion_topic', 'wiki_page', 'external_tool')))
 
-ecs36b = canvas_connection.get_course(677644, include=['term'])
-ecs50 = canvas_connection.get_course(664353, include=['term'])
+ecs36a = canvas_connection.get_course(717533, include=['term'])
+ecs32a = canvas_connection.get_course(709164, include=['term'])
 # ecs36a = canvas_connection.get_course(632679, include=['term'])
 
 # ecs154a = canvas_connection.get_course(657719, include=['term'])
-courses = [ecs36b, ecs50]
+courses = [ecs36a, ecs32a]
 
 
 def test_late_policy():
@@ -141,7 +141,7 @@ def balance_ecs154a_kudo_points():
 
 
 def upload_ecs_36b_survey_completion():
-    course = ecs36b
+    course = ecs36a
     canvas_survey_assignment_ids = 864651, 864652
 
     base_dir = 'D:\\GradeTransfers\\ECS36B'
@@ -157,7 +157,7 @@ def upload_ecs_36b_survey_completion():
 
 
 def upload_ecs_50_survey_completion():
-    course = ecs50
+    course = ecs32a
     canvas_survey_assignment_ids = 864697, 864698
 
     base_dir = 'D:\\GradeTransfers\\ECS50'
@@ -262,7 +262,7 @@ def test_download_groups_to_csv():
 
 
 def test_get_missing_qualtrics_users():
-    courses = [ecs36b, ecs50]
+    courses = [ecs36a, ecs32a]
     csv_paths = ['''D:\DDownloads\ECS36BSpring2022.csv''',
                  '''D:\DDownloads\ECS50Spring2022.csv''']
 
@@ -313,13 +313,13 @@ def test_download_assignment_info():
 def true_kudo_point_evaluation():
     assignment_points = 2
     course_info = [
-        {'course': ecs50,
+        {'course': ecs32a,
          'kudo_point_giving_assignment_group_id': 469556,
          'kudo_point_evaluation_group_id': 469557,
          'completion_statuses': []
          },
 
-        {'course': ecs36b,
+        {'course': ecs36a,
          'kudo_point_giving_assignment_group_id': 469533,
          'kudo_point_evaluation_group_id': 469534,
          'completion_statuses': []
@@ -464,8 +464,8 @@ def main():
     # ones I normally use
     # test_kudo_point_creation()
     # test_download_assignment_info()
-    test_download_users_to_csv()
-    # test_update_group_names_to_reflect_memberships()
+    # test_download_users_to_csv()
+    test_update_group_names_to_reflect_memberships()
     # test_get_missing_qualtrics_users()
     # true_kudo_point_evaluation()
     # upload_ecs_36b_survey_completion()
