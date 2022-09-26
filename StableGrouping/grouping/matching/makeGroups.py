@@ -445,6 +445,7 @@ def make_pairs(students: dict, match_dict: dict):
 # students dict - a dictionary of all the students
 # match_dict - a dictionary of all invalid matching
 def make_quads(students: dict, match_dict: dict, pairs: list):
+
     # Make a copy that won't change the original students
     extra_students = []
 
@@ -546,6 +547,9 @@ def clean_quads(quads: list, singles: dict, num_groups: int, matched_before: dic
 
 # Make a list of the possible students
 def make_groups(singles: dict, extra_students: dict, matched_before: dict):
+    original_limit = sys.getrecursionlimit()
+    sys.setrecursionlimit(2047483647)
+
     # Calculate the number of needed groups
     len_class = len(singles) + len(extra_students)
     num_groups = len_class // 5
@@ -610,7 +614,13 @@ def make_groups(singles: dict, extra_students: dict, matched_before: dict):
         pairs.append(pairs2[i])
 
     # Make the pairs into quads
-    quads = make_quads(singles, matched_before, pairs)
+    try:
+        quads = make_quads(singles, matched_before, pairs)
+    except RecursionError:
+        print("RECURSION ERROR: Matching failed. Uncomment the line to raise the recursion limit to the max")
+        # See the commented out line of code about 5 lines above this and uncomment it before rerunning
+        input("The program will now crash (Press any key to see raw error message)")
+        raise  # Purposely re-crash the program to end it
 
     # The quads needed to be broken down if there are too many
     clean_quads(quads, extra_students, num_groups, matched_before)
@@ -628,7 +638,6 @@ def make_groups(singles: dict, extra_students: dict, matched_before: dict):
 
     if len(leftover_students) > 0:
         groups = add_extras(quintuplets, leftover_students, matched_before)
-    elif len(leftover_students) == 0:
-        return quintuplets
 
+    sys.setrecursionlimit(original_limit)
     return quintuplets
