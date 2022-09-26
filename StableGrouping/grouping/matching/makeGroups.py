@@ -1,6 +1,5 @@
 import sys
 from matching.games import StableMarriage, StableRoommates
-import sys
 
 from ..matching.checkValidGroup import is_valid_group
 from ..matching.matchingFunc import match_partner, match_sym_partner
@@ -366,9 +365,12 @@ def move_students_one(ans: dict, pairs: list, students: dict):
 
 # Make pairs of student-student
 def make_pairs(students: dict, match_dict: dict):
-    # Make a copy that won't change the original students
+    # Raise the recursion limit for preference_lists exceeding 162 to avoid a recursion error
+
     original_limit = sys.getrecursionlimit()
-    sys.setrecursionlimit(10**7)
+    sys.setrecursionlimit(2047483647)
+
+    # Make a copy that won't change the original students
     extra_students = []
 
     for student in students:
@@ -383,9 +385,6 @@ def make_pairs(students: dict, match_dict: dict):
     # You don't want to loop too many times, but run five times at most to find good matches that have not matched before
     while not finished and i < 10:
         preference_list = preference_symmetrical_sort(extra_students, "OneByOne", match_dict)
-
-        # Raise the recursion limit for preference_lists exceeding 162 to avoid a recursion error
-        # sys.setrecursionlimit(2047483647)
         try:
             game = StableRoommates.create_from_dictionary(preference_list)
         except RecursionError:
