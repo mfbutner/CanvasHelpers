@@ -19,7 +19,7 @@ This folder contains the study group matching program
 	* `patterns`: Update if the questions on the quiz change. The default should be fine for now. If a quiz question contains the text, it is mapped to that property
 
 ## Usage
-Run the `main.py` file once installation is complete to match students and create Canvas Groups.  
+Run `python .` in this folder or run `python StableGrouping` once installation is complete to match students and create Canvas Groups.  
 When given a Canvas Quiz containing the appropriate questions, the program will automatically fetch responses and create groups of students based on their stated preferences.  
 Students who do not fill the quiz are given the lowest priority.  
 The program will actively go into Canvas and create groups with the name "Study Group {studyGroupNumber}", no additional work is necessary. Students will also get a message in their Canvas inbox, listing their group mates' available schedules and preferences.

@@ -1,10 +1,11 @@
 import sys
 from matching.games import StableMarriage, StableRoommates
+import sys
 
-from StableGrouping.matching.checkValidGroup import is_valid_group
-from StableGrouping.matching.matchingFunc import match_partner, match_sym_partner
-from StableGrouping.matching.preferenceLists import preference_symmetrical_sort, preference_asymmetrical_sort
-from StableGrouping.shared.scoringFunc import score_group_by_one, score_two_by_two
+from ..matching.checkValidGroup import is_valid_group
+from ..matching.matchingFunc import match_partner, match_sym_partner
+from ..matching.preferenceLists import preference_symmetrical_sort, preference_asymmetrical_sort
+from ..shared.scoringFunc import score_group_by_one, score_two_by_two
 
 
 def quad_has_partner(quad: list):
@@ -382,7 +383,17 @@ def make_pairs(students: dict, match_dict: dict):
     # You don't want to loop too many times, but run five times at most to find good matches that have not matched before
     while not finished and i < 10:
         preference_list = preference_symmetrical_sort(extra_students, "OneByOne", match_dict)
-        game = StableRoommates.create_from_dictionary(preference_list)
+
+        # Raise the recursion limit for preference_lists exceeding 162 to avoid a recursion error
+        # sys.setrecursionlimit(2047483647)
+        try:
+            game = StableRoommates.create_from_dictionary(preference_list)
+        except RecursionError:
+            print("RECURSION ERROR: Matching failed. Uncomment the line to raise the recursion limit to the max")
+            # See the commented out line of code about 5 lines above this and uncomment it before rerunning
+            input("The program will now crash (Press any key to see raw error message)")
+            raise  # Purposely re-crash the program to end it
+
         ans = game.solve()
 
         # remove the students who did not find matches out, delete them from the ans dict

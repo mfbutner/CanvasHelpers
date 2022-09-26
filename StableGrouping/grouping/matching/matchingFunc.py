@@ -1,4 +1,4 @@
-from StableGrouping.shared.studentClass import Student
+from ..shared.studentClass import Student
 
 
 # Return levels of matching preference - From 2 (best) to 0 (worst)

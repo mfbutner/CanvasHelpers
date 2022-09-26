@@ -1,6 +1,6 @@
-from StableGrouping.parsing.indexQuestions import index_questions
-from StableGrouping.shared.constants import NO_ANSWER, PreferGender, PreferAsync, PreferInternational, Confident
-from StableGrouping.shared.studentClass import Student
+from ..parsing.indexQuestions import index_questions
+from ..shared.constants import NO_ANSWER, PreferGender, PreferAsync, PreferInternational, Confident
+from ..shared.studentClass import Student
 
 
 def parse_students(canvas_students):
@@ -217,46 +217,3 @@ def parse_submissions(students_submitted, course, quiz, config):
 
     # Returns nothing. Modifies students_submitted by filling their respective fields
     return
-
-
-# TODO: Remove function since the repo has been rewritten to operate differently. For now, this is kept for reference
-# temporary stopgap for adding partner option
-# add the actual question to the full quiz
-def parsePartnerQuiz(quizData, CLASS_ID: int, dictSt: dict, missingSt: dict):
-    personNameQ = '1162587'
-    personEmailQ = '1162588'
-    if CLASS_ID == 516271:
-        personNameQ = '1162590'
-        personEmailQ = '1162591'
-
-    questionList = [personNameQ, personEmailQ]  # all columns in the student data csv. Need for full question string
-    fullQuestionList = quizData.columns.values.tolist()
-    # print(fullQuestionList)
-    # numerical location of the question
-    questionsLoc = []
-    # iterate through all column names in csv and add location of matching id to list
-    for loc, question in enumerate(fullQuestionList):
-        for id in questionList:
-            if id in question:
-                questionsLoc.append(loc)
-    # make a dictionary where question id matches to the question location
-    questionsDict = dict(zip(questionList, questionsLoc))
-    questionsDict['id'] = quizData.columns.get_loc('id')
-    questionsDict['name'] = quizData.columns.get_loc('name')
-
-    for row in quizData.itertuples(index=False, name=None):
-        id = row[questionsDict['id']]
-        temp = row[questionsDict[personNameQ]]
-        if type(temp) is str and (len(temp)):
-            if id in dictSt:
-                dictSt[id].partner = temp
-            else:
-                missingSt[id].partner = temp
-
-        temp = row[questionsDict[personEmailQ]]
-        if type(temp) is str and (len(temp)):
-
-            if id in dictSt:
-                dictSt[id].partner_email = temp
-            else:
-                missingSt[id].partner_email = temp
