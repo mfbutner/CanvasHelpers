@@ -1,6 +1,5 @@
 # CSV Canvas Grade Transfer
-> An improvement of the current Canvas method of uploading grades from CSV files by simplifying the required documents 
-> and matching students automatically based on emails, student IDs (SIDs) and names.
+> A Python tool to streamline uploading grades to Canvas from CSVs by simplifying formatting and automatically matching students.
 
 ## Table of Contents
 * [General Info](#general-information)
@@ -33,9 +32,9 @@ This program transfers students' grades of one or more assignments from a CSV fi
 
 
 - Match students automatically by their emails and SIDs first, then match the rest of students by their
-unique full names or last names and ask user to verify these name matches.
+unique full names or last names and prompt the user to verify name-based matches.
 
-- Notify the user about which students' grades are not successfully transferred from the CSV file at the end of the program. 
+- Display a summary of unmatched students at the end. 
 
 
 
@@ -44,10 +43,10 @@ unique full names or last names and ask user to verify these name matches.
 1. Canvas url 
     - Example: https://canvas.ucdavis.edu/
     
-2. the Canvas token 
+2. The Canvas token
     - How to get Canvas API access tokens: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-manage-API-access-tokens-as-an-admin/ta-p/89
 
-3. the path to the CSV file on user's local computer
+3. The path to the CSV file on user's local computer
 
 #### To run the program:
 
@@ -75,27 +74,44 @@ unique full names or last names and ask user to verify these name matches.
 
 
 ## Workflow
-- After given the Canvas url, the user's Canvas token, and the path to the CSV file, the program asks user to 
-specify the course, assignment groups, and assignments to which they want the grades to be uploaded. 
 
-- Then the program shows the first five rows from the CSV file and asks user to identify what each column represents.
+1. **Input collection**  
+   The user provides:
+   - Canvas URL  
+   - Canvas API token  
+   - Path to the CSV file  
 
-- The program first matches students from the CSV file and the Canvas course by their emails and student IDs (SID), then 
-it matches the leftover students who can't be matched previously by their unique full names or last names. Next, the 
-program asks user to identify if each name-matched Canvas-CSV student pair is correct.
+2. **Course and assignment selection**  
+   The program prompts the user to:
+   - Select the course  
+   - Choose the assignment group  
+   - Select one or more assignments for grade upload  
 
-- Afterwards the program updates the matched (by emails, SIDs, or verified names) students' grades to Canvas. It informs 
-user about the progress of sending each assignment's grade update request to Canvas.
+3. **CSV column identification**  
+   The first five rows of the CSV file are displayed.  
+   The user is asked to identify the meaning of each column (e.g., name, email, SID, grade).
 
-- Lastly the program announces the CSV file students (full names, emails, and SID) whose grades are not transferred during
-this grade upload. 
+4. **Student matching**  
+   The program attempts to match students from the CSV file with those in the Canvas course:
+   - First by email and student ID (SID)  
+   - Then by unique full name or last name (if still unmatched)  
+   - The user is prompted to verify each name-based match  
 
+5. **Grade upload**  
+   The program updates grades on Canvas for all successfully matched students.  
+   Progress is shown as each assignment’s grades are uploaded.
+
+6. **Unmatched students report**  
+   At the end, the program lists students from the CSV file whose grades were **not transferred**, showing:
+   - Full names  
+   - Emails  
+   - Student IDs  
 - Please visit [ExternalDocumentation](./ExternalDocumentation) for a more detailed workflow about this program. 
 
 
 
 ## Project Status
-The program is functional but it's not in the ideal state. More updates will be upcoming.
+Functional and actively used, with room for future UI and logic improvements.
 
 
 ## Room for Improvement
