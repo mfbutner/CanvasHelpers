@@ -115,21 +115,20 @@ Functional and actively used, with room for future UI and logic improvements.
 
 
 ## Room for Improvement
-To do:
-- Upgrade the user interface from terminal command line to a local website.
+Planned enhancements include:
+- Upgrade the user interface from a terminal-based script to a local web application.
 
-- Find a more efficient algorithm to 
-    1. Match students based on Email, SIDs, and names. 
-    2. Link students together when filling in the grade book dictionary.
+- Optimize student matching logic:
+  - Improve efficiency when matching by email, SID, or name.
+  - Enhance the linking mechanism for grade book entries.
 
 - Change the update announcements to after the grades are uploaded to Canvas.
 
-- Use other data structures than dictionary when announcing the leftover CSV students at the end because at this point 
-names are not guaranteed to be unique and SID/email may not exist.
+- Use alternative data structures (rather than dictionaries) to track unmatched students, especially since names may not be unique and SID/email fields may be missing.
+  
+- Add more test coverage to handle edge and corner cases.
 
-- Test more corner cases.
-
-- Add more comments to functions. 
+- Improve code readability by adding more detailed comments and documentation.
 
 
 
