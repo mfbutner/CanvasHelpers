@@ -126,5 +126,5 @@ instructor's Canvas learning management system (LMS).
 
 
 ## Contact
-Created by Qianhan "Janet" Zhang (jqhzhang@ucdavis.edu) - feel free to contact me!
+Created by Qianhan "Janet" Zhang (jqhzhang@gmail.com) - feel free to contact me!
 
